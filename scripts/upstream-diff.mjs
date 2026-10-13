@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-// upstream-diff — 上游 authms/web 与舰队 packages/* 的差异报告
+// upstream-diff — 上游旧 web 仓 与舰队 packages/* 的差异报告
 // 用法: AUTIONAL_UPSTREAM=<路径> node scripts/upstream-diff.mjs
 //       （缺省找 D:\go\auth_ms_new\web；找不到就跳过并退出 0）
 //
 // 为什么需要它：packages/shared 这一类包**不是 npm 依赖**，而是「从上游拷一份」进每个站点。
-// 上游 authms/web 仍在活跃开发（2026-09 仍在提交 entry-plane / generated API 重生成）。
+// 上游旧 web 仓 仍在活跃开发（2026-09 仍在提交 entry-plane / generated API 重生成）。
 // 实测当前状态：上游 68 个文件，39 个与舰队逐字节相同、29 个不同。也就是说上游的修复
 // **不会自己流到舰队**，而舰队的修复也不会回流。这个脚本把「差在哪」变成一条命令。
 //
@@ -55,7 +55,7 @@ function walk(dir, out = []) {
 // 是**测量口径**错了，不是代码有问题。跨仓库比对不能假设行尾策略一致。
 const sha = (p) => createHash('sha256').update(readFileSync(p, 'utf8').split('\r\n').join('\n')).digest('hex').slice(0, 12);
 
-// 命名空间归一化。为什么需要（第 43 轮实测）：舰队是上游 authms/web 的**换牌分叉**，
+// 命名空间归一化。为什么需要（第 43 轮实测）：舰队是上游旧 web 仓 的**换牌分叉**，
 // 绝大多数文件只差 AuthMS→Autional / @authms→@autional。第一版报告把这类文件
 // 也算成「上游与舰队之间真正的差」，于是 39 个里混进了 14 个**等价**文件，
 // 真正需要人评估的 29 个被淹没。判据先把噪声去掉，人再看剩下的。
