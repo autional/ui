@@ -1,6 +1,6 @@
 {
   "$comment": "非设计系统色阶台账（棘轮，C11）。键 = 非 DS 的 Tailwind 色系名（gray/red/green/blue/…），或设计系统内部被锁的类名（如 text-neutral-400）。数字只许减不许增；closedKeys 里的键必须为 0。度量范围排除 src/components/layout/**（并行工作流只读边界，边界解除后一并收敛）。",
-  "updated": "2026-10-07",
+  "updated": "2026-10-13",
   "coveredSites": [
     "admin",
     "auth",

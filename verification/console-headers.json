@@ -1,6 +1,6 @@
 {
   "$comment": "控制台页头台账（棘轮，D5）。inline = 页面自己写 text-xl font-semibold 的 <h1>；marketing = 控制台误用设计系统的营销 PageHeader。两者都只许减不许增，convergedSites 里的站点必须为 0（该站已全部改用 @autional/ui 的 AppPageHeader）。",
-  "updated": "2026-10-07",
+  "updated": "2026-10-13",
   "convergedSites": [
     "admin",
     "platform",

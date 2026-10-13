@@ -1,6 +1,6 @@
 {
   "$comment": "antd 直接依赖台账（棘轮）。specifiers 计的是**入口数**（具名导入个数），不是用法数。数字只许减不许增：新增直接 import antd 会被 C5 判红。closedKinds 里的种类必须为 0（该批收敛完了）。themeConverged=true 的站点另受 C1 强判据约束：不许自己拿 ConfigProvider。",
-  "updated": "2026-10-07",
+  "updated": "2026-10-13",
   "kinds": [
     "Table",
     "DatePicker",
@@ -40,10 +40,10 @@
         "RangePicker": 0,
         "Drawer": 0,
         "icons": 0,
-        "other": 902,
+        "other": 895,
         "subpath": 4
       },
-      "filesAntd": 107,
+      "filesAntd": 106,
       "filesIcons": 0,
       "bridgeFiles": 1,
       "ownThemeFiles": 0
@@ -56,10 +56,10 @@
         "RangePicker": 0,
         "Drawer": 0,
         "icons": 0,
-        "other": 236,
+        "other": 215,
         "subpath": 0
       },
-      "filesAntd": 36,
+      "filesAntd": 34,
       "filesIcons": 0,
       "bridgeFiles": 1,
       "ownThemeFiles": 0
