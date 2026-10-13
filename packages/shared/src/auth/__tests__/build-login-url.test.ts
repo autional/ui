@@ -182,38 +182,85 @@ describe('buildLoginUrl', () => {
 		});
 	});
 
-	describe('buildLogoutUrl（F-W5c 登出意图标记）', () => {
+	describe('buildLogoutUrl（TASK-LS-08 同源标准端点 + legacy 兜底）', () => {
 		const AUTH_CONFIG = {
 			VITE_PORTAL_CONFIG: {
 				auth: { host: 'auth', base: '' },
 			},
 		};
+		/** env 级 client_id（三级来源之二） */
+		const CID_CONFIG = {
+			...AUTH_CONFIG,
+			VITE_OAUTH_CLIENT_ID: 'cid-env',
+		};
 
-		it('门户域登出：auth 裸根 + redirect 回程 + logout=1', () => {
-			mockWindow('app.autional.com', 'https:', 'https://app.autional.com', AUTH_CONFIG);
+		beforeEach(() => {
+			// localStorage 桩按需设置；测试间清掉全局桩防跨用例泄漏（node 环境无真 localStorage）
+			vi.unstubAllGlobals();
+		});
+
+		it('门户域登出：同源标准端点 + client_id + post_logout_redirect_uri=<origin>/ + state=returnUrl', () => {
+			mockWindow('app.autional.com', 'https:', 'https://app.autional.com', CID_CONFIG);
 			const url = buildLogoutUrl('https://app.autional.com/demo/');
 			expect(url).toBe(
-				'https://auth.autional.com/?redirect=' +
-					encodeURIComponent('https://app.autional.com/demo/') +
-					'&logout=1',
+				'https://app.autional.com/oauth/api/v1/oauth/logout?client_id=cid-env&post_logout_redirect_uri=' +
+					encodeURIComponent('https://app.autional.com/') +
+					'&state=' +
+					encodeURIComponent('https://app.autional.com/demo/'),
 			);
 		});
 
-		it('auth 域租户页登出也走裸根：不经 /<slug>/login（那里 logout=1 被静默忽略）', () => {
-			mockWindow('auth.autional.local', 'https:', 'https://auth.autional.local', AUTH_CONFIG);
+		it('auth 域租户页登出同样走同源标准端点（不再裸根 / 不经 /<slug>/login）', () => {
+			mockWindow('auth.autional.local', 'https:', 'https://auth.autional.local', CID_CONFIG);
 			const url = buildLogoutUrl('https://auth.autional.local/acme-corp/dashboard');
 			expect(url).toBe(
-				'https://auth.autional.local/?redirect=' +
-					encodeURIComponent('https://auth.autional.local/acme-corp/dashboard') +
-					'&logout=1',
+				'https://auth.autional.local/oauth/api/v1/oauth/logout?client_id=cid-env&post_logout_redirect_uri=' +
+					encodeURIComponent('https://auth.autional.local/') +
+					'&state=' +
+					encodeURIComponent('https://auth.autional.local/acme-corp/dashboard'),
 			);
 			expect(url).not.toContain('/acme-corp/login');
 		});
 
-		it('无回程：auth 裸根 + logout=1', () => {
-			mockWindow('auth.autional.local', 'https:', 'https://auth.autional.local', AUTH_CONFIG);
+		it('无回程：仅 client_id + post_logout_redirect_uri，不产 state', () => {
+			mockWindow('app.autional.com', 'https:', 'https://app.autional.com', CID_CONFIG);
 			const url = buildLogoutUrl();
-			expect(url).toBe('https://auth.autional.local/?logout=1');
+			expect(url).toBe(
+				'https://app.autional.com/oauth/api/v1/oauth/logout?client_id=cid-env&post_logout_redirect_uri=' +
+					encodeURIComponent('https://app.autional.com/'),
+			);
+		});
+
+		describe('client_id 三级来源（会话持久化 → env → 空）', () => {
+			it('localStorage 会话值优先于 env', () => {
+				vi.stubGlobal('localStorage', { getItem: () => 'cid-session' });
+				mockWindow('app.autional.com', 'https:', 'https://app.autional.com', CID_CONFIG);
+				const url = buildLogoutUrl('https://app.autional.com/demo/');
+				expect(url).toContain('client_id=cid-session');
+				expect(url).not.toContain('cid-env');
+			});
+
+			it('localStorage 空 → env 兜底', () => {
+				vi.stubGlobal('localStorage', { getItem: () => null });
+				mockWindow('app.autional.com', 'https:', 'https://app.autional.com', CID_CONFIG);
+				expect(buildLogoutUrl()).toContain('client_id=cid-env');
+			});
+
+			it('双空 → legacy 兜底：auth 裸根 + redirect 回程 + logout=1', () => {
+				mockWindow('app.autional.com', 'https:', 'https://app.autional.com', AUTH_CONFIG);
+				const url = buildLogoutUrl('https://app.autional.com/demo/');
+				expect(url).toBe(
+					'https://auth.autional.com/?redirect=' +
+						encodeURIComponent('https://app.autional.com/demo/') +
+						'&logout=1',
+				);
+			});
+
+			it('双空 + 无回程 → legacy 裸根 + logout=1（现行为保持）', () => {
+				mockWindow('auth.autional.local', 'https:', 'https://auth.autional.local', AUTH_CONFIG);
+				const url = buildLogoutUrl();
+				expect(url).toBe('https://auth.autional.local/?logout=1');
+			});
 		});
 	});
 });

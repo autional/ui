@@ -31,9 +31,10 @@ export function useLogout(opts?: { returnUrl?: string }) {
 			const { AuthService } = await import('../auth/service');
 			await AuthService.logout();
 
-			// buildLogoutUrl = auth 域裸根 + `logout=1` 登出意图标记：入口路由据此先
-			// 终结会话再定落点（能解析出租户 → 裸 /<slug>/login；否则 brand 裸根），
-			// 而不是把带会话的回程当普通深链直送登录页（会静默重登）。
+			// buildLogoutUrl（LS-08）：client_id 可得 → 同源标准端点整页导航（服务端无会话
+			// 浏览器支 302 确认页承接，确认后回跳门户根）；不可得 → legacy auth 裸根 + `logout=1`
+			// 意图标记（入口路由据此先终结会话再定落点：能解析出租户 → 裸 /<slug>/login；
+			// 否则 brand 裸根）。两者都不会把带会话的回程当普通深链直送登录页（会静默重登）。
 			// funnel：用户主动行为，静默直跳（assign 保持原 href 历史语义）；仅记 trace。
 			traceRedirect(buildLogoutUrl(currentUrl), { reason: 'logout', assign: true });
 		};

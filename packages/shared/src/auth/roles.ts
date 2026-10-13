@@ -8,6 +8,7 @@
  */
 
 import { getPortalUrl } from '../config';
+import { resolveClientIdForSession } from './oauth-client-id-store';
 
 /** auth-pages 的静态/受保护路由 — 首段不会是租户 slug */
 const AUTH_ROUTE_RESERVED = new Set([
@@ -20,6 +21,7 @@ const AUTH_ROUTE_RESERVED = new Set([
 	'privacy',
 	'error',
 	'logout',
+	'logout-confirm',
 	'passkey',
 	'reapply',
 	'mfa',
@@ -37,20 +39,41 @@ const AUTH_ROUTE_RESERVED = new Set([
 ]);
 
 /**
- * 登出回程 URL：auth 域**裸根**入口 + `logout=1` 显式登出意图标记。
+ * 登出 URL（TASK-LS-08）：同源标准端点（RP-Initiated Logout 无 hint 形态）优先，
+ * client_id 不可得时保持 legacy 形态。
  *
- * 刻意不复用 buildLoginUrl：其租户 slug 保留会把 auth 域页面的登出落到
- * `/<slug>/login`（登录页路由，不经入口路由），`logout=1` 在那里被静默忽略；
+ * 标准端点形态（ADR-12 同源直通）：`${origin}/oauth/api/v1/oauth/logout`
+ * - client_id：本部署的 OAuth 客户端（`resolveClientIdForSession` 三级来源：会话持久化
+ *   localStorage `oauth_client_id` → env），服务端据此做 post_logout_redirect_uri 注册面白名单校验；
+ * - post_logout_redirect_uri：本门户 origin 根（`<origin>/`，注册形态同 PlatformPortalRedirectURIs）；
+ * - state：returnUrl 的 URL-safe 编码（门户零行为驱动——服务端只原样回拼到回跳 URL，门户不解析）。
+ * 浏览器整页导航不带 Bearer → 服务端「无 hint 无会话浏览器」支 302 确认页承接；
+ * 用户确认后由确认页经 BFF（会话 cookie → Bearer）触达端点，走认证会话支并导航服务端 location。
+ *
+ * legacy 兜底（D2=A 兼容分支保留，EntryRouter 承接）：client_id 不可得 → auth 域**裸根**入口 +
+ * `logout=1` 显式登出意图标记。刻意不复用 buildLoginUrl：其租户 slug 保留会把 auth 域页面的
+ * 登出落到 `/<slug>/login`（登录页路由，不经入口路由），`logout=1` 在那里被静默忽略；
  * 带会话回程甚至会被登录页 checkAndRedirect 直接放行成静默重登（F-W5c）。
- * 裸根 = EntryRouter 唯一登出闸门：先终结 auth 域会话，再决定落点——
- * 回程能解析出真实租户 → 裸 `/<slug>/login`（不带回程参数：登出即"重新开始"，
- * 登录后走默认去向，去向选择权交还用户）；否则落 brand 裸根。
+ * 裸根 = EntryRouter 唯一登出闸门：先终结 auth 域会话，再决定落点——回程能解析出真实租户 →
+ * 裸 `/<slug>/login`；否则落 brand 裸根。
  */
 export function buildLogoutUrl(returnUrl?: string): string {
 	const base = getPortalUrl('auth');
-	if (!base) return '/';
-	const redirect = returnUrl ? `redirect=${encodeURIComponent(returnUrl)}&` : '';
-	return `${base}/?${redirect}logout=1`;
+	// legacy 兜底：现行为保持（auth 裸根 + logout=1 意图标记）
+	const legacy = (): string => {
+		if (!base) return '/';
+		const redirect = returnUrl ? `redirect=${encodeURIComponent(returnUrl)}&` : '';
+		return `${base}/?${redirect}logout=1`;
+	};
+
+	const clientId = resolveClientIdForSession();
+	if (!clientId || typeof window === 'undefined' || !window.location?.origin) return legacy();
+
+	const params = new URLSearchParams();
+	params.set('client_id', clientId);
+	params.set('post_logout_redirect_uri', `${window.location.origin}/`);
+	if (returnUrl) params.set('state', returnUrl);
+	return `${window.location.origin}/oauth/api/v1/oauth/logout?${params.toString()}`;
 }
 
 /**

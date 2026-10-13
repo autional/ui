@@ -201,7 +201,8 @@ export function loginWithTokens(
  *
  * redirectTo（U350）：显式落点（会话过期→auth /error、注销完成→/<slug>/login?account_deleted=true 等
  * 旗标页）——清理完成后整页前往。缺省仅清会话、不导航；注意与 useLogout 口径区分：该 hook 走
- * buildLogoutUrl 登出意图流（logout=1 交入口路由定落点），不得用于需要保留业务 query 旗标的目标。
+ * buildLogoutUrl 登出流（LS-08：同源标准端点；client_id 不可得时退 legacy logout=1 交入口路由），
+ * 不得用于需要保留业务 query 旗标的目标。
  */
 export async function logout(redirectTo?: string): Promise<void> {
 	const { AuthService } = await import('./service');
