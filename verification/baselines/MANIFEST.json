@@ -1,6 +1,6 @@
 {
   "$description": "视觉基线环境固化。跨机器复用基线与字体差异必然误报——本基线绑定下列环境。",
-  "generatedAt": "2026-10-08T15:44:20.697Z",
+  "generatedAt": "2026-10-13T18:21:21.976Z",
   "config": {
     "viewport": {
       "width": 1440,
@@ -25,8 +25,8 @@
     {
       "name": "web-home",
       "action": "baseline-written",
-      "bytes": 539236,
-      "sha256": "8df038d1f0ffafae",
+      "bytes": 538348,
+      "sha256": "38a4a5ea00401d58",
       "env": {
         "browser": "149.0.7827.55",
         "viewport": {
