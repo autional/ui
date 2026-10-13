@@ -2,7 +2,9 @@
 
 import React from 'react';
 import { AlertTriangle, CheckCircle2, Info, X, XCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { SOFT_BORDER, SOFT_TEXT, type SemanticVariant } from '../internal/semantic-styles';
+import { UI_I18N_NS, uiText } from '../i18n';
 
 // Alert —— 区块级提示（着色块）。
 //
@@ -67,9 +69,14 @@ export const Alert = React.memo(function Alert({
 	action,
 	closable = false,
 	onClose,
-	closeLabel = '关闭',
+	closeLabel,
 	className = ''
 }: AlertProps) {
+	const { t, i18n } = useTranslation();
+	// 文案解析链与 Modal / ThemeToggle 同构（语言问题审计 2026-10-13）：原为硬编码中文默认。
+	const closeLabelText =
+		closeLabel ??
+		t('alert.close', { ns: UI_I18N_NS, defaultValue: uiText(i18n.language, 'alert.close') ?? '关闭' });
 	const glyph = icon === null ? null : (icon ?? DEFAULT_ICONS[variant]);
 	return (
 		// role="alert" 与 antd 的 Alert 一致：这些块绝大多数是**动作之后**才出现的（结果/失败原因），
@@ -89,7 +96,7 @@ export const Alert = React.memo(function Alert({
 				<button
 					type="button"
 					onClick={onClose}
-					aria-label={closeLabel}
+					aria-label={closeLabelText}
 					className="-mr-1 -mt-1 shrink-0 rounded-md p-1 opacity-70 transition-opacity hover:opacity-100 focus-visible:outline focus-visible:outline-2"
 				>
 					<X className="h-4 w-4" />

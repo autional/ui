@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { AlertTriangle, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { UI_I18N_NS, uiText } from '../i18n';
 
 interface ConfirmDialogProps {
 	open: boolean;
@@ -32,12 +34,22 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
 	open,
 	title,
 	description,
-	confirmText = '确认',
-	cancelText = '取消',
+	confirmText,
+	cancelText,
 	variant = 'neutral',
 	onConfirm,
 	onCancel,
 }: ConfirmDialogProps) {
+	const { t, i18n } = useTranslation();
+	// 文案解析链与 Modal / ThemeToggle 同构（语言问题审计 2026-10-13）：原为硬编码
+	// 中文默认（'确认' / '取消' / X 按钮 '关闭'）—— user 门户 5 处裸调用 EN 站裸露中文。
+	const resolve = (key: string, fallback: string): string =>
+		t(key, { ns: UI_I18N_NS, defaultValue: uiText(i18n.language, key) ?? fallback });
+	const confirmLabel = confirmText ?? resolve('confirmDialog.confirm', '确认');
+	const cancelLabel = cancelText ?? resolve('confirmDialog.cancel', '取消');
+	// X 按钮与 Modal 同键（同为对话框关闭，文案一致）
+	const closeLabel = resolve('modal.close', '关闭');
+
 	const handleKeyDown = useCallback(
 		(e: KeyboardEvent) => {
 			if (e.key === 'Escape') onCancel();
@@ -69,7 +81,7 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
 				<button
 					onClick={onCancel}
 					className="absolute right-4 top-4 text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
-					aria-label="关闭"
+					aria-label={closeLabel}
 				>
 					<X className="h-4 w-4" />
 				</button>
@@ -89,13 +101,13 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
 						onClick={onCancel}
 						className="rounded-md border border-[var(--color-border-subtle)] bg-[var(--color-bg-surface)] px-4 py-2 text-sm font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-bg-muted)]"
 					>
-						{cancelText}
+						{cancelLabel}
 					</button>
 					<button
 						onClick={onConfirm}
 						className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${style.confirm}`}
 					>
-						{confirmText}
+						{confirmLabel}
 					</button>
 				</div>
 			</div>
