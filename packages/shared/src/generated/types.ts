@@ -5257,7 +5257,7 @@ export interface ListResponsedto_WebAuthnCredentialResponse {
   total?: number;  // 总条数（平铺，便于直接读取）
 }
 
-export interface ListResponsegitee_com_linmes_authms_microservices_identityservice_internal_device_domain_DeviceInfo {
+export interface ListResponsegitee_com_autional_microservices_identityservice_internal_device_domain_DeviceInfo {
   code?: number;
   items?: DeviceInfo[];  // 统一使用 items
   message?: string;
@@ -6643,7 +6643,7 @@ export interface DataResponsedto_Web3VerifyResponse {
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_identityservice_internal_device_domain_DeviceInfo {
+export interface DataResponsegitee_com_autional_microservices_identityservice_internal_device_domain_DeviceInfo {
   code?: number;
   data?: DeviceInfo;
   message?: string;
@@ -8274,7 +8274,7 @@ export interface ClientRegistrationResponse {
   policyUri?: string;  // 隐私政策URL | @example https://app.example.com/privacy
   redirectUris?: string[];  // 回调URI列表 | @example ['["https://app.example.com/callback"]']
   registrationAccessToken?: string;  // 注册管理Token | @example reg_abc123...
-  registrationClientUri?: string;  // 注册管理URI | @example https://authms.example.com/api/v1/oauth/register/app-123
+  registrationClientUri?: string;  // 注册管理URI | @example https://api.example.com/api/v1/oauth/register/app-123
   scope?: string;  // 权限范围 | @example openid profile email
   tokenEndpointAuthMethod?: string;  // 认证方法 | @example client_secret_basic
   tosUri?: string;  // 服务条款URL | @example https://app.example.com/tos
@@ -8510,7 +8510,7 @@ export interface DeviceAuthorizationResponse {
   expiresIn?: number;  // @example 600
   interval?: number;  // @example 5
   userCode?: string;  // @example BDJW-DSXQ
-  verificationUri?: string;  // @example https://authms.example.com/device
+  verificationUri?: string;  // @example https://api.example.com/device
 }
 
 /** 用户在浏览器中授权设备（RFC 8628 §3.3） */
@@ -9783,7 +9783,7 @@ export interface WebhookConfigResponse {
 // rbac-service
 // ============================================================
 
-export interface ListResponsegitee_com_linmes_authms_microservices_rbacservice_internal_handler_dto_ApprovalRequestResponse {
+export interface ListResponsegitee_com_autional_microservices_rbacservice_internal_handler_dto_ApprovalRequestResponse {
   code?: number;
   items?: ApprovalRequestResponse[];  // 统一使用 items
   message?: string;
@@ -9792,7 +9792,7 @@ export interface ListResponsegitee_com_linmes_authms_microservices_rbacservice_i
   total?: number;  // 总条数（平铺，便于直接读取）
 }
 
-export interface ListResponsegitee_com_linmes_authms_microservices_rbacservice_internal_handler_dto_PermissionResponse {
+export interface ListResponsegitee_com_autional_microservices_rbacservice_internal_handler_dto_PermissionResponse {
   code?: number;
   items?: PermissionResponse[];  // 统一使用 items
   message?: string;
@@ -9801,7 +9801,7 @@ export interface ListResponsegitee_com_linmes_authms_microservices_rbacservice_i
   total?: number;  // 总条数（平铺，便于直接读取）
 }
 
-export interface ListResponsegitee_com_linmes_authms_microservices_rbacservice_internal_handler_dto_RoleResponse {
+export interface ListResponsegitee_com_autional_microservices_rbacservice_internal_handler_dto_RoleResponse {
   code?: number;
   items?: RoleResponse[];  // 统一使用 items
   message?: string;
@@ -9810,119 +9810,119 @@ export interface ListResponsegitee_com_linmes_authms_microservices_rbacservice_i
   total?: number;  // 总条数（平铺，便于直接读取）
 }
 
-export interface DataResponsearray_gitee_com_linmes_authms_microservices_rbacservice_internal_handler_dto_ConflictPairResponse {
+export interface DataResponsearray_gitee_com_autional_microservices_rbacservice_internal_handler_dto_ConflictPairResponse {
   code?: number;
   data?: ConflictPairResponse[];
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsearray_gitee_com_linmes_authms_microservices_rbacservice_internal_handler_dto_DefaultRoleResponse {
+export interface DataResponsearray_gitee_com_autional_microservices_rbacservice_internal_handler_dto_DefaultRoleResponse {
   code?: number;
   data?: DefaultRoleResponse[];
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsearray_gitee_com_linmes_authms_microservices_rbacservice_internal_handler_dto_PermissionResponse {
+export interface DataResponsearray_gitee_com_autional_microservices_rbacservice_internal_handler_dto_PermissionResponse {
   code?: number;
   data?: PermissionResponse[];
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsearray_gitee_com_linmes_authms_microservices_rbacservice_internal_handler_dto_RebacRelationshipDTO {
+export interface DataResponsearray_gitee_com_autional_microservices_rbacservice_internal_handler_dto_RebacRelationshipDTO {
   code?: number;
   data?: RebacRelationshipDTO[];
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsearray_gitee_com_linmes_authms_microservices_rbacservice_internal_handler_dto_RoleResponse {
+export interface DataResponsearray_gitee_com_autional_microservices_rbacservice_internal_handler_dto_RoleResponse {
   code?: number;
   data?: RoleResponse[];
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_rbacservice_internal_handler_dto_ApprovalRequestResponse {
+export interface DataResponsegitee_com_autional_microservices_rbacservice_internal_handler_dto_ApprovalRequestResponse {
   code?: number;
   data?: ApprovalRequestResponse;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_rbacservice_internal_handler_dto_BootstrapAdminResponse {
+export interface DataResponsegitee_com_autional_microservices_rbacservice_internal_handler_dto_BootstrapAdminResponse {
   code?: number;
   data?: BootstrapAdminResponse;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_rbacservice_internal_handler_dto_ConflictPairResponse {
+export interface DataResponsegitee_com_autional_microservices_rbacservice_internal_handler_dto_ConflictPairResponse {
   code?: number;
   data?: ConflictPairResponse;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_rbacservice_internal_handler_dto_PermissionCheckDetailResponse {
+export interface DataResponsegitee_com_autional_microservices_rbacservice_internal_handler_dto_PermissionCheckDetailResponse {
   code?: number;
   data?: PermissionCheckDetailResponse;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_rbacservice_internal_handler_dto_PermissionCheckResponse {
+export interface DataResponsegitee_com_autional_microservices_rbacservice_internal_handler_dto_PermissionCheckResponse {
   code?: number;
   data?: PermissionCheckResponse;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_rbacservice_internal_handler_dto_PermissionResponse {
+export interface DataResponsegitee_com_autional_microservices_rbacservice_internal_handler_dto_PermissionResponse {
   code?: number;
   data?: PermissionResponse;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_rbacservice_internal_handler_dto_RebacDeleteResult {
+export interface DataResponsegitee_com_autional_microservices_rbacservice_internal_handler_dto_RebacDeleteResult {
   code?: number;
   data?: RebacDeleteResult;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_rbacservice_internal_handler_dto_RebacRelationshipDTO {
+export interface DataResponsegitee_com_autional_microservices_rbacservice_internal_handler_dto_RebacRelationshipDTO {
   code?: number;
   data?: RebacRelationshipDTO;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_rbacservice_internal_handler_dto_RoleCheckResponse {
+export interface DataResponsegitee_com_autional_microservices_rbacservice_internal_handler_dto_RoleCheckResponse {
   code?: number;
   data?: RoleCheckResponse;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_rbacservice_internal_handler_dto_RoleResponse {
+export interface DataResponsegitee_com_autional_microservices_rbacservice_internal_handler_dto_RoleResponse {
   code?: number;
   data?: RoleResponse;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_rbacservice_internal_handler_dto_UserIDsResponse {
+export interface DataResponsegitee_com_autional_microservices_rbacservice_internal_handler_dto_UserIDsResponse {
   code?: number;
   data?: UserIDsResponse;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_rbacservice_internal_handler_dto_ValidateUserRolesResponse {
+export interface DataResponsegitee_com_autional_microservices_rbacservice_internal_handler_dto_ValidateUserRolesResponse {
   code?: number;
   data?: ValidateUserRolesResponse;
   message?: string;
@@ -10152,7 +10152,7 @@ export type Effect = "allow" | "deny";
 // saml-service
 // ============================================================
 
-export interface ListResponsegitee_com_linmes_authms_microservices_samlservice_internal_handler_dto_SamlSessionItem {
+export interface ListResponsegitee_com_autional_microservices_samlservice_internal_handler_dto_SamlSessionItem {
   code?: number;
   items?: SamlSessionItem[];  // 统一使用 items
   message?: string;
@@ -10161,7 +10161,7 @@ export interface ListResponsegitee_com_linmes_authms_microservices_samlservice_i
   total?: number;  // 总条数（平铺，便于直接读取）
 }
 
-export interface ListResponsegitee_com_linmes_authms_microservices_samlservice_internal_handler_dto_SamlUserLinkItem {
+export interface ListResponsegitee_com_autional_microservices_samlservice_internal_handler_dto_SamlUserLinkItem {
   code?: number;
   items?: SamlUserLinkItem[];  // 统一使用 items
   message?: string;
@@ -10295,91 +10295,91 @@ export interface SamlUserLinkItem {
 // secret-service
 // ============================================================
 
-export interface DataResponsearray_gitee_com_linmes_authms_microservices_secretservice_internal_handler_dto_SecretVersionResponse {
+export interface DataResponsearray_gitee_com_autional_microservices_secretservice_internal_handler_dto_SecretVersionResponse {
   code?: number;
   data?: SecretVersionResponse[];
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_secretservice_internal_handler_dto_BatchGetResponse {
+export interface DataResponsegitee_com_autional_microservices_secretservice_internal_handler_dto_BatchGetResponse {
   code?: number;
   data?: BatchGetResponse;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_secretservice_internal_handler_dto_BatchResult {
+export interface DataResponsegitee_com_autional_microservices_secretservice_internal_handler_dto_BatchResult {
   code?: number;
   data?: BatchResult;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_secretservice_internal_handler_dto_EncryptionKeysDetailResponse {
+export interface DataResponsegitee_com_autional_microservices_secretservice_internal_handler_dto_EncryptionKeysDetailResponse {
   code?: number;
   data?: EncryptionKeysDetailResponse;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_secretservice_internal_handler_dto_JWTKeyResponse {
+export interface DataResponsegitee_com_autional_microservices_secretservice_internal_handler_dto_JWTKeyResponse {
   code?: number;
   data?: JWTKeyResponse;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_secretservice_internal_handler_dto_JWTKeysListResponse {
+export interface DataResponsegitee_com_autional_microservices_secretservice_internal_handler_dto_JWTKeysListResponse {
   code?: number;
   data?: JWTKeysListResponse;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_secretservice_internal_handler_dto_JWTPublicKeyResponse {
+export interface DataResponsegitee_com_autional_microservices_secretservice_internal_handler_dto_JWTPublicKeyResponse {
   code?: number;
   data?: JWTPublicKeyResponse;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_secretservice_internal_handler_dto_SecretDetailResponse {
+export interface DataResponsegitee_com_autional_microservices_secretservice_internal_handler_dto_SecretDetailResponse {
   code?: number;
   data?: SecretDetailResponse;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_secretservice_internal_handler_dto_SecretPolicyResponse {
+export interface DataResponsegitee_com_autional_microservices_secretservice_internal_handler_dto_SecretPolicyResponse {
   code?: number;
   data?: SecretPolicyResponse;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_secretservice_internal_handler_dto_SecretResponse {
+export interface DataResponsegitee_com_autional_microservices_secretservice_internal_handler_dto_SecretResponse {
   code?: number;
   data?: SecretResponse;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_secretservice_internal_handler_dto_SecretValueResponse {
+export interface DataResponsegitee_com_autional_microservices_secretservice_internal_handler_dto_SecretValueResponse {
   code?: number;
   data?: SecretValueResponse;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_secretservice_internal_handler_dto_TransmissionDecryptResponse {
+export interface DataResponsegitee_com_autional_microservices_secretservice_internal_handler_dto_TransmissionDecryptResponse {
   code?: number;
   data?: TransmissionDecryptResponse;
   message?: string;
   timestamp?: string;
 }
 
-export interface ListResponsegitee_com_linmes_authms_microservices_secretservice_internal_handler_dto_SecretResponse {
+export interface ListResponsegitee_com_autional_microservices_secretservice_internal_handler_dto_SecretResponse {
   code?: number;
   items?: SecretResponse[];  // 统一使用 items
   message?: string;
@@ -12976,14 +12976,14 @@ export interface DataResponsecaptcha_Challenge {
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_thirdpartyservice_internal_dto_CaptchaVerifyResponse {
+export interface DataResponsegitee_com_autional_microservices_thirdpartyservice_internal_dto_CaptchaVerifyResponse {
   code?: number;
   data?: CaptchaVerifyResponse;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_thirdpartyservice_internal_dto_ExportUserDataResponse {
+export interface DataResponsegitee_com_autional_microservices_thirdpartyservice_internal_dto_ExportUserDataResponse {
   code?: number;
   data?: ExportUserDataResponse;
   message?: string;
@@ -13010,70 +13010,70 @@ export interface CaptchaVerifyResponse {
 // verification-service
 // ============================================================
 
-export interface DataResponsegitee_com_linmes_authms_microservices_verificationservice_internal_handler_dto_AdminVerificationDetail {
+export interface DataResponsegitee_com_autional_microservices_verificationservice_internal_handler_dto_AdminVerificationDetail {
   code?: number;
   data?: AdminVerificationDetail;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_verificationservice_internal_handler_dto_BeginLivenessResponse {
+export interface DataResponsegitee_com_autional_microservices_verificationservice_internal_handler_dto_BeginLivenessResponse {
   code?: number;
   data?: BeginLivenessResponse;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_verificationservice_internal_handler_dto_GuardianRelationshipResponse {
+export interface DataResponsegitee_com_autional_microservices_verificationservice_internal_handler_dto_GuardianRelationshipResponse {
   code?: number;
   data?: GuardianRelationshipResponse;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_verificationservice_internal_handler_dto_LivenessResultResponse {
+export interface DataResponsegitee_com_autional_microservices_verificationservice_internal_handler_dto_LivenessResultResponse {
   code?: number;
   data?: LivenessResultResponse;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_verificationservice_internal_handler_dto_ProviderConfigResponse {
+export interface DataResponsegitee_com_autional_microservices_verificationservice_internal_handler_dto_ProviderConfigResponse {
   code?: number;
   data?: ProviderConfigResponse;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_verificationservice_internal_handler_dto_StatsResponse {
+export interface DataResponsegitee_com_autional_microservices_verificationservice_internal_handler_dto_StatsResponse {
   code?: number;
   data?: StatsResponse;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_verificationservice_internal_handler_dto_SubmitOCRResponse {
+export interface DataResponsegitee_com_autional_microservices_verificationservice_internal_handler_dto_SubmitOCRResponse {
   code?: number;
   data?: SubmitOCRResponse;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_verificationservice_internal_handler_dto_VerificationDetailResponse {
+export interface DataResponsegitee_com_autional_microservices_verificationservice_internal_handler_dto_VerificationDetailResponse {
   code?: number;
   data?: VerificationDetailResponse;
   message?: string;
   timestamp?: string;
 }
 
-export interface DataResponsegitee_com_linmes_authms_microservices_verificationservice_internal_handler_dto_VerificationStatusResponse {
+export interface DataResponsegitee_com_autional_microservices_verificationservice_internal_handler_dto_VerificationStatusResponse {
   code?: number;
   data?: VerificationStatusResponse;
   message?: string;
   timestamp?: string;
 }
 
-export interface ListResponsegitee_com_linmes_authms_microservices_verificationservice_internal_handler_dto_GuardianRelationshipResponse {
+export interface ListResponsegitee_com_autional_microservices_verificationservice_internal_handler_dto_GuardianRelationshipResponse {
   code?: number;
   items?: GuardianRelationshipResponse[];  // 统一使用 items
   message?: string;
@@ -13082,7 +13082,7 @@ export interface ListResponsegitee_com_linmes_authms_microservices_verifications
   total?: number;  // 总条数（平铺，便于直接读取）
 }
 
-export interface ListResponsegitee_com_linmes_authms_microservices_verificationservice_internal_handler_dto_MinorProfileResponse {
+export interface ListResponsegitee_com_autional_microservices_verificationservice_internal_handler_dto_MinorProfileResponse {
   code?: number;
   items?: MinorProfileResponse[];  // 统一使用 items
   message?: string;
@@ -13091,7 +13091,7 @@ export interface ListResponsegitee_com_linmes_authms_microservices_verifications
   total?: number;  // 总条数（平铺，便于直接读取）
 }
 
-export interface ListResponsegitee_com_linmes_authms_microservices_verificationservice_internal_handler_dto_ProviderConfigResponse {
+export interface ListResponsegitee_com_autional_microservices_verificationservice_internal_handler_dto_ProviderConfigResponse {
   code?: number;
   items?: ProviderConfigResponse[];  // 统一使用 items
   message?: string;
@@ -13100,7 +13100,7 @@ export interface ListResponsegitee_com_linmes_authms_microservices_verifications
   total?: number;  // 总条数（平铺，便于直接读取）
 }
 
-export interface ListResponsegitee_com_linmes_authms_microservices_verificationservice_internal_handler_dto_VerificationListItem {
+export interface ListResponsegitee_com_autional_microservices_verificationservice_internal_handler_dto_VerificationListItem {
   code?: number;
   items?: VerificationListItem[];  // 统一使用 items
   message?: string;
