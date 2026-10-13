@@ -32,6 +32,14 @@ export const uiI18nResources: Record<'zh-CN' | 'en-US', Record<string, string>> 
 		// ThemeToggle 默认文案（UP-04：原为组件内硬编码中文，EN 站点顶栏出现中文标签）
 		'theme.toggleDark': '切换到深色模式',
 		'theme.toggleLight': '切换到浅色模式',
+		// 组件默认文案（语言问题审计 2026-10-13）：原为组件内硬编码中文默认 ——
+		// EN 站裸露中文（trust 加载态「加载中...」线上实测）。文案逐字保留原硬编码值。
+		'loadingScreen.message': '加载中...',
+		'emptyState.title': '暂无数据',
+		'emptyState.description': '当前没有可显示的内容。',
+		'confirmDialog.confirm': '确认',
+		'confirmDialog.cancel': '取消',
+		'alert.close': '关闭',
 	},
 	'en-US': {
 		'portal.switcher': 'Switch portal',
@@ -52,5 +60,12 @@ export const uiI18nResources: Record<'zh-CN' | 'en-US', Record<string, string>> 
 		'pageStatus.retry': 'Retry',
 		'theme.toggleDark': 'Switch to dark mode',
 		'theme.toggleLight': 'Switch to light mode',
+		// EN 词汇对齐舰队既有口径（Loading... / No data / Confirm / Cancel / Close）
+		'loadingScreen.message': 'Loading...',
+		'emptyState.title': 'No data',
+		'emptyState.description': 'Nothing to display yet.',
+		'confirmDialog.confirm': 'Confirm',
+		'confirmDialog.cancel': 'Cancel',
+		'alert.close': 'Close',
 	},
 };
