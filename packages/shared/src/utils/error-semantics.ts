@@ -55,6 +55,11 @@ export function isNotFoundError(error: unknown): boolean {
 	return getHttpStatus(error) === 404;
 }
 
+/** HTTP 401：登录态失效（与 query-state 同口径，供调用方在语义层统一取用）。 */
+export function isUnauthorizedError(error: unknown): boolean {
+	return getHttpStatus(error) === 401;
+}
+
 /** 「未开通」判定：404 且契约标记 absence='unprovisioned'。 */
 export function isUnprovisionedError(error: unknown): boolean {
 	if (getHttpStatus(error) !== 404) return false;

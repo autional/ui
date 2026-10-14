@@ -255,6 +255,7 @@ export {
 	errorCodeOf,
 	isEmptyStateError,
 	isNotFoundError,
+	isUnauthorizedError,
 	isRetryableErrorContractFirst,
 	isUnprovisionedError,
 	semanticsOfCode,
