@@ -5,7 +5,7 @@
  * （不复制 4 份，违反 DRY）。
  *
  * - usePublicTenantSlugs: 调公开 tenants API（无认证端点），staleTime 5m 缓存，
- *   retry 1 + 8s 超时；失败上抛（不吞成空数组成功）——放行语义由消费方
+ *   8s 超时（重试由消费方默认策略决定）；失败上抛（不吞成空数组成功）——放行语义由消费方
  *   （TenantIndexGuard / TenantRootRedirect）在失败态自行 fail-open（rc.35）。
  * - TenantIndexGuard: 租户 slug 白名单守卫（P0-2），防止未知 slug 被贪婪渲染为
  *   租户内容（index 首页与 /:slug/... 子路由通用）。404 页由各 portal 通过
@@ -32,7 +32,7 @@ export interface PublicTenantInfo {
 }
 
 /** 公开租户名单请求超时（ms）。跨境链路（Vercel edge → 源站）实测新连接丢 ~45%，
- * 失败连接 edge 端要 ~31s 才吐 502；正常成功 ≤2s，8s 留 4x 余量，失败快速交给 retry。
+ * 失败连接 edge 端要 ~31s 才吐 502；正常成功 ≤2s，8s 留 4x 余量，失败快速交由消费方的重试策略。
  * （rc.35：此前无超时 + catch 吞错 → retry 死码、失败被当"空名单"成功。） */
 export const PUBLIC_TENANTS_FETCH_TIMEOUT_MS = 8000;
 
@@ -40,7 +40,7 @@ export const PUBLIC_TENANTS_FETCH_TIMEOUT_MS = 8000;
  * 公开租户列表（无认证端点，用于校验 URL slug 有效性）。
  * 从 end-user-portal App.tsx 原样抽取。
  * - staleTime 5m（plan §5 资源列：public tenants API 有缓存）
- * - retry 1；非 2xx / 网络错 / 超时一律上抛（不吞成空数组成功）——
+ * - 非 2xx / 网络错 / 超时一律上抛（不吞成空数组成功）——
  *   error 态不落缓存，下次调用自然重试
  * - 消费方 fail-open：名单缺失（error 态 data=undefined 或空数组）→ 不拦截
  *   （TenantIndexGuard 渲染 children；TenantRootRedirect 漏斗 brand；
@@ -69,7 +69,7 @@ export function usePublicTenantSlugs() {
 			}
 		},
 		staleTime: 5 * 60 * 1000,
-		retry: 1,
+		// 重试策略交给消费方 QueryClient 默认（本包不得有 per-query 覆盖）。
 	});
 }
 

@@ -58,8 +58,7 @@ export function usePermissionsQuery(tenantId?: string | null, enabled = true) {
 				[]) as string[];
 		},
 		staleTime: AUTH_DATA_STALE_TIME,
-		retry: 1,
-		retryDelay: 1000,
+		// 重试策略不在此声明：交给消费方的 QueryClient 默认（本包不得有 per-query 覆盖，否则会盖过默认）。
 		// 无 token 时禁止发起请求：未登录时该查询必然 401 → apiClient 401 拦截
 		// → refreshToken() 无 refresh token → onUnauthorized() 抢跑 buildLoginUrl，
 		// 与 RequireAuth 的 OAuth PKCE 触发形成时序竞争（跨域 admin 场景偶发 302 回登录页）。
@@ -92,8 +91,7 @@ export function useTenantsQuery(tenantId?: string | null, enabled = true) {
 			}>;
 		},
 		staleTime: AUTH_DATA_STALE_TIME,
-		retry: 1,
-		retryDelay: 1000,
+		// 重试策略不在此声明：交给消费方的 QueryClient 默认（本包不得有 per-query 覆盖，否则会盖过默认）。
 		// 与 usePermissionsQuery 一致：无 token 时禁止发起请求，
 		// 避免 401 → onUnauthorized 抢跑 RequireAuth 的 OAuth PKCE 流程。
 		enabled,
@@ -112,7 +110,6 @@ export function useMeQuery() {
 			return extractItem(res.data) ?? res.data;
 		},
 		staleTime: AUTH_DATA_STALE_TIME,
-		retry: 1,
-		retryDelay: 1000,
+		// 重试策略不在此声明：交给消费方的 QueryClient 默认（本包不得有 per-query 覆盖，否则会盖过默认）。
 	});
 }

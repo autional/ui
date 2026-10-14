@@ -9,9 +9,10 @@ import { TenantIndexGuard, usePublicTenantSlugs } from '../TenantIndexGuard';
 function createQueryClient() {
 	return new QueryClient({
 		defaultOptions: {
-			// retryDelay 0：hook 内部 retry:1 覆盖 retry，但重试退避仍走 defaultOptions，
-			// 不设 0 时失败用例要白等默认 1s 退避
-			queries: { retry: false, retryDelay: 0, gcTime: Infinity },
+			// 重试由**本测试客户端**声明（生产里由消费方 QueryClient 默认决定；本包不再声明 retry，
+			// 否则会盖过消费方默认 —— rc.35 起如此）。retry:1 + retryDelay:0 让
+			// 「重试耗尽后错误必须上抛」这一断言仍可验证，且失败用例不白等默认退避。
+			queries: { retry: 1, retryDelay: 0, gcTime: Infinity },
 		},
 	});
 }
