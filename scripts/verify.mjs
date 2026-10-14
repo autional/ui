@@ -15,6 +15,7 @@ import { ROOT } from './lib/tokens.mjs';
 
 const STEPS = [
   { key: 'gen', label: '生成物一致性', cmd: ['node', 'scripts/generate.mjs', '--check'] },
+  { key: 'errors', label: '错误语义契约一致性', cmd: ['node', 'scripts/gen-error-semantics.mjs', '--check'] },
   { key: 'lint', label: '令牌 lint', cmd: ['node', 'scripts/lint-tokens.mjs'] },
   { key: 'lock', label: '令牌快照锁', cmd: ['node', 'scripts/token-lock.mjs', '--check'] },
   { key: 'consumers', label: '消费者副本漂移', cmd: ['node', 'scripts/check-consumers.mjs'] },

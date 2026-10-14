@@ -1,0 +1,6467 @@
+[
+  {
+    "code": 10000002,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/10000002"
+  },
+  {
+    "code": 10000003,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/10000003"
+  },
+  {
+    "code": 10000004,
+    "http_status": 504,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/10000004"
+  },
+  {
+    "code": 10000005,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/10000005"
+  },
+  {
+    "code": 10000006,
+    "http_status": 413,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/10000006"
+  },
+  {
+    "code": 10000007,
+    "http_status": 429,
+    "class": "limit",
+    "ui_observation": "rate_limited",
+    "retryable": true,
+    "docs_path": "/errors/10000007"
+  },
+  {
+    "code": 20000001,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20000001"
+  },
+  {
+    "code": 20000002,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20000002"
+  },
+  {
+    "code": 20000003,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20000003"
+  },
+  {
+    "code": 20000004,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/20000004"
+  },
+  {
+    "code": 20000006,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20000006"
+  },
+  {
+    "code": 20000007,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20000007"
+  },
+  {
+    "code": 20000008,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20000008"
+  },
+  {
+    "code": 20000009,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20000009"
+  },
+  {
+    "code": 20010301,
+    "http_status": 429,
+    "class": "limit",
+    "ui_observation": "rate_limited",
+    "retryable": true,
+    "docs_path": "/errors/20010301"
+  },
+  {
+    "code": 20010401,
+    "http_status": 502,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/20010401"
+  },
+  {
+    "code": 20010402,
+    "http_status": 502,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/20010402"
+  },
+  {
+    "code": 20010501,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20010501"
+  },
+  {
+    "code": 20010502,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20010502"
+  },
+  {
+    "code": 20010503,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20010503"
+  },
+  {
+    "code": 20010504,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/20010504"
+  },
+  {
+    "code": 20010505,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/20010505"
+  },
+  {
+    "code": 20010506,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20010506"
+  },
+  {
+    "code": 20010601,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20010601"
+  },
+  {
+    "code": 20010602,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20010602"
+  },
+  {
+    "code": 20010603,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20010603"
+  },
+  {
+    "code": 20010604,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20010604"
+  },
+  {
+    "code": 20010605,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20010605"
+  },
+  {
+    "code": 20010606,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20010606"
+  },
+  {
+    "code": 20010701,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20010701"
+  },
+  {
+    "code": 20010702,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20010702"
+  },
+  {
+    "code": 20010801,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20010801"
+  },
+  {
+    "code": 20010802,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20010802"
+  },
+  {
+    "code": 20010803,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20010803"
+  },
+  {
+    "code": 20010804,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20010804"
+  },
+  {
+    "code": 20010805,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20010805"
+  },
+  {
+    "code": 20010806,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20010806"
+  },
+  {
+    "code": 20010807,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20010807"
+  },
+  {
+    "code": 20010808,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20010808"
+  },
+  {
+    "code": 20010809,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20010809"
+  },
+  {
+    "code": 20010810,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20010810"
+  },
+  {
+    "code": 20010811,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20010811"
+  },
+  {
+    "code": 20010812,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20010812"
+  },
+  {
+    "code": 20010813,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20010813"
+  },
+  {
+    "code": 20010814,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20010814"
+  },
+  {
+    "code": 20010815,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20010815"
+  },
+  {
+    "code": 20010816,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20010816"
+  },
+  {
+    "code": 20010817,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20010817"
+  },
+  {
+    "code": 20010818,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20010818"
+  },
+  {
+    "code": 20010819,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20010819"
+  },
+  {
+    "code": 20010820,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20010820"
+  },
+  {
+    "code": 20010821,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20010821"
+  },
+  {
+    "code": 20010901,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20010901"
+  },
+  {
+    "code": 20010902,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/20010902"
+  },
+  {
+    "code": 20010903,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20010903"
+  },
+  {
+    "code": 20010904,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/20010904"
+  },
+  {
+    "code": 20010905,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20010905"
+  },
+  {
+    "code": 20010906,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/20010906"
+  },
+  {
+    "code": 20010907,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/20010907"
+  },
+  {
+    "code": 20010908,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/20010908"
+  },
+  {
+    "code": 20010909,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20010909"
+  },
+  {
+    "code": 20010910,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20010910"
+  },
+  {
+    "code": 20010911,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20010911"
+  },
+  {
+    "code": 20011001,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/20011001"
+  },
+  {
+    "code": 20011002,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20011002"
+  },
+  {
+    "code": 20011010,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20011010"
+  },
+  {
+    "code": 20011011,
+    "http_status": 502,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/20011011"
+  },
+  {
+    "code": 20011012,
+    "http_status": 502,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/20011012"
+  },
+  {
+    "code": 20011013,
+    "http_status": 502,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/20011013"
+  },
+  {
+    "code": 20011014,
+    "http_status": 502,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/20011014"
+  },
+  {
+    "code": 20011101,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20011101"
+  },
+  {
+    "code": 20011102,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20011102"
+  },
+  {
+    "code": 20011103,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20011103"
+  },
+  {
+    "code": 20011201,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20011201"
+  },
+  {
+    "code": 20011202,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20011202"
+  },
+  {
+    "code": 20011203,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20011203"
+  },
+  {
+    "code": 20011204,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20011204"
+  },
+  {
+    "code": 20011205,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20011205"
+  },
+  {
+    "code": 20011206,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20011206"
+  },
+  {
+    "code": 20011207,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20011207"
+  },
+  {
+    "code": 20011208,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20011208"
+  },
+  {
+    "code": 20011209,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20011209"
+  },
+  {
+    "code": 20011210,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20011210"
+  },
+  {
+    "code": 20011301,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20011301"
+  },
+  {
+    "code": 20011302,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20011302"
+  },
+  {
+    "code": 20011401,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20011401"
+  },
+  {
+    "code": 20011402,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20011402"
+  },
+  {
+    "code": 20011403,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/20011403"
+  },
+  {
+    "code": 20011501,
+    "http_status": 502,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/20011501"
+  },
+  {
+    "code": 20011601,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20011601"
+  },
+  {
+    "code": 20011602,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20011602"
+  },
+  {
+    "code": 20011603,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20011603"
+  },
+  {
+    "code": 20011701,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20011701"
+  },
+  {
+    "code": 20011702,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20011702"
+  },
+  {
+    "code": 20011703,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20011703"
+  },
+  {
+    "code": 20011801,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20011801"
+  },
+  {
+    "code": 20011802,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20011802"
+  },
+  {
+    "code": 20011803,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20011803"
+  },
+  {
+    "code": 20011804,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20011804"
+  },
+  {
+    "code": 20011805,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20011805"
+  },
+  {
+    "code": 20011806,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/20011806"
+  },
+  {
+    "code": 20011807,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/20011807"
+  },
+  {
+    "code": 20011808,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/20011808"
+  },
+  {
+    "code": 20011809,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20011809"
+  },
+  {
+    "code": 20011810,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/20011810"
+  },
+  {
+    "code": 20011811,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20011811"
+  },
+  {
+    "code": 20011901,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20011901"
+  },
+  {
+    "code": 20011902,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20011902"
+  },
+  {
+    "code": 20011903,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20011903"
+  },
+  {
+    "code": 20012101,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20012101"
+  },
+  {
+    "code": 20012102,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/20012102"
+  },
+  {
+    "code": 20012103,
+    "http_status": 502,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/20012103"
+  },
+  {
+    "code": 20012104,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/20012104"
+  },
+  {
+    "code": 20012105,
+    "http_status": 502,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/20012105"
+  },
+  {
+    "code": 20012106,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/20012106"
+  },
+  {
+    "code": 20012107,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/20012107"
+  },
+  {
+    "code": 20012108,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/20012108"
+  },
+  {
+    "code": 20012109,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/20012109"
+  },
+  {
+    "code": 20012201,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20012201"
+  },
+  {
+    "code": 20012202,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20012202"
+  },
+  {
+    "code": 20012205,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20012205"
+  },
+  {
+    "code": 20012206,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/20012206"
+  },
+  {
+    "code": 20012207,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20012207"
+  },
+  {
+    "code": 20600004,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/20600004"
+  },
+  {
+    "code": 20600006,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20600006"
+  },
+  {
+    "code": 20600007,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20600007"
+  },
+  {
+    "code": 20600008,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/20600008"
+  },
+  {
+    "code": 20800004,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/20800004"
+  },
+  {
+    "code": 21000004,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/21000004"
+  },
+  {
+    "code": 21100004,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/21100004"
+  },
+  {
+    "code": 21100006,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/21100006"
+  },
+  {
+    "code": 21100007,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/21100007"
+  },
+  {
+    "code": 21100008,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/21100008"
+  },
+  {
+    "code": 21200001,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/21200001"
+  },
+  {
+    "code": 21200002,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/21200002"
+  },
+  {
+    "code": 21200003,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/21200003"
+  },
+  {
+    "code": 21300004,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/21300004"
+  },
+  {
+    "code": 21500004,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/21500004"
+  },
+  {
+    "code": 21600004,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/21600004"
+  },
+  {
+    "code": 21700004,
+    "http_status": 502,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/21700004"
+  },
+  {
+    "code": 21800004,
+    "http_status": 502,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/21800004"
+  },
+  {
+    "code": 21900004,
+    "http_status": 502,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/21900004"
+  },
+  {
+    "code": 22000001,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/22000001"
+  },
+  {
+    "code": 22000002,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/22000002"
+  },
+  {
+    "code": 22000003,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/22000003"
+  },
+  {
+    "code": 22000004,
+    "http_status": 502,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/22000004"
+  },
+  {
+    "code": 30000001,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/30000001"
+  },
+  {
+    "code": 40000003,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/40000003"
+  },
+  {
+    "code": 40000004,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/40000004"
+  },
+  {
+    "code": 40000101,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/40000101"
+  },
+  {
+    "code": 40000102,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/40000102"
+  },
+  {
+    "code": 40000103,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/40000103"
+  },
+  {
+    "code": 40000202,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/40000202"
+  },
+  {
+    "code": 40000203,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/40000203"
+  },
+  {
+    "code": 40000204,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/40000204"
+  },
+  {
+    "code": 40000301,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/40000301"
+  },
+  {
+    "code": 40000501,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/40000501"
+  },
+  {
+    "code": 40000502,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/40000502"
+  },
+  {
+    "code": 40000503,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/40000503"
+  },
+  {
+    "code": 40000603,
+    "http_status": 429,
+    "class": "limit",
+    "ui_observation": "rate_limited",
+    "retryable": true,
+    "docs_path": "/errors/40000603"
+  },
+  {
+    "code": 40000604,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/40000604"
+  },
+  {
+    "code": 40000701,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/40000701"
+  },
+  {
+    "code": 40000702,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/40000702"
+  },
+  {
+    "code": 40000802,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/40000802"
+  },
+  {
+    "code": 40000901,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/40000901"
+  },
+  {
+    "code": 40000902,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/40000902"
+  },
+  {
+    "code": 40000903,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/40000903"
+  },
+  {
+    "code": 40010001,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/40010001"
+  },
+  {
+    "code": 40010002,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/40010002"
+  },
+  {
+    "code": 40010101,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/40010101"
+  },
+  {
+    "code": 40010102,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/40010102"
+  },
+  {
+    "code": 40010103,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/40010103"
+  },
+  {
+    "code": 40010104,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/40010104"
+  },
+  {
+    "code": 40010105,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/40010105"
+  },
+  {
+    "code": 40010201,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/40010201"
+  },
+  {
+    "code": 40010204,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/40010204"
+  },
+  {
+    "code": 40010205,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/40010205"
+  },
+  {
+    "code": 40010301,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/40010301"
+  },
+  {
+    "code": 40010302,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/40010302"
+  },
+  {
+    "code": 40010303,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/40010303"
+  },
+  {
+    "code": 40010401,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/40010401"
+  },
+  {
+    "code": 40010402,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/40010402"
+  },
+  {
+    "code": 40010403,
+    "http_status": 429,
+    "class": "limit",
+    "ui_observation": "rate_limited",
+    "retryable": true,
+    "docs_path": "/errors/40010403"
+  },
+  {
+    "code": 40020001,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/40020001"
+  },
+  {
+    "code": 40020002,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/40020002"
+  },
+  {
+    "code": 40020101,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/40020101"
+  },
+  {
+    "code": 40020102,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/40020102"
+  },
+  {
+    "code": 40020103,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/40020103"
+  },
+  {
+    "code": 40020104,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/40020104"
+  },
+  {
+    "code": 40020105,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/40020105"
+  },
+  {
+    "code": 40020106,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/40020106"
+  },
+  {
+    "code": 40020201,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/40020201"
+  },
+  {
+    "code": 40020203,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/40020203"
+  },
+  {
+    "code": 40020303,
+    "http_status": 429,
+    "class": "limit",
+    "ui_observation": "rate_limited",
+    "retryable": true,
+    "docs_path": "/errors/40020303"
+  },
+  {
+    "code": 40020401,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/40020401"
+  },
+  {
+    "code": 40040006,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/40040006"
+  },
+  {
+    "code": 40040007,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/40040007"
+  },
+  {
+    "code": 40300001,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/40300001"
+  },
+  {
+    "code": 40300002,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/40300002"
+  },
+  {
+    "code": 40300003,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/40300003"
+  },
+  {
+    "code": 40300004,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/40300004"
+  },
+  {
+    "code": 40300101,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/40300101"
+  },
+  {
+    "code": 40300102,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/40300102"
+  },
+  {
+    "code": 40300103,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/40300103"
+  },
+  {
+    "code": 40300104,
+    "http_status": 413,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/40300104"
+  },
+  {
+    "code": 40300201,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/40300201"
+  },
+  {
+    "code": 40300401,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/40300401"
+  },
+  {
+    "code": 40300402,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/40300402"
+  },
+  {
+    "code": 40301001,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/40301001"
+  },
+  {
+    "code": 40301002,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/40301002"
+  },
+  {
+    "code": 40301003,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/40301003"
+  },
+  {
+    "code": 40400001,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/40400001"
+  },
+  {
+    "code": 40400002,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/40400002"
+  },
+  {
+    "code": 40400004,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/40400004"
+  },
+  {
+    "code": 40500001,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/40500001"
+  },
+  {
+    "code": 40500004,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/40500004"
+  },
+  {
+    "code": 40500101,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/40500101"
+  },
+  {
+    "code": 40500102,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/40500102"
+  },
+  {
+    "code": 40500103,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/40500103"
+  },
+  {
+    "code": 40600001,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/40600001"
+  },
+  {
+    "code": 40600002,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/40600002"
+  },
+  {
+    "code": 40600004,
+    "http_status": 413,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/40600004"
+  },
+  {
+    "code": 40600101,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/40600101"
+  },
+  {
+    "code": 40600102,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/40600102"
+  },
+  {
+    "code": 40600103,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/40600103"
+  },
+  {
+    "code": 40600104,
+    "http_status": 413,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/40600104"
+  },
+  {
+    "code": 40600201,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/40600201"
+  },
+  {
+    "code": 40800002,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/40800002"
+  },
+  {
+    "code": 40800003,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/40800003"
+  },
+  {
+    "code": 40800004,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/40800004"
+  },
+  {
+    "code": 40800005,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/40800005"
+  },
+  {
+    "code": 40800101,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/40800101"
+  },
+  {
+    "code": 40800102,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/40800102"
+  },
+  {
+    "code": 40800103,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/40800103"
+  },
+  {
+    "code": 40800104,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/40800104"
+  },
+  {
+    "code": 40800201,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/40800201"
+  },
+  {
+    "code": 40800251,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "reauth_required",
+    "retryable": false,
+    "docs_path": "/errors/40800251"
+  },
+  {
+    "code": 40800302,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/40800302"
+  },
+  {
+    "code": 40800303,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/40800303"
+  },
+  {
+    "code": 40800305,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/40800305"
+  },
+  {
+    "code": 40800401,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/40800401"
+  },
+  {
+    "code": 40800501,
+    "http_status": 429,
+    "class": "limit",
+    "ui_observation": "rate_limited",
+    "retryable": true,
+    "docs_path": "/errors/40800501"
+  },
+  {
+    "code": 40800502,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/40800502"
+  },
+  {
+    "code": 40800503,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "action_required",
+    "retryable": false,
+    "docs_path": "/errors/40800503"
+  },
+  {
+    "code": 40800504,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/40800504"
+  },
+  {
+    "code": 40800505,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "captcha_required",
+    "retryable": false,
+    "docs_path": "/errors/40800505"
+  },
+  {
+    "code": 40800506,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "captcha_required",
+    "retryable": false,
+    "docs_path": "/errors/40800506"
+  },
+  {
+    "code": 40800702,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/40800702"
+  },
+  {
+    "code": 40800703,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/40800703"
+  },
+  {
+    "code": 40800704,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/40800704"
+  },
+  {
+    "code": 40800801,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/40800801"
+  },
+  {
+    "code": 40800802,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/40800802"
+  },
+  {
+    "code": 40900001,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/40900001"
+  },
+  {
+    "code": 40900101,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/40900101"
+  },
+  {
+    "code": 40900102,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/40900102"
+  },
+  {
+    "code": 60000001,
+    "http_status": 502,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/60000001"
+  },
+  {
+    "code": 60000002,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/60000002"
+  },
+  {
+    "code": 60000003,
+    "http_status": 504,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/60000003"
+  },
+  {
+    "code": 60000004,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/60000004"
+  },
+  {
+    "code": 60000005,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/60000005"
+  },
+  {
+    "code": 60000006,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/60000006"
+  },
+  {
+    "code": 60000101,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/60000101"
+  },
+  {
+    "code": 60000102,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/60000102"
+  },
+  {
+    "code": 60000201,
+    "http_status": 429,
+    "class": "limit",
+    "ui_observation": "rate_limited",
+    "retryable": true,
+    "docs_path": "/errors/60000201"
+  },
+  {
+    "code": 60100002,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/60100002"
+  },
+  {
+    "code": 60100003,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/60100003"
+  },
+  {
+    "code": 60100004,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/60100004"
+  },
+  {
+    "code": 60100005,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/60100005"
+  },
+  {
+    "code": 60100006,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/60100006"
+  },
+  {
+    "code": 60100050,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/60100050"
+  },
+  {
+    "code": 60100051,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/60100051"
+  },
+  {
+    "code": 60100101,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/60100101"
+  },
+  {
+    "code": 60100102,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/60100102"
+  },
+  {
+    "code": 60100103,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/60100103"
+  },
+  {
+    "code": 60100104,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/60100104"
+  },
+  {
+    "code": 60100105,
+    "http_status": 413,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/60100105"
+  },
+  {
+    "code": 60100201,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/60100201"
+  },
+  {
+    "code": 60100202,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/60100202"
+  },
+  {
+    "code": 60100203,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/60100203"
+  },
+  {
+    "code": 60100301,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/60100301"
+  },
+  {
+    "code": 60100302,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/60100302"
+  },
+  {
+    "code": 60100303,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/60100303"
+  },
+  {
+    "code": 60100401,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/60100401"
+  },
+  {
+    "code": 60100501,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/60100501"
+  },
+  {
+    "code": 60100601,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/60100601"
+  },
+  {
+    "code": 60100602,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/60100602"
+  },
+  {
+    "code": 60100603,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/60100603"
+  },
+  {
+    "code": 60100604,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/60100604"
+  },
+  {
+    "code": 60100701,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/60100701"
+  },
+  {
+    "code": 60100702,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/60100702"
+  },
+  {
+    "code": 60100703,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/60100703"
+  },
+  {
+    "code": 60100801,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/60100801"
+  },
+  {
+    "code": 60100802,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/60100802"
+  },
+  {
+    "code": 60100803,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/60100803"
+  },
+  {
+    "code": 60100804,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/60100804"
+  },
+  {
+    "code": 60100805,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/60100805"
+  },
+  {
+    "code": 60100806,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/60100806"
+  },
+  {
+    "code": 60100901,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/60100901"
+  },
+  {
+    "code": 60100902,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/60100902"
+  },
+  {
+    "code": 60100903,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/60100903"
+  },
+  {
+    "code": 61000002,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61000002"
+  },
+  {
+    "code": 61000003,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61000003"
+  },
+  {
+    "code": 61000004,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61000004"
+  },
+  {
+    "code": 61000005,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61000005"
+  },
+  {
+    "code": 61000006,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/61000006"
+  },
+  {
+    "code": 61000101,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61000101"
+  },
+  {
+    "code": 61000102,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61000102"
+  },
+  {
+    "code": 61000103,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61000103"
+  },
+  {
+    "code": 61000104,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "credential_mismatch",
+    "retryable": false,
+    "docs_path": "/errors/61000104"
+  },
+  {
+    "code": 61000111,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61000111"
+  },
+  {
+    "code": 61000201,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61000201"
+  },
+  {
+    "code": 61000202,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61000202"
+  },
+  {
+    "code": 61000203,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61000203"
+  },
+  {
+    "code": 61000301,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61000301"
+  },
+  {
+    "code": 61000302,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61000302"
+  },
+  {
+    "code": 61000401,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61000401"
+  },
+  {
+    "code": 61000402,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61000402"
+  },
+  {
+    "code": 61000403,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "reauth_required",
+    "retryable": false,
+    "docs_path": "/errors/61000403"
+  },
+  {
+    "code": 61000406,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61000406"
+  },
+  {
+    "code": 61000407,
+    "http_status": 410,
+    "class": "gone",
+    "ui_observation": "expired",
+    "retryable": false,
+    "docs_path": "/errors/61000407"
+  },
+  {
+    "code": 61000408,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61000408"
+  },
+  {
+    "code": 61000501,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61000501"
+  },
+  {
+    "code": 61000502,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61000502"
+  },
+  {
+    "code": 61000601,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61000601"
+  },
+  {
+    "code": 61000701,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61000701"
+  },
+  {
+    "code": 61000702,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61000702"
+  },
+  {
+    "code": 61000801,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61000801"
+  },
+  {
+    "code": 61000802,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61000802"
+  },
+  {
+    "code": 61000803,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61000803"
+  },
+  {
+    "code": 61000901,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61000901"
+  },
+  {
+    "code": 61000902,
+    "http_status": 410,
+    "class": "gone",
+    "ui_observation": "expired",
+    "retryable": false,
+    "docs_path": "/errors/61000902"
+  },
+  {
+    "code": 61000903,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61000903"
+  },
+  {
+    "code": 61000904,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61000904"
+  },
+  {
+    "code": 61001001,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61001001"
+  },
+  {
+    "code": 61001002,
+    "http_status": 429,
+    "class": "limit",
+    "ui_observation": "rate_limited",
+    "retryable": true,
+    "docs_path": "/errors/61001002"
+  },
+  {
+    "code": 61001003,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61001003"
+  },
+  {
+    "code": 61001004,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61001004"
+  },
+  {
+    "code": 61001005,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61001005"
+  },
+  {
+    "code": 61001101,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61001101"
+  },
+  {
+    "code": 61001102,
+    "http_status": 410,
+    "class": "gone",
+    "ui_observation": "expired",
+    "retryable": false,
+    "docs_path": "/errors/61001102"
+  },
+  {
+    "code": 61001103,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61001103"
+  },
+  {
+    "code": 61001201,
+    "http_status": 410,
+    "class": "gone",
+    "ui_observation": "expired",
+    "retryable": false,
+    "docs_path": "/errors/61001201"
+  },
+  {
+    "code": 61001202,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61001202"
+  },
+  {
+    "code": 61001203,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61001203"
+  },
+  {
+    "code": 61001301,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61001301"
+  },
+  {
+    "code": 61001302,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61001302"
+  },
+  {
+    "code": 61001401,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61001401"
+  },
+  {
+    "code": 61001501,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61001501"
+  },
+  {
+    "code": 61001502,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61001502"
+  },
+  {
+    "code": 61001503,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61001503"
+  },
+  {
+    "code": 61001504,
+    "http_status": 410,
+    "class": "gone",
+    "ui_observation": "expired",
+    "retryable": false,
+    "docs_path": "/errors/61001504"
+  },
+  {
+    "code": 61001505,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61001505"
+  },
+  {
+    "code": 61001601,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61001601"
+  },
+  {
+    "code": 61001602,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61001602"
+  },
+  {
+    "code": 61001603,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61001603"
+  },
+  {
+    "code": 61001604,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61001604"
+  },
+  {
+    "code": 61001605,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61001605"
+  },
+  {
+    "code": 61001608,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61001608"
+  },
+  {
+    "code": 61001621,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61001621"
+  },
+  {
+    "code": 61001622,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61001622"
+  },
+  {
+    "code": 61001623,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61001623"
+  },
+  {
+    "code": 61001624,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61001624"
+  },
+  {
+    "code": 61001626,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61001626"
+  },
+  {
+    "code": 61001627,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61001627"
+  },
+  {
+    "code": 61001641,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61001641"
+  },
+  {
+    "code": 61001642,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61001642"
+  },
+  {
+    "code": 61001643,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61001643"
+  },
+  {
+    "code": 61001644,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61001644"
+  },
+  {
+    "code": 61001645,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61001645"
+  },
+  {
+    "code": 61001646,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61001646"
+  },
+  {
+    "code": 61001647,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61001647"
+  },
+  {
+    "code": 61001648,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61001648"
+  },
+  {
+    "code": 61001660,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61001660"
+  },
+  {
+    "code": 61001661,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61001661"
+  },
+  {
+    "code": 61001662,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61001662"
+  },
+  {
+    "code": 61001663,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61001663"
+  },
+  {
+    "code": 61001670,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61001670"
+  },
+  {
+    "code": 61001671,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61001671"
+  },
+  {
+    "code": 61001672,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61001672"
+  },
+  {
+    "code": 61001673,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61001673"
+  },
+  {
+    "code": 61001701,
+    "http_status": 422,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61001701"
+  },
+  {
+    "code": 61001702,
+    "http_status": 422,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61001702"
+  },
+  {
+    "code": 61001703,
+    "http_status": 422,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61001703"
+  },
+  {
+    "code": 61001801,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "action_required",
+    "retryable": false,
+    "docs_path": "/errors/61001801"
+  },
+  {
+    "code": 61001802,
+    "http_status": 502,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/61001802"
+  },
+  {
+    "code": 61001803,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61001803"
+  },
+  {
+    "code": 61001804,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61001804"
+  },
+  {
+    "code": 61001805,
+    "http_status": 502,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/61001805"
+  },
+  {
+    "code": 61001806,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61001806"
+  },
+  {
+    "code": 61001807,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61001807"
+  },
+  {
+    "code": 61001808,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61001808"
+  },
+  {
+    "code": 61001809,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61001809"
+  },
+  {
+    "code": 61001901,
+    "http_status": 502,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/61001901"
+  },
+  {
+    "code": 61001902,
+    "http_status": 502,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/61001902"
+  },
+  {
+    "code": 61001903,
+    "http_status": 501,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61001903"
+  },
+  {
+    "code": 61002001,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61002001"
+  },
+  {
+    "code": 61002002,
+    "http_status": 429,
+    "class": "limit",
+    "ui_observation": "rate_limited",
+    "retryable": true,
+    "docs_path": "/errors/61002002"
+  },
+  {
+    "code": 61002003,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61002003"
+  },
+  {
+    "code": 61002004,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61002004"
+  },
+  {
+    "code": 61002005,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61002005"
+  },
+  {
+    "code": 61002201,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "reauth_required",
+    "retryable": false,
+    "docs_path": "/errors/61002201"
+  },
+  {
+    "code": 61002202,
+    "http_status": 429,
+    "class": "limit",
+    "ui_observation": "rate_limited",
+    "retryable": true,
+    "docs_path": "/errors/61002202"
+  },
+  {
+    "code": 61002203,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61002203"
+  },
+  {
+    "code": 61002204,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61002204"
+  },
+  {
+    "code": 61002205,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61002205"
+  },
+  {
+    "code": 61002206,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61002206"
+  },
+  {
+    "code": 61002207,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61002207"
+  },
+  {
+    "code": 61010002,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61010002"
+  },
+  {
+    "code": 61010003,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61010003"
+  },
+  {
+    "code": 61010004,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61010004"
+  },
+  {
+    "code": 61010005,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61010005"
+  },
+  {
+    "code": 61010006,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61010006"
+  },
+  {
+    "code": 61010007,
+    "http_status": 502,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/61010007"
+  },
+  {
+    "code": 61020004,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61020004"
+  },
+  {
+    "code": 61020101,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61020101"
+  },
+  {
+    "code": 61020102,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61020102"
+  },
+  {
+    "code": 61020103,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61020103"
+  },
+  {
+    "code": 61020104,
+    "http_status": 429,
+    "class": "limit",
+    "ui_observation": "rate_limited",
+    "retryable": true,
+    "docs_path": "/errors/61020104"
+  },
+  {
+    "code": 61020201,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61020201"
+  },
+  {
+    "code": 61020301,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61020301"
+  },
+  {
+    "code": 61020302,
+    "http_status": 410,
+    "class": "gone",
+    "ui_observation": "expired",
+    "retryable": false,
+    "docs_path": "/errors/61020302"
+  },
+  {
+    "code": 61020303,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61020303"
+  },
+  {
+    "code": 61020304,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61020304"
+  },
+  {
+    "code": 61020305,
+    "http_status": 429,
+    "class": "limit",
+    "ui_observation": "rate_limited",
+    "retryable": true,
+    "docs_path": "/errors/61020305"
+  },
+  {
+    "code": 61020401,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61020401"
+  },
+  {
+    "code": 61020402,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61020402"
+  },
+  {
+    "code": 61020501,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61020501"
+  },
+  {
+    "code": 61020502,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61020502"
+  },
+  {
+    "code": 61020503,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61020503"
+  },
+  {
+    "code": 61020601,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61020601"
+  },
+  {
+    "code": 61020701,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61020701"
+  },
+  {
+    "code": 61020801,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61020801"
+  },
+  {
+    "code": 61020901,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61020901"
+  },
+  {
+    "code": 61021001,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61021001"
+  },
+  {
+    "code": 61021002,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61021002"
+  },
+  {
+    "code": 61021003,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61021003"
+  },
+  {
+    "code": 61021004,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61021004"
+  },
+  {
+    "code": 61021101,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61021101"
+  },
+  {
+    "code": 61021102,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61021102"
+  },
+  {
+    "code": 61021103,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61021103"
+  },
+  {
+    "code": 61021104,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61021104"
+  },
+  {
+    "code": 61021201,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61021201"
+  },
+  {
+    "code": 61021202,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61021202"
+  },
+  {
+    "code": 61021203,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61021203"
+  },
+  {
+    "code": 61021204,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61021204"
+  },
+  {
+    "code": 61021205,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61021205"
+  },
+  {
+    "code": 61021206,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61021206"
+  },
+  {
+    "code": 61021207,
+    "http_status": 429,
+    "class": "limit",
+    "ui_observation": "rate_limited",
+    "retryable": true,
+    "docs_path": "/errors/61021207"
+  },
+  {
+    "code": 61021208,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61021208"
+  },
+  {
+    "code": 61021301,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61021301"
+  },
+  {
+    "code": 61021302,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61021302"
+  },
+  {
+    "code": 61021303,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61021303"
+  },
+  {
+    "code": 61021304,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61021304"
+  },
+  {
+    "code": 61021401,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61021401"
+  },
+  {
+    "code": 61021501,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61021501"
+  },
+  {
+    "code": 61028001,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61028001"
+  },
+  {
+    "code": 61028002,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61028002"
+  },
+  {
+    "code": 61030101,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61030101"
+  },
+  {
+    "code": 61030102,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61030102"
+  },
+  {
+    "code": 61030103,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61030103"
+  },
+  {
+    "code": 61030201,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61030201"
+  },
+  {
+    "code": 61040002,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61040002"
+  },
+  {
+    "code": 61040003,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61040003"
+  },
+  {
+    "code": 61040004,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61040004"
+  },
+  {
+    "code": 61040005,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61040005"
+  },
+  {
+    "code": 61040010,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61040010"
+  },
+  {
+    "code": 61040011,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61040011"
+  },
+  {
+    "code": 61040012,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61040012"
+  },
+  {
+    "code": 61040013,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61040013"
+  },
+  {
+    "code": 61040014,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61040014"
+  },
+  {
+    "code": 61040015,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61040015"
+  },
+  {
+    "code": 61040020,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61040020"
+  },
+  {
+    "code": 61040030,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61040030"
+  },
+  {
+    "code": 61040031,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61040031"
+  },
+  {
+    "code": 61040032,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61040032"
+  },
+  {
+    "code": 61040040,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61040040"
+  },
+  {
+    "code": 61040041,
+    "http_status": 429,
+    "class": "limit",
+    "ui_observation": "rate_limited",
+    "retryable": true,
+    "docs_path": "/errors/61040041"
+  },
+  {
+    "code": 61040050,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61040050"
+  },
+  {
+    "code": 61040051,
+    "http_status": 410,
+    "class": "gone",
+    "ui_observation": "expired",
+    "retryable": false,
+    "docs_path": "/errors/61040051"
+  },
+  {
+    "code": 61040052,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61040052"
+  },
+  {
+    "code": 61040053,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61040053"
+  },
+  {
+    "code": 61040060,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61040060"
+  },
+  {
+    "code": 61040061,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61040061"
+  },
+  {
+    "code": 61040070,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61040070"
+  },
+  {
+    "code": 61040071,
+    "http_status": 429,
+    "class": "limit",
+    "ui_observation": "rate_limited",
+    "retryable": true,
+    "docs_path": "/errors/61040071"
+  },
+  {
+    "code": 61040072,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61040072"
+  },
+  {
+    "code": 61040080,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61040080"
+  },
+  {
+    "code": 61040081,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61040081"
+  },
+  {
+    "code": 61040082,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61040082"
+  },
+  {
+    "code": 61040083,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61040083"
+  },
+  {
+    "code": 61040084,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61040084"
+  },
+  {
+    "code": 61040085,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61040085"
+  },
+  {
+    "code": 61040086,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61040086"
+  },
+  {
+    "code": 61040090,
+    "http_status": 413,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61040090"
+  },
+  {
+    "code": 61040091,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61040091"
+  },
+  {
+    "code": 61040092,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61040092"
+  },
+  {
+    "code": 61040100,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "action_required",
+    "retryable": false,
+    "docs_path": "/errors/61040100"
+  },
+  {
+    "code": 61050002,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61050002"
+  },
+  {
+    "code": 61050003,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61050003"
+  },
+  {
+    "code": 61050004,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61050004"
+  },
+  {
+    "code": 61050005,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61050005"
+  },
+  {
+    "code": 61050010,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61050010"
+  },
+  {
+    "code": 61050011,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61050011"
+  },
+  {
+    "code": 61050012,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61050012"
+  },
+  {
+    "code": 61050013,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61050013"
+  },
+  {
+    "code": 61050014,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61050014"
+  },
+  {
+    "code": 61050020,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61050020"
+  },
+  {
+    "code": 61050021,
+    "http_status": 429,
+    "class": "limit",
+    "ui_observation": "rate_limited",
+    "retryable": true,
+    "docs_path": "/errors/61050021"
+  },
+  {
+    "code": 61050022,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61050022"
+  },
+  {
+    "code": 61050030,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61050030"
+  },
+  {
+    "code": 61050031,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61050031"
+  },
+  {
+    "code": 61050032,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61050032"
+  },
+  {
+    "code": 61050033,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61050033"
+  },
+  {
+    "code": 61050034,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61050034"
+  },
+  {
+    "code": 61050035,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/61050035"
+  },
+  {
+    "code": 61050040,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61050040"
+  },
+  {
+    "code": 61050041,
+    "http_status": 502,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/61050041"
+  },
+  {
+    "code": 61050042,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61050042"
+  },
+  {
+    "code": 61050043,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61050043"
+  },
+  {
+    "code": 61050044,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61050044"
+  },
+  {
+    "code": 61050045,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61050045"
+  },
+  {
+    "code": 61050046,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61050046"
+  },
+  {
+    "code": 61050047,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61050047"
+  },
+  {
+    "code": 61050048,
+    "http_status": 502,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/61050048"
+  },
+  {
+    "code": 61050049,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61050049"
+  },
+  {
+    "code": 61050050,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61050050"
+  },
+  {
+    "code": 61050051,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61050051"
+  },
+  {
+    "code": 61050060,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61050060"
+  },
+  {
+    "code": 61060002,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61060002"
+  },
+  {
+    "code": 61060003,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61060003"
+  },
+  {
+    "code": 61060004,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61060004"
+  },
+  {
+    "code": 61060005,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61060005"
+  },
+  {
+    "code": 61060101,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61060101"
+  },
+  {
+    "code": 61060102,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61060102"
+  },
+  {
+    "code": 61060201,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61060201"
+  },
+  {
+    "code": 61060202,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61060202"
+  },
+  {
+    "code": 61060203,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61060203"
+  },
+  {
+    "code": 61060204,
+    "http_status": 429,
+    "class": "limit",
+    "ui_observation": "rate_limited",
+    "retryable": true,
+    "docs_path": "/errors/61060204"
+  },
+  {
+    "code": 61060205,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61060205"
+  },
+  {
+    "code": 61060206,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61060206"
+  },
+  {
+    "code": 61060207,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61060207"
+  },
+  {
+    "code": 61060208,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61060208"
+  },
+  {
+    "code": 61060209,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61060209"
+  },
+  {
+    "code": 61060210,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61060210"
+  },
+  {
+    "code": 61060211,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61060211"
+  },
+  {
+    "code": 61060212,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/61060212"
+  },
+  {
+    "code": 61060213,
+    "http_status": 410,
+    "class": "gone",
+    "ui_observation": "expired",
+    "retryable": false,
+    "docs_path": "/errors/61060213"
+  },
+  {
+    "code": 61060214,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61060214"
+  },
+  {
+    "code": 61060215,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61060215"
+  },
+  {
+    "code": 61070002,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61070002"
+  },
+  {
+    "code": 61070003,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61070003"
+  },
+  {
+    "code": 61070004,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61070004"
+  },
+  {
+    "code": 61070005,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61070005"
+  },
+  {
+    "code": 61070010,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61070010"
+  },
+  {
+    "code": 61070011,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61070011"
+  },
+  {
+    "code": 61070012,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61070012"
+  },
+  {
+    "code": 61070013,
+    "http_status": 410,
+    "class": "gone",
+    "ui_observation": "expired",
+    "retryable": false,
+    "docs_path": "/errors/61070013"
+  },
+  {
+    "code": 61070014,
+    "http_status": 422,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61070014"
+  },
+  {
+    "code": 61070015,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61070015"
+  },
+  {
+    "code": 61070016,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61070016"
+  },
+  {
+    "code": 61070017,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61070017"
+  },
+  {
+    "code": 61070018,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61070018"
+  },
+  {
+    "code": 61070019,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61070019"
+  },
+  {
+    "code": 61070020,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61070020"
+  },
+  {
+    "code": 61070021,
+    "http_status": 422,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61070021"
+  },
+  {
+    "code": 61070022,
+    "http_status": 422,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61070022"
+  },
+  {
+    "code": 61070023,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61070023"
+  },
+  {
+    "code": 61070024,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61070024"
+  },
+  {
+    "code": 61070025,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61070025"
+  },
+  {
+    "code": 61070026,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61070026"
+  },
+  {
+    "code": 61070027,
+    "http_status": 422,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61070027"
+  },
+  {
+    "code": 61070028,
+    "http_status": 422,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61070028"
+  },
+  {
+    "code": 61070029,
+    "http_status": 429,
+    "class": "limit",
+    "ui_observation": "rate_limited",
+    "retryable": true,
+    "docs_path": "/errors/61070029"
+  },
+  {
+    "code": 61070030,
+    "http_status": 429,
+    "class": "limit",
+    "ui_observation": "rate_limited",
+    "retryable": true,
+    "docs_path": "/errors/61070030"
+  },
+  {
+    "code": 61080001,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61080001"
+  },
+  {
+    "code": 61080002,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61080002"
+  },
+  {
+    "code": 61080003,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61080003"
+  },
+  {
+    "code": 61080004,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61080004"
+  },
+  {
+    "code": 61080005,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61080005"
+  },
+  {
+    "code": 61080010,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61080010"
+  },
+  {
+    "code": 61080011,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61080011"
+  },
+  {
+    "code": 61080012,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61080012"
+  },
+  {
+    "code": 61080013,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61080013"
+  },
+  {
+    "code": 61080014,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61080014"
+  },
+  {
+    "code": 61080020,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61080020"
+  },
+  {
+    "code": 61080021,
+    "http_status": 429,
+    "class": "limit",
+    "ui_observation": "rate_limited",
+    "retryable": true,
+    "docs_path": "/errors/61080021"
+  },
+  {
+    "code": 61080030,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61080030"
+  },
+  {
+    "code": 61080040,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61080040"
+  },
+  {
+    "code": 61080041,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61080041"
+  },
+  {
+    "code": 61090001,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61090001"
+  },
+  {
+    "code": 61090002,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61090002"
+  },
+  {
+    "code": 61090003,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61090003"
+  },
+  {
+    "code": 61090004,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61090004"
+  },
+  {
+    "code": 61090005,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61090005"
+  },
+  {
+    "code": 61090006,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61090006"
+  },
+  {
+    "code": 61090010,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61090010"
+  },
+  {
+    "code": 61090011,
+    "http_status": 429,
+    "class": "limit",
+    "ui_observation": "rate_limited",
+    "retryable": true,
+    "docs_path": "/errors/61090011"
+  },
+  {
+    "code": 61090012,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61090012"
+  },
+  {
+    "code": 61100001,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61100001"
+  },
+  {
+    "code": 61100002,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61100002"
+  },
+  {
+    "code": 61100003,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61100003"
+  },
+  {
+    "code": 61100004,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61100004"
+  },
+  {
+    "code": 61100005,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61100005"
+  },
+  {
+    "code": 61100010,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61100010"
+  },
+  {
+    "code": 61100011,
+    "http_status": 413,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61100011"
+  },
+  {
+    "code": 61100012,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61100012"
+  },
+  {
+    "code": 61100013,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61100013"
+  },
+  {
+    "code": 61100014,
+    "http_status": 410,
+    "class": "gone",
+    "ui_observation": "expired",
+    "retryable": false,
+    "docs_path": "/errors/61100014"
+  },
+  {
+    "code": 61100015,
+    "http_status": 429,
+    "class": "limit",
+    "ui_observation": "rate_limited",
+    "retryable": true,
+    "docs_path": "/errors/61100015"
+  },
+  {
+    "code": 61100016,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61100016"
+  },
+  {
+    "code": 61100017,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61100017"
+  },
+  {
+    "code": 61100018,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61100018"
+  },
+  {
+    "code": 61100019,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61100019"
+  },
+  {
+    "code": 61100020,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61100020"
+  },
+  {
+    "code": 61100021,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61100021"
+  },
+  {
+    "code": 61100022,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61100022"
+  },
+  {
+    "code": 61100023,
+    "http_status": 413,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61100023"
+  },
+  {
+    "code": 61110002,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61110002"
+  },
+  {
+    "code": 61110003,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61110003"
+  },
+  {
+    "code": 61110004,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61110004"
+  },
+  {
+    "code": 61110005,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61110005"
+  },
+  {
+    "code": 61110006,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61110006"
+  },
+  {
+    "code": 61110007,
+    "http_status": 422,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61110007"
+  },
+  {
+    "code": 61110008,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61110008"
+  },
+  {
+    "code": 61110009,
+    "http_status": 422,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61110009"
+  },
+  {
+    "code": 61110010,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61110010"
+  },
+  {
+    "code": 61110011,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/61110011"
+  },
+  {
+    "code": 61110012,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61110012"
+  },
+  {
+    "code": 61110013,
+    "http_status": 429,
+    "class": "limit",
+    "ui_observation": "rate_limited",
+    "retryable": true,
+    "docs_path": "/errors/61110013"
+  },
+  {
+    "code": 61110014,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61110014"
+  },
+  {
+    "code": 61110015,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61110015"
+  },
+  {
+    "code": 61110016,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61110016"
+  },
+  {
+    "code": 61110017,
+    "http_status": 422,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61110017"
+  },
+  {
+    "code": 61110018,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61110018"
+  },
+  {
+    "code": 61110019,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61110019"
+  },
+  {
+    "code": 61110020,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61110020"
+  },
+  {
+    "code": 61110021,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61110021"
+  },
+  {
+    "code": 61110022,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61110022"
+  },
+  {
+    "code": 61110023,
+    "http_status": 422,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61110023"
+  },
+  {
+    "code": 61110024,
+    "http_status": 422,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61110024"
+  },
+  {
+    "code": 61110025,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61110025"
+  },
+  {
+    "code": 61110026,
+    "http_status": 422,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61110026"
+  },
+  {
+    "code": 61110027,
+    "http_status": 422,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61110027"
+  },
+  {
+    "code": 61110028,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61110028"
+  },
+  {
+    "code": 61110029,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61110029"
+  },
+  {
+    "code": 61110030,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61110030"
+  },
+  {
+    "code": 61110031,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61110031"
+  },
+  {
+    "code": 61110032,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61110032"
+  },
+  {
+    "code": 61120002,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61120002"
+  },
+  {
+    "code": 61120003,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61120003"
+  },
+  {
+    "code": 61120004,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61120004"
+  },
+  {
+    "code": 61120005,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61120005"
+  },
+  {
+    "code": 61120010,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61120010"
+  },
+  {
+    "code": 61120011,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61120011"
+  },
+  {
+    "code": 61120012,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61120012"
+  },
+  {
+    "code": 61120020,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61120020"
+  },
+  {
+    "code": 61120021,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61120021"
+  },
+  {
+    "code": 61120022,
+    "http_status": 410,
+    "class": "gone",
+    "ui_observation": "expired",
+    "retryable": false,
+    "docs_path": "/errors/61120022"
+  },
+  {
+    "code": 61120030,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61120030"
+  },
+  {
+    "code": 61120031,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61120031"
+  },
+  {
+    "code": 61120040,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61120040"
+  },
+  {
+    "code": 61120041,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61120041"
+  },
+  {
+    "code": 61120050,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61120050"
+  },
+  {
+    "code": 61120051,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61120051"
+  },
+  {
+    "code": 61120060,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61120060"
+  },
+  {
+    "code": 61120061,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61120061"
+  },
+  {
+    "code": 61120070,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61120070"
+  },
+  {
+    "code": 61120071,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61120071"
+  },
+  {
+    "code": 61120072,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61120072"
+  },
+  {
+    "code": 61120080,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61120080"
+  },
+  {
+    "code": 61120081,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61120081"
+  },
+  {
+    "code": 61120090,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61120090"
+  },
+  {
+    "code": 61120100,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61120100"
+  },
+  {
+    "code": 61120101,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61120101"
+  },
+  {
+    "code": 61120102,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61120102"
+  },
+  {
+    "code": 61120103,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61120103"
+  },
+  {
+    "code": 61120104,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61120104"
+  },
+  {
+    "code": 61120105,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61120105"
+  },
+  {
+    "code": 61120106,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61120106"
+  },
+  {
+    "code": 61120107,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61120107"
+  },
+  {
+    "code": 61120108,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/61120108"
+  },
+  {
+    "code": 61130001,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61130001"
+  },
+  {
+    "code": 61130002,
+    "http_status": 410,
+    "class": "gone",
+    "ui_observation": "expired",
+    "retryable": false,
+    "docs_path": "/errors/61130002"
+  },
+  {
+    "code": 61130003,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61130003"
+  },
+  {
+    "code": 61130004,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61130004"
+  },
+  {
+    "code": 61130005,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61130005"
+  },
+  {
+    "code": 61130006,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61130006"
+  },
+  {
+    "code": 61130007,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61130007"
+  },
+  {
+    "code": 61130008,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61130008"
+  },
+  {
+    "code": 61130009,
+    "http_status": 410,
+    "class": "gone",
+    "ui_observation": "expired",
+    "retryable": false,
+    "docs_path": "/errors/61130009"
+  },
+  {
+    "code": 61140001,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61140001"
+  },
+  {
+    "code": 61140002,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61140002"
+  },
+  {
+    "code": 61140003,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61140003"
+  },
+  {
+    "code": 61140004,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61140004"
+  },
+  {
+    "code": 61140005,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61140005"
+  },
+  {
+    "code": 61140010,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61140010"
+  },
+  {
+    "code": 61140011,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61140011"
+  },
+  {
+    "code": 61140020,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61140020"
+  },
+  {
+    "code": 61140021,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61140021"
+  },
+  {
+    "code": 61140022,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61140022"
+  },
+  {
+    "code": 61140023,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61140023"
+  },
+  {
+    "code": 61140024,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61140024"
+  },
+  {
+    "code": 61140025,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61140025"
+  },
+  {
+    "code": 61140026,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61140026"
+  },
+  {
+    "code": 61140027,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61140027"
+  },
+  {
+    "code": 61150101,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61150101"
+  },
+  {
+    "code": 61150102,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61150102"
+  },
+  {
+    "code": 61150103,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61150103"
+  },
+  {
+    "code": 61150104,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61150104"
+  },
+  {
+    "code": 61150105,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61150105"
+  },
+  {
+    "code": 61150106,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61150106"
+  },
+  {
+    "code": 61150107,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61150107"
+  },
+  {
+    "code": 61150108,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61150108"
+  },
+  {
+    "code": 61150109,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61150109"
+  },
+  {
+    "code": 61150110,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61150110"
+  },
+  {
+    "code": 61150111,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61150111"
+  },
+  {
+    "code": 61150112,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61150112"
+  },
+  {
+    "code": 61150113,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61150113"
+  },
+  {
+    "code": 61150114,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61150114"
+  },
+  {
+    "code": 61150115,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61150115"
+  },
+  {
+    "code": 61150116,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61150116"
+  },
+  {
+    "code": 61160002,
+    "http_status": 401,
+    "class": "unauthorized",
+    "ui_observation": "session_expired",
+    "retryable": false,
+    "docs_path": "/errors/61160002"
+  },
+  {
+    "code": 61160003,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61160003"
+  },
+  {
+    "code": 61160004,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61160004"
+  },
+  {
+    "code": 61160005,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61160005"
+  },
+  {
+    "code": 61160101,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61160101"
+  },
+  {
+    "code": 61160102,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61160102"
+  },
+  {
+    "code": 61160103,
+    "http_status": 422,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61160103"
+  },
+  {
+    "code": 61160104,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61160104"
+  },
+  {
+    "code": 61160105,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61160105"
+  },
+  {
+    "code": 61160106,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61160106"
+  },
+  {
+    "code": 61160107,
+    "http_status": 422,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61160107"
+  },
+  {
+    "code": 61160108,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61160108"
+  },
+  {
+    "code": 61160109,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61160109"
+  },
+  {
+    "code": 61160110,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61160110"
+  },
+  {
+    "code": 61160111,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61160111"
+  },
+  {
+    "code": 61160112,
+    "http_status": 502,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/61160112"
+  },
+  {
+    "code": 61160113,
+    "http_status": 502,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/61160113"
+  },
+  {
+    "code": 61160114,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61160114"
+  },
+  {
+    "code": 61160115,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61160115"
+  },
+  {
+    "code": 61160116,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61160116"
+  },
+  {
+    "code": 61160117,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61160117"
+  },
+  {
+    "code": 61160118,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61160118"
+  },
+  {
+    "code": 61160120,
+    "http_status": 501,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61160120"
+  },
+  {
+    "code": 61170001,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61170001"
+  },
+  {
+    "code": 61170002,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/61170002"
+  },
+  {
+    "code": 61180001,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61180001"
+  },
+  {
+    "code": 61180002,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61180002"
+  },
+  {
+    "code": 61180003,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61180003"
+  },
+  {
+    "code": 61180004,
+    "http_status": 429,
+    "class": "limit",
+    "ui_observation": "rate_limited",
+    "retryable": true,
+    "docs_path": "/errors/61180004"
+  },
+  {
+    "code": 61180005,
+    "http_status": 429,
+    "class": "limit",
+    "ui_observation": "rate_limited",
+    "retryable": true,
+    "docs_path": "/errors/61180005"
+  },
+  {
+    "code": 61180006,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/61180006"
+  },
+  {
+    "code": 61180007,
+    "http_status": 422,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61180007"
+  },
+  {
+    "code": 61180008,
+    "http_status": 502,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/61180008"
+  },
+  {
+    "code": 61180009,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61180009"
+  },
+  {
+    "code": 61180010,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61180010"
+  },
+  {
+    "code": 61180011,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61180011"
+  },
+  {
+    "code": 61180012,
+    "http_status": 410,
+    "class": "gone",
+    "ui_observation": "expired",
+    "retryable": false,
+    "docs_path": "/errors/61180012"
+  },
+  {
+    "code": 61180013,
+    "http_status": 429,
+    "class": "limit",
+    "ui_observation": "rate_limited",
+    "retryable": true,
+    "docs_path": "/errors/61180013"
+  },
+  {
+    "code": 61180014,
+    "http_status": 422,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61180014"
+  },
+  {
+    "code": 61180015,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61180015"
+  },
+  {
+    "code": 61180016,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61180016"
+  },
+  {
+    "code": 61180017,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61180017"
+  },
+  {
+    "code": 61180018,
+    "http_status": 502,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/61180018"
+  },
+  {
+    "code": 61180019,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61180019"
+  },
+  {
+    "code": 61180020,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61180020"
+  },
+  {
+    "code": 61180021,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61180021"
+  },
+  {
+    "code": 61180022,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61180022"
+  },
+  {
+    "code": 61180023,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61180023"
+  },
+  {
+    "code": 61180024,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61180024"
+  },
+  {
+    "code": 61180025,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61180025"
+  },
+  {
+    "code": 61180026,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61180026"
+  },
+  {
+    "code": 61180099,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61180099"
+  },
+  {
+    "code": 61190001,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61190001"
+  },
+  {
+    "code": 61190002,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61190002"
+  },
+  {
+    "code": 61190003,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61190003"
+  },
+  {
+    "code": 61190004,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61190004"
+  },
+  {
+    "code": 61190005,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61190005"
+  },
+  {
+    "code": 61190099,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61190099"
+  },
+  {
+    "code": 61200001,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61200001"
+  },
+  {
+    "code": 61200002,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61200002"
+  },
+  {
+    "code": 61200003,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61200003"
+  },
+  {
+    "code": 61200004,
+    "http_status": 500,
+    "class": "internal",
+    "ui_observation": "unexpected",
+    "retryable": false,
+    "docs_path": "/errors/61200004"
+  },
+  {
+    "code": 61200005,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/61200005"
+  },
+  {
+    "code": 61200006,
+    "http_status": 429,
+    "class": "limit",
+    "ui_observation": "rate_limited",
+    "retryable": true,
+    "docs_path": "/errors/61200006"
+  },
+  {
+    "code": 61200007,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61200007"
+  },
+  {
+    "code": 61260004,
+    "http_status": 404,
+    "class": "not_found",
+    "absence": "entity",
+    "ui_observation": "not_found_page",
+    "retryable": false,
+    "docs_path": "/errors/61260004"
+  }
+]

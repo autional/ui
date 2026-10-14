@@ -245,3 +245,20 @@ export type { TransmissionResult } from './utils/password-transmission';
 export type { ExtractedApiError } from './utils/error';
 export type { PaginationInfo, ListResult } from './utils/response';
 // force rebuild 1781616516
+
+export {
+	EMPTY_STATE_CODES,
+	ERROR_SEMANTICS,
+	ERROR_SEMANTICS_META,
+	MAX_RETRIES,
+	UNPROVISIONED_CODES,
+	errorCodeOf,
+	isEmptyStateError,
+	isNotFoundError,
+	isRetryableErrorContractFirst,
+	isUnprovisionedError,
+	semanticsOfCode,
+	semanticsOfError,
+	shouldRetry,
+} from './utils/error-semantics';
+export type { Absence, ErrorClass, ErrorSemantics, UIObservation } from './utils/error-semantics';
