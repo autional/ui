@@ -29,7 +29,7 @@
 //// 判据必须跟着事实走：下面 C2 的「设计系统色值表」直接从 tokens 派生，
 // 不写死清单——令牌改了，检查自动跟上。
 
-import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, readdirSync, statSync, realpathSync } from 'node:fs';
 import { join, resolve, relative, dirname } from 'node:path';
 import { createHash } from 'node:crypto';
 import { ROOT, loadTokens, stripMeta, flatten } from './lib/tokens.mjs';
@@ -71,8 +71,25 @@ function walk(dir, acc, test, skip) {
   }
   return acc;
 }
+function execFileSyncSafe(cmd, args) {
+  try {
+    execFileSync(cmd, args, { stdio: 'ignore' });
+    return 0;
+  } catch (e) {
+    return typeof e.status === 'number' ? e.status : 1;
+  }
+}
+// R8（2026-10-15）：**构建期生成目录**显式排除在度量之外。
+// 实测：docs 站 `src/pages/errors/*.astro` 由 scripts/gen-errors-pages.mjs **构建期生成**
+// （其仓 .gitignore 已忽略，788 个文件、每个都含 <table>），却被 C8 当成「手写 <table>」
+// ⇒ 计数 10 → 798 假红。生成物与手写代码不是一回事，拿前者判后者属判据错误。
+// 为什么不用通用「git check-ignore」判定：这些站点在 `autional-cn/sites/*` 下是 **junction**
+// （→ deploy-sync/*），实测同一条 `git -C … check-ignore -q` 在命令行返回 0、在 walk 里却拿不到该规则
+// （junction 的仓发现语义不稳）；与其依赖它，不如按「生成物名单」**显式**排除（与本文件 ARTIFACT_DIRS 同惯例，可读可审）。
+const GENERATED_DIRS = new Set(['errors']); // 生成器：sites/docs/scripts/gen-errors-pages.mjs（写入 src/pages/errors/）
 const SKIP = (e, dir) => ARTIFACT_DIRS.has(e.name)
-  || (e.isDirectory() && e.name === 'tailwind-preset' && dir.endsWith('packages'));
+  || (e.isDirectory() && e.name === 'tailwind-preset' && dir.endsWith('packages'))
+  || (e.isDirectory() && GENERATED_DIRS.has(e.name) && dir.endsWith('pages'));
 
 if (!existsSync(SITES)) {
   console.log('check-consistency：本次工作区没有 sites/，跳过（CI 里同样跳过）');
@@ -1025,7 +1042,8 @@ if (!existsSync(PALETTE_PATH)) {
   info.push('C12 手写容器：卡片 ' + total + ' 处 · 着色提示块 ' + alerts + ' 处 · 结果块 ' + results + ' 处（四站在册，判据是硬零）');
 }
 // ── 已知问题登记（与其它检查同一套约定）────────────────────────────────
-const codeOf = (msg) => { const m = /^(C\d)/.exec(msg); return m ? m[1] : null; };
+// R8 修复：原为 /^(C\d)/ ⇒ 只取一位数字，C10/C11/C12 会被截成 C1 ⇒ 「C10 及以后的 finding 永远无法登记」。
+const codeOf = (msg) => { const m = /^(C\d+)/.exec(msg); return m ? m[1] : null; };
 const knownFor = (msg) => { const c = codeOf(msg); return c ? known.find((k) => k.code === c && msg.indexOf(k.match) >= 0) : undefined; };
 const suppressed = [];
 const active = [];

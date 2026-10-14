@@ -85,6 +85,43 @@ try {
   execFileSync('npm', ['install', '--prefer-online', REG, ...pkgs.map((p) => p + '@' + versionOf(p))], { cwd: tmp, stdio: 'pipe', env, shell: process.platform === 'win32' });
 
   const sha = (f) => createHash('sha256').update(readFileSync(f)).digest('hex').slice(0, 12);
+
+/**
+ * 从命令输出里**只**取出第一个完整 JSON 数组（R8 修复）。
+ *
+ * 为什么不能 `raw.slice(raw.indexOf('['))` 直接 JSON.parse：`npm pack --dry-run --json` 会在 JSON
+ * **之后**再打印 notice/审计等文本 ⇒ 报 "Unexpected non-whitespace character after JSON"（实测
+ * position 5154 / line 252）—— 解析器脆弱，且该闸门一旦解析失败就整条红（挡住发布）。
+ * 这里按括号配平扫描（跳过字符串与转义），与输出前后的噪声解耦。
+ */
+function extractJsonDocument(raw) {
+  const iBrace = raw.indexOf('{');
+  const iBrack = raw.indexOf('[');
+  const cands = [iBrace, iBrack].filter((i) => i >= 0);
+  if (!cands.length) throw new Error('输出里没有 JSON：' + raw.slice(0, 120));
+  const start = Math.min(...cands);
+  const open = raw[start];
+  const close = open === '{' ? '}' : ']';
+  let depth = 0;
+  let inStr = false;
+  let esc = false;
+  for (let i = start; i < raw.length; i++) {
+    const c = raw[i];
+    if (inStr) {
+      if (esc) esc = false;
+      else if (c === '\\') esc = true;
+      else if (c === '"') inStr = false;
+      continue;
+    }
+    if (c === '"') inStr = true;
+    else if (c === open) depth++;
+    else if (c === close) {
+      depth--;
+      if (depth === 0) return raw.slice(start, i + 1);
+    }
+  }
+  throw new Error('JSON 未闭合（输出被截断？）');
+}
   const walk = (d, base, out) => {
     let es; try { es = readdirSync(d, { withFileTypes: true }); } catch (e) { return out; }
     for (const e of es) {
@@ -104,7 +141,12 @@ try {
     const raw = execFileSync('npm', ['pack', '--dry-run', '--json', '--registry=https://registry.npmjs.org/'], {
       cwd: join(ROOT, dirRel), stdio: 'pipe', shell: process.platform === 'win32',
     }).toString();
-    const set = new Set(JSON.parse(raw.slice(raw.indexOf('[')))[0].files.map((f) => f.path.replace(/\\/g, '/')));
+    // npm pack --json 的输出形状随版本变化：老版本 = [{...}]，新版本 = { '<name>': {...} }。
+    // 两种都要吃（实测 npm 10/11 返回对象 ⇒ 旧代码按数组取 [0].files 会炸）。
+    const doc = JSON.parse(extractJsonDocument(raw));
+    const entry = Array.isArray(doc) ? doc[0] : Object.values(doc)[0];
+    if (!entry || !Array.isArray(entry.files)) throw new Error('npm pack --json 形状不认识：' + JSON.stringify(doc).slice(0, 120));
+    const set = new Set(entry.files.map((f) => f.path.replace(/\\/g, '/')));
     packCache.set(dirRel, set);
     return set;
   };

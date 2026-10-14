@@ -1,9 +1,18 @@
 {
-  "$description": "已知问题登记。每条必须有 id / code / match / reason / owner / expires。到期未处理即构建失败——把「写在文档里的债」变成「机器守得住的债」。这不是豁免，是有期限的登记。",
-  "$rules": [
-    "登记必须给出 owner 与到期日；没有到期日的登记等于永久豁免，不允许",
-    "到期后 lint 会直接失败：要么修掉，要么重新评估并续期（续期必须改 expires 并写理由）",
-    "match 是对 lint finding 的 key 做子串匹配，粒度要够细，不能用来屏蔽整类检查"
-  ],
-  "issues": []
+    "$description": "已知问题登记。每条必须有 id / code / match / reason / owner / expires。到期未处理即构建失败——把「写在文档里的债」变成「机器守得住的债」。这不是豁免，是有期限的登记。",
+    "$rules": [
+        "登记必须给出 owner 与到期日；没有到期日的登记等于永久豁免，不允许",
+        "到期后 lint 会直接失败：要么修掉，要么重新评估并续期（续期必须改 expires 并写理由）",
+        "match 是对 lint finding 的 key 做子串匹配，粒度要够细，不能用来屏蔽整类检查"
+    ],
+    "issues": [
+        {
+            "id": "KI-status-neutral400",
+            "code": "C11",
+            "match": "text-neutral-400",
+            "reason": "status 站总览页「状态墙 + 舰队全景条」改造（提交 2fe15fd，2026-10-14）引入 text-neutral-400；该键在设计系统里已 closed（要求站点为 0）。收敛方式二选一：该站改用设计系统语义 token，或由设计系统评估放开该键。登记期间视觉一致性强判据对该站点暂时抑制。",
+            "owner": "portal-status",
+            "expires": "2026-11-14"
+        }
+    ]
 }
