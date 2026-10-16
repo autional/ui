@@ -1,6 +1,6 @@
 {
   "name": "@autional/ui",
-  "version": "0.1.0-rc.49",
+  "version": "0.1.0-rc.50",
   "description": "Autional shared React component library (atoms + molecules) …the canonical home of the component layer",
   "license": "AGPL-3.0",
   "main": "./src/index.ts",
