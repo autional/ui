@@ -32,7 +32,9 @@ export function ThemeToggle({
 	return (
 		<button
 			onClick={toggle}
-			className={`rounded-md transition-colors ${className}`}
+			/* 命中盒（T49）：此前只有圆角/过渡 ⇒ 可点区域 = 图标尺寸（14–18px，实测 14×14）。
+			   撑到 44px 令牌等价物；图标本身仍居中不变（视觉尺寸零变化）。 */
+			className={`inline-flex items-center justify-center min-h-[44px] min-w-[44px] rounded-md transition-colors ${className}`}
 			title={label}
 			aria-label={label}
 		>
