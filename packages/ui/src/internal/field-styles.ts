@@ -39,7 +39,7 @@ export function fieldControlClassFor(
 	invalid?: boolean,
 	extra = '',
 ): string {
-	const border = invalid ? 'border-[var(--color-danger)]' : 'border-[var(--color-border)]';
+	const border = invalid ? 'border-[var(--color-danger)]' : 'border-[var(--color-border-strong)]';
 	return `${STRUCT} ${SIZE[size]} ${SHAPE[shape]} ${border} ${extra}`.trim();
 }
 
