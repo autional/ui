@@ -99,7 +99,7 @@ export const ConfirmDialog = React.memo(function ConfirmDialog({
 				<div className="mt-6 flex justify-end gap-3">
 					<button
 						onClick={onCancel}
-						className="rounded-md border border-[var(--color-border-subtle)] bg-[var(--color-bg-surface)] px-4 py-2 text-sm font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-bg-muted)]"
+						className="rounded-md border border-[var(--color-border-strong)] bg-[var(--color-bg-surface)] px-4 py-2 text-sm font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-bg-muted)]"
 					>
 						{cancelLabel}
 					</button>

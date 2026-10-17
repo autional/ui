@@ -34,7 +34,7 @@ export function ErrorState({
 			{action ? (
 				<button
 					onClick={action.onClick}
-					className="inline-flex items-center gap-1.5 rounded-md border border-[var(--color-border-subtle)] bg-[var(--color-bg-surface)] px-3 py-1.5 text-xs text-[var(--color-text-primary)] hover:bg-[var(--color-bg-muted)]"
+					className="inline-flex items-center gap-1.5 rounded-md border border-[var(--color-border-strong)] bg-[var(--color-bg-surface)] px-3 py-1.5 text-xs text-[var(--color-text-primary)] hover:bg-[var(--color-bg-muted)]"
 				>
 					{action.label}
 				</button>
