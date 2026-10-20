@@ -23,7 +23,8 @@ import { ROOT } from './lib/tokens.mjs';
 const UPSTREAM = process.env.AUTIONAL_UPSTREAM || 'D:\\go\\auth_ms_new\\web';
 // 比对目标 = 舰队权威源 ui/packages/*。站点不再持有副本，扫 sites/ 只会得到全零。
 const FLEET = resolve(ROOT, 'packages');
-const PACKAGES = ['shared', 'ui', 'tailwind-preset', 'react'];
+// react 已从舰队下线（上游仍保留），不再纳入对账。
+const PACKAGES = ['shared', 'ui', 'tailwind-preset'];
 const SKIP = new Set(['node_modules', 'dist', '.turbo', '.git']);
 
 if (!existsSync(UPSTREAM)) {
@@ -66,6 +67,8 @@ const canon = (p) => readFileSync(p, 'utf8').split('\r\n').join('\n')
 
 let totalFiles = 0;
 let totalSame = 0;
+let totalNamespaceOnly = 0;
+let totalUpstreamGap = 0;
 
 for (const pkg of PACKAGES) {
 	const upDir = join(UPSTREAM, 'packages', pkg);
@@ -88,8 +91,8 @@ for (const pkg of PACKAGES) {
 		const g = join(FLEET, pkg, rel);
 		if (!existsSync(g)) { absent.push(rel); continue; }
 		if (sha(f) === sha(g)) { identical.push(rel); totalSame++; }
-		else if (canon(f) === canon(g)) namespaceOnly.push(rel);
-		else upstreamGap.push(rel);
+		else if (canon(f) === canon(g)) { namespaceOnly.push(rel); totalNamespaceOnly++; }
+		else { upstreamGap.push(rel); totalUpstreamGap++; }
 	}
 	if (absent.length === files.length && files.length) {
 		console.log('   舰队 packages/ 下没有这个包 —— 上游独有或已下线；若已改为从 npm 消费，这属正常。');
@@ -122,3 +125,12 @@ if (log.status === 0 && log.stdout.trim()) {
 console.log('');
 console.log('合计：上游 ' + totalFiles + ' 个文件，与舰队逐字节相同 ' + totalSame + ' 个。');
 console.log('这份报告只摆差异，不合并：舰队在若干处已领先上游，直接「同步上游」会回退这些修复。');
+
+// 布局漂移兜底：目录在、但一个文件都对不上，不能再静默报全零。
+if (totalFiles === 0) {
+	console.error('上游差异报告：上游没有任何可比对文件（包名不匹配？），判为布局漂移。');
+	process.exitCode = 1;
+} else if (totalSame + totalNamespaceOnly + totalUpstreamGap === 0) {
+	console.error('上游差异报告：所有上游文件在舰队都无对应文件，判为布局漂移（检查 FLEET/PACKAGES）。');
+	process.exitCode = 1;
+}
