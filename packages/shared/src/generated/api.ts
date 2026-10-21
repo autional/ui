@@ -5661,15 +5661,6 @@ export async function authOauthAccounts() {
 }
 
 /**
- * 绑定OAuth账号
- * 为当前用户绑定第三方OAuth账号
- */
-export async function authOauthBindPost(data: BindOAuthRequest) {
-  const res = await api.post(`/identity/api/v1/auth/oauth/bind`, data);
-  return res.data;
-}
-
-/**
  * 获取OAuth提供商列表
  * 获取系统支持的所有OAuth登录提供者列表
  */
@@ -6007,24 +5998,6 @@ export async function authSendSmsCodePost(data: SendSMSCodeRequest) {
  */
 export async function authSendVerificationEmailPost(data: SendVerificationEmailRequest) {
   const res = await api.post(`/identity/api/v1/auth/send-verification-email`, data);
-  return res.data;
-}
-
-/**
- * 企业SSO回调
- * 接收企业身份提供商的回调信息，验证state并交换本地访问令牌
- */
-export async function authSsoCallbackPost(data: SSOCallbackRequest) {
-  const res = await api.post(`/identity/api/v1/auth/sso/callback`, data);
-  return res.data;
-}
-
-/**
- * 启动企业SSO登录
- * 根据指定的SSO提供商（SAML或OIDC）生成授权URL与state参数，通过PKCE和CSRF state保护，引导用户跳转至企业身份提供商进行认证。参考：SAML 2.0 Core §3.4、OpenID Connect Core 1.0 §3、RFC 7636 (PKCE)。
- */
-export async function authSsoInitiatePost(data: SSOInitiateRequest) {
-  const res = await api.post(`/identity/api/v1/auth/sso/initiate`, data);
   return res.data;
 }
 
@@ -7973,15 +7946,6 @@ export async function oauthAuthorize(params?: {
  */
 export async function oauthAuthorizePost(data: Record<string, unknown>) {
   const res = await api.post(`/oauth/api/v1/oauth/authorize`, data);
-  return res.data;
-}
-
-/**
- * 绑定 OAuth 账号
- * 将当前用户的 Autional 账号与第三方 OAuth 提供商账号绑定。需 JWT 认证，请求体中的 user_id 必须与 JWT subject 一致。
- */
-export async function oauthBindPost(data: BindOAuthRequest) {
-  const res = await api.post(`/oauth/api/v1/oauth/bind`, data);
   return res.data;
 }
 

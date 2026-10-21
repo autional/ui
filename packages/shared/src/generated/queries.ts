@@ -8047,17 +8047,6 @@ export function usePostAuthMfaVerify_challenge() {
   });
 }
 
-/** 绑定OAuth账号 */
-export function usePostAuthOauthBind() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (data: any) => api.authOauthBindPost(data),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['identity-service'] });
-    },
-  });
-}
-
 /** 解绑OAuth账号 */
 export function usePostAuthOauthUnbind() {
   const qc = useQueryClient();
@@ -8349,28 +8338,6 @@ export function usePostAuthSend_verification_email() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (data: any) => api.authSendVerificationEmailPost(data),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['identity-service'] });
-    },
-  });
-}
-
-/** 企业SSO回调 */
-export function usePostAuthSsoCallback() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (data: any) => api.authSsoCallbackPost(data),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['identity-service'] });
-    },
-  });
-}
-
-/** 启动企业SSO登录 */
-export function usePostAuthSsoInitiate() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (data: any) => api.authSsoInitiatePost(data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['identity-service'] });
     },
@@ -9697,17 +9664,6 @@ export function usePostOauthAuthorize() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (data: any) => api.oauthAuthorizePost(data),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['oauth-service'] });
-    },
-  });
-}
-
-/** 绑定 OAuth 账号 */
-export function usePostOauthBind() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (data: any) => api.oauthBindPost(data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['oauth-service'] });
     },
