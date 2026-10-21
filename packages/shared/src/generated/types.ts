@@ -5515,6 +5515,7 @@ export interface PasskeyAuthBeginRequest {
 export interface PasskeyAuthenticateCompleteRequest {
   credential: AuthenticationResponse;
   email?: string;
+  tenantId?: string;
 }
 
 /** 密码策略配置 */
