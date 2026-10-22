@@ -1,6 +1,6 @@
 {
   "$comment": "lint warning 台账（棘轮，C14）。键 = ESLint 规则名，值 = 该站该规则的 warning 数。只许减不许增；error 不在台账里 —— 它必须恒为 0。首轮 921 条 warning 的来源与理由见 @autional/eslint-config/index.js。",
-  "updated": "2026-10-13",
+  "updated": "2026-10-22",
   "apps": {
     "admin": {
       "@typescript-eslint/no-explicit-any": 233,
@@ -19,7 +19,7 @@
     },
     "user": {
       "@typescript-eslint/no-unused-vars": 16,
-      "@typescript-eslint/no-explicit-any": 57,
+      "@typescript-eslint/no-explicit-any": 55,
       "react-hooks/exhaustive-deps": 3
     }
   }
