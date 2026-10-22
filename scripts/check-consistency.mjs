@@ -47,6 +47,16 @@ const warns = [];
 const info = [];
 const known = existsSync(KNOWN) ? (JSON.parse(readFileSync(KNOWN, 'utf8')).issues || []) : [];
 
+// 手写 <table> 的登记豁免（C8）。只收「语义表格」——日历网格这类靠 caption/th/aria-label
+// 表达结构的表格，不是需要排序/分页的数据表；数据表仍一律走 DataTable。
+const TABLE_EXEMPTIONS = join(ROOT, 'verification', 'table-exemptions.json');
+const tableExemptions = existsSync(TABLE_EXEMPTIONS)
+  ? (JSON.parse(readFileSync(TABLE_EXEMPTIONS, 'utf8')).exemptions || [])
+  : [];
+const tableAllowance = (site) => tableExemptions
+  .filter((e) => e.site === site)
+  .reduce((n, e) => n + (Number(e.allowance) || 0), 0);
+
 // ── 设计系统"品牌定义色"表：从令牌派生 ──────────────────────────────────
 // 只收品牌定义性的色，不收中性白/黑/浅灰——那些在各处合法出现，收了只会淹没信号。
 const core = stripMeta(loadTokens().core);
@@ -309,7 +319,12 @@ if (WRITE_REGISTRY) {
     closedKinds: (antdRegistry && antdRegistry.closedKinds) || [],
     tableConvergedSites: (antdRegistry && antdRegistry.tableConvergedSites) || [],
     overlayConvergedSites: (antdRegistry && antdRegistry.overlayConvergedSites) || [],
-    handwrittenTablesBySite: countHandwrittenTables(),
+    // 豁免是「允许的存量」，不从台账里消失：写入时扣掉，避免台账与豁免叠加成双份额度。
+    handwrittenTablesBySite: Object.fromEntries(
+      Object.entries(countHandwrittenTables())
+        .map(([s, n]) => [s, Math.max(0, n - tableAllowance(s))])
+        .filter(([, n]) => n > 0),
+    ),
     handwrittenOverlaysBySite: countHandwrittenOverlays(),
     sites: {},
   };
@@ -720,12 +735,35 @@ if (!antdRegistry) {
   problems.push('C8 缺少 verification/antd-entries.json —— 手写表格的存量要靠它记账（node scripts/check-consistency.mjs --write-registry）');
 } else {
   const recorded = antdRegistry.handwrittenTablesBySite || {};
+  for (const ex of tableExemptions) {
+    for (const f of ['site', 'allowance', 'reason', 'owner', 'expires']) {
+      if (ex[f] === undefined || ex[f] === '') {
+        problems.push('C8 豁免台账缺少字段 ' + f + '（site=' + (ex.site || '?') + '）—— 没有到期日的豁免等于永久放行，不允许');
+      }
+    }
+    if (ex.site && !SITES_HAS(ex.site)) problems.push('C8 豁免台账含不存在的站点「' + ex.site + '」——拼错会让豁免静默失效');
+    if (ex.allowance !== undefined && !(Number.isInteger(ex.allowance) && ex.allowance > 0)) {
+      problems.push('C8 豁免台账 ' + ex.site + ' 的 allowance 必须是正整数');
+    }
+    if (ex.expires && ex.expires < TODAY) {
+      problems.push('C8 豁免 ' + ex.site + ' 已过期（' + ex.expires + '）：要么修掉，要么重新评估并续期');
+    }
+  }
   for (const [site, n] of Object.entries(tableCounts)) {
-    const was = recorded[site] || 0;
-    if (n > was) {
-      problems.push('C8 ' + site + ' 新增了手写 <table>（' + was + ' → ' + n + '）。表格一律走 @autional/ui/antd 的 DataTable：手写表要自己实现排序/分页/空态/加载态，而且必然与其余 portal 长得不一样。');
-    } else if (n < was) {
-      warns.push('C8 ' + site + ' 的手写 <table> 从 ' + was + ' 降到 ' + n + ' —— 这是进展，请跑 node scripts/check-consistency.mjs --write-registry 更新台账');
+    const recordedCount = recorded[site] || 0;
+    const allowed = tableAllowance(site);
+    const ceiling = recordedCount + allowed;
+    if (n > ceiling) {
+      problems.push('C8 ' + site + ' 新增了手写 <table>（基线 ' + recordedCount + (allowed ? ' + 豁免 ' + allowed : '') + ' → ' + n + '）。表格一律走 @autional/ui/antd 的 DataTable：手写表要自己实现排序/分页/空态/加载态，而且必然与其余 portal 长得不一样。语义表格（日历等）请在 verification/table-exemptions.json 登记 reason/owner/expires。');
+    } else if (n < recordedCount) {
+      warns.push('C8 ' + site + ' 的手写 <table> 从 ' + recordedCount + ' 降到 ' + n + ' —— 这是进展，请跑 node scripts/check-consistency.mjs --write-registry 更新台账');
+    } else if (allowed && n > recordedCount) {
+      info.push('C8 ' + site + ' 有 ' + (n - recordedCount) + ' 处手写 <table> 走已登记豁免（上限 ' + allowed + '，语义表格）');
+    }
+  }
+  for (const ex of tableExemptions) {
+    if (ex.site && SITES_HAS(ex.site) && !tableCounts[ex.site]) {
+      warns.push('C8 豁免 ' + ex.site + ' 未命中任何手写 <table> —— 豁免可能已过期，请核实后移除');
     }
   }
   for (const site of antdRegistry.tableConvergedSites || []) {

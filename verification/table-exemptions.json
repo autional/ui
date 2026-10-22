@@ -1,0 +1,12 @@
+{
+  "$description": "手写 <table> 闸门（C8）的登记豁免。与 known-issues / header-exemptions 同样的纪律：必须有 reason / owner / expires，到期即失败。只用于「语义表格」——靠 caption/th/aria-label 表达结构的日历网格等；数据表一律走 @autional/ui/antd 的 DataTable。allowance 是该站允许的手写表格数（在台账基线之上）。",
+  "exemptions": [
+    {
+      "site": "status",
+      "allowance": 1,
+      "reason": "维护日历用真实表格语义（ST2-16）：caption 报月份、th scope=col 报星期、日期格 aria-label 报完整日期。日历是日期网格，不是需要排序/分页/空态/加载态的数据表；改用 DataTable 会破坏无障碍语义。",
+      "owner": "portal-status",
+      "expires": "2026-11-22"
+    }
+  ]
+}
