@@ -17,13 +17,15 @@ export function extractApiErrorMessage(err: unknown, defaultMsg: string): string
 
 export function extractApiError(err: unknown, defaultMsg: string): ExtractedApiError {
 	// UP-17-B：后端 Problem 契约（service-core/base/dto/problem.go）字段为 title（必填）/ detail / code / i18n_key，
-	// **没有 message** —— 只认 message 会把整类后端错误退化成 defaultMsg。键链：message → title → detail → err.message。
+	// **没有 message** —— 只认 message 会把整类后端错误退化成 defaultMsg。
+	// U380：键链 message → detail → title，对齐 Problem.GetMessage()（Detail 非空优先），
+	// 避免英文 title 压过本地化 detail。
 	// 继续用 `||`（而非 `??`）：空串语义按「缺省」处理，与既有实现一致。
 	// AUTH-46：附加透出 i18n_key（响应拦截器深 camel 后为 i18nKey，两者都认）。
 	const data = (err as any)?.response?.data;
 	return {
 		code: data?.code || 'UNKNOWN',
-		message: data?.message || data?.title || data?.detail || (err as any)?.message || defaultMsg,
+		message: data?.message || data?.detail || data?.title || (err as any)?.message || defaultMsg,
 		i18nKey: data?.i18n_key || data?.i18nKey || undefined,
 	};
 }

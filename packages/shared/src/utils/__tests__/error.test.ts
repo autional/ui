@@ -4,19 +4,36 @@ import { extractApiError, extractApiErrorMessage } from '../error';
 // UP-17-B 回归锁（AC-401）：extractApiError message 键链。
 // 后端 Problem 契约（service-core/base/dto/problem.go）为 title 必填 / detail / code / i18n_key，无 message；
 // 只认 message 会把 Problem 类错误整类退化为 defaultMsg。
-describe('extractApiError message 键链（UP-17-B / AC-401）', () => {
-	it('title 优先：Problem 契约（title/detail/code）→ 取 title', () => {
+// U380 回归锁：detail 优先于 title，对齐 Problem.GetMessage()（Detail 非空优先）。
+describe('extractApiError message 键链（UP-17-B / AC-401 / U380）', () => {
+	it('detail 优先：Problem 契约（title/detail/code）→ 取 detail', () => {
 		const err = {
-			response: { data: { code: 403, title: '平台级访问受限', detail: '需要平台角色' } },
+			response: { data: { code: 403, title: 'Platform Access Denied', detail: '需要平台角色' } },
 		};
 		const out = extractApiError(err, 'fallback');
-		expect(out.message).toBe('平台级访问受限');
+		expect(out.message).toBe('需要平台角色');
 		expect(out.code).toBe(403);
 	});
 
-	it('detail 兜底：无 message/title 时取 detail', () => {
-		const err = { response: { data: { detail: '令牌已过期' } } };
-		expect(extractApiError(err, 'fallback').message).toBe('令牌已过期');
+	it('title 兜底：无 message/detail 时取 title', () => {
+		const err = { response: { data: { title: 'Invalid Request' } } };
+		expect(extractApiError(err, 'fallback').message).toBe('Invalid Request');
+	});
+
+	it('U380：英文 title + 中文 detail → 中文 detail 胜出', () => {
+		const err = {
+			response: {
+				data: {
+					code: 61040050,
+					title: 'push challenge not found',
+					detail: '推送挑战未找到',
+					i18n_key: 'error.push_challenge_not_found',
+				},
+			},
+		};
+		const out = extractApiError(err, 'fallback');
+		expect(out.message).toBe('推送挑战未找到');
+		expect(out.i18nKey).toBe('error.push_challenge_not_found');
 	});
 
 	it('皆无回落 err.message，再皆无回落 defaultMsg', () => {
@@ -52,8 +69,8 @@ describe('extractApiError i18n_key 透出（AUTH-46）', () => {
 		};
 		const out = extractApiError(err, 'fallback');
 		expect(out.i18nKey).toBe('error.oauth_state_missing');
-		// message 键链不回归（title 优先于 detail）
-		expect(out.message).toBe('Invalid Parameter');
+		// U380：键链为 message → detail → title
+		expect(out.message).toBe('state not found');
 	});
 
 	it('响应拦截器深 camel 后（i18nKey）同样识别', () => {
