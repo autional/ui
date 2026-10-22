@@ -22,7 +22,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
 
       # tokens/ 与 packages/ 都是纯文件生成，不需要 node_modules；
       # 但保留 install 以便将来加入需要依赖的检查（视觉回归等）。
