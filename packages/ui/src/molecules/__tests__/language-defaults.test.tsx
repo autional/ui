@@ -7,9 +7,10 @@ import { LoadingScreen } from '../LoadingScreen';
 import { EmptyState } from '../EmptyState';
 import { ConfirmDialog } from '../ConfirmDialog';
 import { Alert } from '../Alert';
+import { ErrorState } from '../ErrorState';
 import { UI_I18N_NS, registerUiI18n } from '../../i18n';
 
-// 语言问题审计 2026-10-13 回归锁：四组件的默认文案此前是硬编码中文 ——
+// 语言问题审计 2026-10-13 回归锁：五组件的默认文案此前是硬编码中文 ——
 // EN 站裸露中文（trust 加载态「加载中...」线上实测、user 确认框「取消」等）。
 // 修复后走与 Modal / ThemeToggle 同构的解析链：站点 i18next（可覆盖）→ 内置表（未注册）→ 硬编码兜底。
 
@@ -109,6 +110,42 @@ describe('ConfirmDialog 默认按钮文案（语言问题审计 2026-10-13）', 
 		);
 		expect(screen.getByRole('button', { name: 'Delete' })).toBeInTheDocument();
 		expect(screen.getByRole('button', { name: 'Keep' })).toBeInTheDocument();
+	});
+});
+
+describe('ErrorState 默认文案（语言问题审计 2026-10-13 家族）', () => {
+	it('EN 站：标题/描述/重试为英文（此前硬编码「加载失败」/「请稍后重试」/「重试」）', async () => {
+		renderWith(await makeSiteI18n('en-US'), <ErrorState onRetry={() => {}} />);
+		expect(screen.getByText('Failed to load')).toBeInTheDocument();
+		expect(screen.getByText('Please try again later')).toBeInTheDocument();
+		expect(screen.getByRole('button', { name: 'Retry' })).toBeInTheDocument();
+	});
+
+	it('ZH 站：中文原文', async () => {
+		renderWith(await makeSiteI18n('zh-CN'), <ErrorState onRetry={() => {}} />);
+		expect(screen.getByText('加载失败')).toBeInTheDocument();
+		expect(screen.getByText('请稍后重试')).toBeInTheDocument();
+		expect(screen.getByRole('button', { name: '重试' })).toBeInTheDocument();
+	});
+
+	it('未注册站点按站点语言回落内置表', async () => {
+		renderWith(await makeSiteI18n('en-US', false), <ErrorState onRetry={() => {}} />);
+		expect(screen.getByText('Failed to load')).toBeInTheDocument();
+		expect(screen.getByRole('button', { name: 'Retry' })).toBeInTheDocument();
+	});
+
+	it('显式 title / description 优先，action 标签优先于默认重试', async () => {
+		renderWith(
+			await makeSiteI18n('en-US'),
+			<ErrorState
+				title="No results"
+				description="Check the filters"
+				action={{ label: 'Reload', onClick: () => {} }}
+			/>,
+		);
+		expect(screen.getByText('No results')).toBeInTheDocument();
+		expect(screen.getByText('Check the filters')).toBeInTheDocument();
+		expect(screen.getByRole('button', { name: 'Reload' })).toBeInTheDocument();
 	});
 });
 

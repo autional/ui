@@ -1,4 +1,6 @@
 import { AlertTriangle, RefreshCw } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { UI_I18N_NS, uiText } from '../i18n';
 
 export interface ErrorStateProps {
 	title?: string;
@@ -17,8 +19,13 @@ export function ErrorState({
 	action,
 	className = '',
 }: ErrorStateProps) {
-	const displayTitle = title || '加载失败';
-	const displayMessage = description || message || '请稍后重试';
+	const { t, i18n } = useTranslation();
+	// 文案解析链与 LoadingScreen / EmptyState 同构（语言问题审计 2026-10-13 家族）：
+	// 原为硬编码中文默认，EN 站错误态裸露「加载失败 / 请稍后重试 / 重试」。
+	const resolve = (key: string, fallback: string): string =>
+		t(key, { ns: UI_I18N_NS, defaultValue: uiText(i18n.language, key) ?? fallback });
+	const displayTitle = title || resolve('errorState.title', '加载失败');
+	const displayMessage = description || message || resolve('errorState.description', '请稍后重试');
 
 	return (
 		<div
@@ -44,7 +51,7 @@ export function ErrorState({
 					className="inline-flex items-center gap-1.5 rounded-md border border-danger-soft bg-[var(--color-bg-surface)] px-3 py-1.5 text-xs text-danger-text hover:bg-danger-soft"
 				>
 					<RefreshCw className="h-3.5 w-3.5" />
-					重试
+					{resolve('pageStatus.retry', '重试')}
 				</button>
 			) : null}
 		</div>

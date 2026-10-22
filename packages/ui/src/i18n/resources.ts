@@ -29,6 +29,9 @@ export const uiI18nResources: Record<'zh-CN' | 'en-US', Record<string, string>> 
 		'pageStatus.loading': '加载中…',
 		'pageStatus.loadError': '数据加载失败',
 		'pageStatus.retry': '重试',
+		// ErrorState 默认标题与描述（原组件硬编码中文）；重试按钮复用 pageStatus.retry。
+		'errorState.title': '加载失败',
+		'errorState.description': '请稍后重试',
 		// ThemeToggle 默认文案（UP-04：原为组件内硬编码中文，EN 站点顶栏出现中文标签）
 		'theme.toggleDark': '切换到深色模式',
 		'theme.toggleLight': '切换到浅色模式',
@@ -58,6 +61,8 @@ export const uiI18nResources: Record<'zh-CN' | 'en-US', Record<string, string>> 
 		'pageStatus.loading': 'Loading...',
 		'pageStatus.loadError': 'Data loading failed',
 		'pageStatus.retry': 'Retry',
+		'errorState.title': 'Failed to load',
+		'errorState.description': 'Please try again later',
 		'theme.toggleDark': 'Switch to dark mode',
 		'theme.toggleLight': 'Switch to light mode',
 		// EN 词汇对齐舰队既有口径（Loading... / No data / Confirm / Cancel / Close）
