@@ -4726,6 +4726,7 @@ export interface CheckRoleRequest {
 /** 检查用户名可用性请求 */
 export interface CheckUsernameRequest {
   username: string;  // Username | @example john_doe
+  tenantId?: string;  // 目标租户（地址栏租户优先）
 }
 
 /** 检查用户名可用性结果 */
@@ -5691,6 +5692,7 @@ export interface ReapplyRegistrationRequest {
   email: string;  // Email
   invitationCode?: string;  // 邀请码
   reason?: string;  // 申请理由
+  tenantId?: string;  // 目标租户（地址栏租户优先）
 }
 
 export interface ReapplyRegistrationResponse {
