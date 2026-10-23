@@ -35,8 +35,11 @@ function setupInterceptors(instance: AxiosInstance) {
 			config.headers.Authorization = `Bearer ${bearer}`;
 		}
 
+		// 无 token 的公开认证入口（登录/OAuth/QR/恢复）以地址栏租户为唯一权威：
+		// 此时 localStorage 里的 currentTenantId 可能是上次会话残留，注入会覆盖显式租户。
+		// 有 token 才注入（内部调用链沿用它）；调用方显式设置的 X-Tenant-ID 不受影响。
 		const tenantId = AuthService.getCurrentTenantId();
-		if (tenantId) {
+		if (bearer && tenantId) {
 			config.headers['X-Tenant-ID'] = tenantId;
 		}
 

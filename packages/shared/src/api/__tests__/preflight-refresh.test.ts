@@ -43,6 +43,11 @@ function expiredJwt(): string {
 	return `eyJhbGciOiJIUzI1NiJ9.${payload}.sig`;
 }
 
+function liveJwt(): string {
+	const payload = btoa(JSON.stringify({ exp: Math.floor(Date.now() / 1000) + 3600 }));
+	return `eyJhbGciOiJIUzI1NiJ9.${payload}.sig`;
+}
+
 describe('U352: 预刷新成功后注入链完整性', () => {
 	beforeEach(() => {
 		captured = [];
@@ -85,5 +90,39 @@ describe('U352: 预刷新成功后注入链完整性', () => {
 		await apiClient.get('/probe/z');
 		expect(String(captured[0].headers['Authorization'])).toMatch(/^Bearer /);
 		expect(captured[0].headers['X-Tenant-ID']).toBe('tenant-abc');
+	});
+});
+
+// 地址栏唯一权威（Wave 2）：无 token 的公开认证入口不得被 localStorage 残留租户污染。
+describe('无 token 不注入 X-Tenant-ID', () => {
+	beforeEach(() => {
+		captured = [];
+		installCaptureAdapter();
+		useAuthStore.getState().clearAuth();
+		useAuthStore.getState().setCurrentTenant('tenant-stale');
+	});
+
+	afterEach(() => {
+		apiClient.defaults.adapter = originalAdapter as any;
+		vi.restoreAllMocks();
+		useAuthStore.getState().clearAuth();
+	});
+
+	it('无 token：残留租户不注入 header', async () => {
+		await apiClient.get('/probe/public');
+		expect(captured[0].headers['X-Tenant-ID']).toBeUndefined();
+		expect(captured[0].headers['Authorization']).toBeUndefined();
+	});
+
+	it('调用方显式 X-Tenant-ID 原样保留（不注入也不清除）', async () => {
+		await apiClient.get('/probe/public', { headers: { 'X-Tenant-ID': 'explicit-tenant' } });
+		expect(captured[0].headers['X-Tenant-ID']).toBe('explicit-tenant');
+	});
+
+	it('有 token：仍注入当前租户（内部调用链回归）', async () => {
+		useAuthStore.getState().setAuth(liveJwt(), 'rt-live', { id: 'u-1', username: 'demo' } as any);
+		await apiClient.get('/probe/authed');
+		expect(captured[0].headers['X-Tenant-ID']).toBe('tenant-stale');
+		expect(String(captured[0].headers['Authorization'])).toMatch(/^Bearer /);
 	});
 });

@@ -5664,8 +5664,10 @@ export async function authOauthAccounts() {
  * 获取OAuth提供商列表
  * 获取系统支持的所有OAuth登录提供者列表
  */
-export async function authOauthProviders() {
-  const res = await api.get(`/identity/api/v1/auth/oauth/providers`);
+export async function authOauthProviders(params?: {
+  tenantId?: string;  // 显式租户（地址栏/slug 优先于 localStorage 残留）
+}) {
+  const res = await api.get(`/identity/api/v1/auth/oauth/providers`, { params });
   return res.data;
 }
 
@@ -5770,8 +5772,8 @@ export async function authQrLoginConfirmPost(data: QrLoginConfirmRequest) {
  * 发起二维码登录
  * 生成一个新的二维码登录会话，返回会话令牌和数字匹配码供用户扫描
  */
-export async function authQrLoginInitiatePost() {
-  const res = await api.post(`/identity/api/v1/auth/qr-login/initiate`);
+export async function authQrLoginInitiatePost(data?: QrLoginInitiateRequest) {
+  const res = await api.post(`/identity/api/v1/auth/qr-login/initiate`, data);
   return res.data;
 }
 

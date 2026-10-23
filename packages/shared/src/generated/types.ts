@@ -4760,6 +4760,7 @@ export interface CompleteAccountRecoveryRequest {
   newPassword: string;  // 新密码
   passwordTransmission?: string;  // plain|hash|symmetric|asymmetric
   recoveryToken: string;  // 恢复令牌
+  tenantId?: string;  // 显式租户（非空时必须与恢复令牌租户一致）
 }
 
 export interface CompleteAccountRecoveryResponse {
@@ -5656,6 +5657,10 @@ export interface QrLoginConfirmRequest {
   token: string;
 }
 
+export interface QrLoginInitiateRequest {
+  tenantId?: string;  // 显式租户（地址栏/slug 优先）
+}
+
 export interface QrLoginInitiateResponse {
   expiresIn?: number;
   numberMatching?: string;
@@ -5831,6 +5836,7 @@ export interface RegisterResponse {
 export interface RequestAccountRecoveryRequest {
   identity: string;  // 已知的身份标识 | @example john@example.com
   method: "backup_email" | "security_qa" | "trusted_device" | "sms";  // 恢复方法
+  tenantId?: string;  // 显式租户（地址栏/slug 优先）
 }
 
 export interface RequestAccountRecoveryResponseWrapper {
@@ -6283,6 +6289,7 @@ export interface VerificationTrackingQueryResponse {
 export interface VerifyAccountRecoveryRequest {
   code: string;  // 验证码
   recoveryToken: string;  // 恢复令牌
+  tenantId?: string;  // 显式租户（非空时必须与恢复令牌租户一致）
 }
 
 /** 验证邮箱/手机号变更 */
