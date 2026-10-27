@@ -40,15 +40,26 @@ function walkFiles(dir, out, depth) {
   return out;
 }
 
-/** 站点声明的 CDN 版本指纹（scripts/env.mjs 或 src/lib/site-env.ts 里的 CDN_PIN 常量）。 */
-export function readSitePin(siteDir) {
-  for (const rel of [join('scripts', 'env.mjs'), join('src', 'lib', 'site-env.ts')]) {
+/** 声明 CDN 版本的候选文件：SPA 在 scripts/env.mjs，Astro 站（内容站）在 src/lib/site-env.ts。 */
+export const PIN_FILES = [join('scripts', 'env.mjs'), join('src', 'lib', 'site-env.ts')];
+/** 匹配 `export const CDN_PIN = 'v…'`（也容忍 `CDN_PIN: 'v…'` 的对象写法）。第 3 组是版本值。 */
+export const PIN_RE = /(CDN_PIN\s*[:=]\s*)(['"])([^'"]+)\2/;
+
+/** 找到站点在哪个文件里声明 pin，返回 { file, rel, value }。bump-cdn-version 用它改值。 */
+export function findSitePin(siteDir) {
+  for (const rel of PIN_FILES) {
     const p = join(siteDir, rel);
     if (!existsSync(p)) continue;
-    const m = readFileSync(p, 'utf8').match(/CDN_PIN\s*[:=][^'"]*['"]([^'"]+)['"]/);
-    if (m) return m[1];
+    const m = readFileSync(p, 'utf8').match(PIN_RE);
+    if (m) return { file: p, rel, value: m[3] };
   }
   return null;
+}
+
+/** 站点声明的 CDN 版本指纹（scripts/env.mjs 或 src/lib/site-env.ts 里的 CDN_PIN 常量）。 */
+export function readSitePin(siteDir) {
+  const found = findSitePin(siteDir);
+  return found ? found.value : null;
 }
 
 /** 还原 {{CDN_ASSET_BASE}} 与 cdnAsset('X') → canonical 基址。返回 { text, expanded, base }。 */

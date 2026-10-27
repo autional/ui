@@ -8,6 +8,7 @@
     "runtime": "运行期通道（轮次 42 起）：14 个站点的 <head> 直接 <link> cdn.autional.cn 的 tokens.css / profiles/<x>.css / primitives.css / icons/*。构建期代码（Tailwind preset、antd 主题桥、React 组件）仍走 npm —— preset 是被 bundler 解析的 JS 模块，CDN 给不了解析阶段的东西。",
     "runtimeSheets": "运行期样式表能不能直接 <link>，逐份登记。判据不是「能不能取到」，而是**位置无关性**：从 CDN 直接加载时整个文件排在站点 bundle 之前，而经 bundler @import 时 Tailwind 会把 @layer 片段按层重新定位。两者只有在样式表不依赖那个位置时才等价。tokens/profile 实测与 bundler 导入逐像素相同（developer/docs/web 0.000%）；primitives 不成立（实测整页偏移 3–4.5%）。新增样式表必须在这里显式分类，闸门 check-icons I22 按此断言。",
     "themeColor": "site.webmanifest 是 14 站**共用**的一份，因此**刻意不含 theme_color**：它是每站不同的值（DESIGN.md §13：品牌面 #003153 / 浅色内容站 #ffffff / authenticator #0a0a0a）。唯一来源是各站 <meta name=\"theme-color\">，值在本表的 themeColors 里登记，由 check-icons I11 断言一致、I18 断言共享清单里没有它。实测踩过：清单改由 CDN 提供后 authenticator 的 meta 是 #0a0a0a 而清单是 #003153。",
+    "manifests": "manifest 的交付方式，两种：`static`（默认，未登记的站点即此）—— 页面 <head> 显式 `<link rel=manifest>` 指向 CDN 的共享 icons/site.webmanifest（刻意不含 theme_color），public/site.webmanifest 是回滚副本；`vite-plugin-pwa` —— 构建期由插件按站点生成 manifest.webmanifest 并注入 <link>，**源 HTML 里没有 <link>、public/ 里也没有回滚副本**。过去闸门只认第一种形态，对 4 个 PWA 站稳定误报 I4/I8（2026-10-27 清零）。换交付路径不等于放弃断言：PWA 站由 check-icons I26–I28 改验插件配置（真在、manifest 块真在、theme_color 与 themeColors 同值、192/512 图标与图标文件真在 public/）。",
     "noTopBar": "**按设计没有顶栏**的站点（声明，不是豁免）。check-headers 的 H1 要求每站至少有一个可识别的顶栏元素；对确实不需要顶栏的站（例如 auth 的登录/注册/MFA 全是居中卡片），把它登在这里表示「本契约对该站不适用」。与 known-issues/exemptions 的区别：那两者是**有期限的债务登记**，这里是**适用范围声明**，因此不需要 owner/expires。判断口径：源码里 0 个 <header>/<AntHeader>/<Header>/自报 sticky 的 <nav>，且这是该站的设计意图。"
   },
   "noTopBar": [
@@ -91,6 +92,13 @@
       "linkable": false,
       "why": "含 Tailwind 的 @layer base / @layer components。Tailwind 会把 base 段落重新定位到 preflight **之后**；当普通外部样式表加载时整个文件排在 bundle 之前，base 段落落到 preflight **之前**，于是 preflight 的 body { line-height: inherit } 盖掉 primitives 的 body { line-height: var(--line-height-body-md) }。实测 developer-home 3.025% / docs 3.035% / wiki 4.478%，放回 bundler 后均为 0.000%。必须 @import '@autional/tokens/primitives.css'。"
     }
+  },
+  "manifests": {
+    "$note": "manifest 交付方式（见 $modes.manifests）。未登记的站点 = static。这四个是 PWA 站：manifest 由 vite-plugin-pwa 在构建期生成并注入，config 指向声明它的 vite 配置 —— 闸门读它来断言清单内容，不执行它。",
+    "auth": { "delivery": "vite-plugin-pwa", "config": "apps/auth-pages/vite.config.ts" },
+    "authenticator": { "delivery": "vite-plugin-pwa", "config": "apps/authenticator-app/vite.config.ts" },
+    "brand": { "delivery": "vite-plugin-pwa", "config": "apps/brand-portal/vite.config.ts" },
+    "status": { "delivery": "vite-plugin-pwa", "config": "apps/status-page/vite.config.ts" }
   },
   "themeColors": {
     "$note": "每站 theme-color 的**单一来源**。theme-color 由浏览器消费、必须写字面量（写 var() 会被直接忽略），所以它无法直接引用 CSS 变量——这里的做法是：在这里声明一次（值可以是 {令牌路径} 引用），sync-consumers 解析后写进 site.webmanifest，check-icons 闸门再断言各站 <meta> 与之一致。三处非默认值是刻意的平台差异，不是心情：authenticator 是纯黑底暗色应用、user 是 indigo 品牌体系、web 是白底营销站。",

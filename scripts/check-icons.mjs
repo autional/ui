@@ -27,6 +27,15 @@
 //      必须 link tokens.css 且 profile 与 consumer-targets.json 声明一致（I23）。
 //      I22 是本轮真实踩出来的：primitives.css 含 Tailwind @layer 片段，直链会让 base 段落
 //      掉到 preflight 之前，实测三站整页偏移 3–4.5%，而当时所有闸门全绿。
+//   ⑦ **站点名单以 consumer-targets.json 的 publicDirs 为准**（2026-10-27）。
+//      过去用 readdirSync(SITES) 枚举「站点」，而工作区里还有 ui/ cdn/ armenian/ cyrillic/ 这些
+//      非站点目录 ⇒ 每次全量跑都稳定产出 4 条 I0 假红。一个永远带 ERROR 的闸门，
+//      真红就会被当成噪音跳过。声明了但目录不存在才是真问题（I0）。
+//   ⑧ manifest 有**两种合法交付方式**（I26–I28）。4 个 PWA 站（auth / authenticator / brand / status）
+//      的 manifest 由 vite-plugin-pwa 在构建期生成 manifest.webmanifest 并注入 <link>：
+//      源 HTML 里没有 <link rel="manifest">、public/ 里也没有回滚副本 —— I4/I8 对它们问的是错问题。
+//      但「插件负责」不等于「不用验」：闸门改为断言插件配置里真有图标、真有 theme_color，
+//      且图标文件真的在 public/（I28）。**换一条交付路径不等于放弃断言。**
 //
 // 离线：CDN 侧的内容从同级 ../cdn 仓库的工作区读，不联网。
 // 「CDN 能否连上」不在这里断言：网络可用性不是本项目的判据（用户已定调）。
@@ -68,6 +77,8 @@ const RUNTIME_SHEETS = Object.fromEntries(Object.entries(CT.runtimeSheets || {})
 const PROFILE_BY_SITE = {};
 for (const b of (CT.profiles || [])) if (b.site) PROFILE_BY_SITE[b.site] = b.profile || null;
 const THEME_COLORS = CT.themeColors || {};
+// manifest 交付方式。未登记的站点 = static（页面 <head> 里显式 <link>，指向 CDN 的共享清单）。
+const MANIFEST_DECL = Object.fromEntries(Object.entries(CT.manifests || {}).filter(([k]) => k[0] !== '$'));
 const ICON_SOURCES = (CT.iconSources || {}).files || [];
 // 与 sync-consumers 用同一份声明，这样「theme-color 的唯一来源」是 consumer-targets.json，
 // 而不是散在 14 个站点的 HTML 里。页面 <meta> 是手写的，由本闸门断言它与声明一致。
@@ -78,6 +89,57 @@ const declaredThemeColor = (site) => {
   const m = /^\{([^}]+)\}$/.exec(raw);
   return m ? (RES[m[1]] || null) : raw;
 };
+// ── PWA 站的 manifest：插件生成，但断言不降级（I26–I28）────────────────────────
+// 配置是 TS，不执行它 —— 只读文本：找 VitePWA(...) 的 manifest 对象，断言三件事：
+//   ① 真有 manifest 块（没有就不会注入 <link rel="manifest">）；
+//   ② theme_color 与 consumer-targets.json 声明的一致（安装后标题栏就是它，装前是 <meta> —— 两个来源必须同值）；
+//   ③ 图标文件真的在 public/（src 可能是 `${BASE}android-chrome-192x192.png`，取 basename 判存在）。
+// ③ 不是形式主义：status 的 /favicon-32x32.png 曾经实际返回 SPA fallback 的 text/html，肉眼看不出来。
+function manifestObject(src) {
+  const at = src.search(/\bmanifest\s*:\s*\{/);
+  if (at < 0) return null;
+  const open = src.indexOf('{', at);
+  let depth = 0;
+  for (let i = open; i < src.length; i++) {
+    if (src[i] === '{') depth++;
+    else if (src[i] === '}') { depth--; if (depth === 0) return src.slice(open + 1, i); }
+  }
+  return null;
+}
+
+function checkPwaManifest(site, dir, decl, pubDir, pubRel, declared) {
+  const relCfg = decl.config || '';
+  const cfgPath = join(dir, relCfg);
+  if (!relCfg || !existsSync(cfgPath)) {
+    problems.push('I26 ' + site + '：consumer-targets.json 声明本站的 manifest 由 vite-plugin-pwa 交付，但配置 ' +
+      (relCfg || '（未填 config）') + ' 不存在 —— 清单没有交付方，安装入口会 404');
+    return;
+  }
+  const src = readFileSync(cfgPath, 'utf8');
+  if (!/VitePWA\s*\(/.test(src)) {
+    problems.push('I26 ' + site + '：' + relCfg + ' 里没有 VitePWA(...) —— 声明了插件交付但插件不在，产物不会有 <link rel="manifest">');
+    return;
+  }
+  const block = manifestObject(src);
+  if (!block) {
+    problems.push('I26 ' + site + '：' + relCfg + ' 的 VitePWA(...) 里没有 manifest: { ... } —— 插件不会生成清单');
+    return;
+  }
+  const tc = (block.match(/theme_color\s*:\s*['"]([^'"]+)['"]/) || [])[1] || null;
+  if (!tc) problems.push('I27 ' + site + '：PWA manifest 没有 theme_color —— 安装后标题栏回落到浏览器默认色（页面 meta 是 ' + (declared || '（未声明）') + '）');
+  else if (declared && tc !== declared) problems.push('I27 ' + site + '：PWA manifest 的 theme_color=' + tc + ' 与 consumer-targets.json 声明的 ' + declared + ' 不一致 —— 安装前后的标题栏会是两种颜色');
+  const sizes = [...block.matchAll(/sizes\s*:\s*['"]([^'"]+)['"]/g)].map((m) => m[1]);
+  for (const need of ['192x192', '512x512']) {
+    if (!sizes.includes(need)) problems.push('I28 ' + site + '：PWA manifest 缺 ' + need + ' 图标（安卓安装必需）');
+  }
+  const srcs = [...block.matchAll(/\bsrc\s*:\s*[`'"]([^`'"]+)[`'"]/g)].map((m) => m[1]);
+  for (const s of srcs) {
+    const base = s.split('/').pop().replace(/\$\{[^}]*\}/g, '');
+    if (!base) continue;
+    if (!existsSync(join(pubDir, base))) problems.push('I28 ' + site + '：manifest 图标 ' + s + ' 对应的 ' + base + ' 不在 ' + pubRel + '/ —— 安装时会拿到 404');
+  }
+}
+
 const SKIPDIR = makeSkip('public');
 function walk(d, out, depth) {
   if (depth > 4) return out;
@@ -91,11 +153,18 @@ function walk(d, out, depth) {
   return out;
 }
 
-for (const site of readdirSync(SITES)) {
+// 站点名单的唯一出处 = consumer-targets.json 的 publicDirs：**声明的才算站点**。
+// 用 readdirSync 枚举的后果（2026-10-27 实测）：工作区里还有 ui/ cdn/ armenian/ cyrillic/，
+// 每次全量跑都稳定产出 4 条 I0 假红 —— 一个永远带 ERROR 的闸门，真红就会被当成噪音。
+const DECLARED = Object.keys(publicDirs).filter((k) => k[0] !== '$').sort();
+const PRESENT = readdirSync(SITES).filter((n) => { try { return statSync(join(SITES, n)).isDirectory(); } catch (e) { return false; } });
+const IGNORED = PRESENT.filter((n) => DECLARED.indexOf(n) < 0).sort();
+if (IGNORED.length) warns.push('未登记、按非站点跳过：' + IGNORED.join(', ') + '（要纳入检查就登记到 consumer-targets.json 的 publicDirs）');
+
+for (const site of DECLARED) {
+  if (PRESENT.indexOf(site) < 0) { problems.push('I0 ' + site + '：consumer-targets.json 的 publicDirs 登记了该站点，但目录不存在（' + join(SITES, site) + '）'); continue; }
   const dir = join(SITES, site);
-  if (!statSync(dir).isDirectory()) continue;
   const pubRel = publicDirs[site];
-  if (!pubRel) { problems.push('I0 ' + site + '：consumer-targets.json 的 publicDirs 缺少该站点'); continue; }
   const pubDir = join(dir, pubRel);
 
   // 找声明图标的 head 文件
@@ -110,12 +179,14 @@ for (const site of readdirSync(SITES)) {
   const icons = [...text.matchAll(/<link\b[^>]*\brel=["']?(?:shortcut )?icon["']?[^>]*>/gi)].map((m) => m[0]);
   const apple = /rel=["']?apple-touch-icon["']?/i.test(text);
   const manifest = /rel=["']?manifest["']?/i.test(text);
+  // manifest 的交付方式：static（默认，<head> 显式 <link>）或 vite-plugin-pwa（构建期生成并注入）。
+  const pwa = MANIFEST_DECL[site] && MANIFEST_DECL[site].delivery === 'vite-plugin-pwa' ? MANIFEST_DECL[site] : null;
   const tcMatch = text.match(/<meta\s+name=["']theme-color["'][^>]*content=["']([^"']*)["']/i);
   const tc = tcMatch ? tcMatch[1] : null;
 
   if (icons.length < REQUIRED_ICON) problems.push('I2 ' + site + '：只声明了 ' + icons.length + ' 个 rel="icon"，应有 >= ' + REQUIRED_ICON + '（' + rel + '）');
   if (!apple) problems.push('I3 ' + site + '：没有 apple-touch-icon（' + rel + '）');
-  if (!manifest) problems.push('I4 ' + site + '：没有 manifest 链接（' + rel + '）');
+  if (!manifest && !pwa) problems.push('I4 ' + site + '：没有 manifest 链接（' + rel + '）');
   if (!tc) problems.push('I5 ' + site + '：没有 theme-color（' + rel + '）');
   else if (/var\(/.test(tc)) problems.push('I6 ' + site + '：theme-color 是 var()（' + tc + '）——该值由浏览器消费、不经过 CSS，写 var() 等于没写');
 
@@ -183,9 +254,12 @@ for (const site of readdirSync(SITES)) {
   }
 
   // 回滚副本 site.webmanifest（public/）：它不参与运行期交付，但回滚时必须自洽。
+  // PWA 站例外：manifest 由 vite-plugin-pwa 构建期生成，回滚通道里没有这一项，改验插件配置（I26–I28）。
   const wmPath = join(pubDir, 'site.webmanifest');
   let wmTc = null;
-  if (!existsSync(wmPath)) problems.push('I8 ' + site + '：' + pubRel + '/site.webmanifest 不存在（回滚通道需要它）');
+  if (pwa) {
+    checkPwaManifest(site, dir, pwa, pubDir, pubRel, declaredThemeColor(site));
+  } else if (!existsSync(wmPath)) problems.push('I8 ' + site + '：' + pubRel + '/site.webmanifest 不存在（回滚通道需要它）');
   else {
     try { wmTc = JSON.parse(readFileSync(wmPath, 'utf8')).theme_color || null; } catch (e) { problems.push('I9 ' + site + '：site.webmanifest 不是合法 JSON'); }
     if (wmTc && tc && wmTc !== tc) problems.push('I10 ' + site + '：回滚副本 site.webmanifest 的 theme_color=' + wmTc + ' 与页面 meta 的 ' + tc + ' 不一致——同一个值不该有两个来源');
@@ -282,7 +356,8 @@ for (const site of readdirSync(SITES)) {
   }
 
   rows.push({
-    site, icons: icons.length, apple, manifest, themeColor: tc, manifestThemeColor: wmTc, declared, head: rel,
+    site, icons: icons.length, apple, manifest: manifest || !!pwa, manifestDelivery: pwa ? 'vite-plugin-pwa' : 'static',
+    themeColor: tc, manifestThemeColor: wmTc, declared, head: rel,
     cdnVersion: cdnRefs.length ? [...new Set(cdnRefs.map((r) => r.version))].join(',') : null,
     cdnRefs: cdnRefs.length, linkedThemeColor: linkedTc
   });
@@ -344,6 +419,8 @@ else {
       String(r.cdnVersion || '（无）').padEnd(13) + String(r.themeColor || '（无）'));
   }
   console.log('');
+  const pwaSites = rows.filter((r) => r.manifestDelivery === 'vite-plugin-pwa').map((r) => r.site);
+  if (pwaSites.length) info.unshift('manifest 由 vite-plugin-pwa 构建期生成（I26–I28 验插件配置）：' + pwaSites.join('/'));
   for (const i of info) console.log('  [INFO ] ' + i);
   for (const w of warns) console.log('  [WARN ] ' + w);
   for (const p of problems) console.log('  [ERROR] ' + p);

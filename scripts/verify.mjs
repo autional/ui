@@ -27,6 +27,7 @@ const STEPS = [
   { key: 'cdn', label: 'CDN 资产契约（CORS / 不可变缓存 / manifest 字节一致）', cmd: ['node', 'scripts/check-cdn.mjs'] },
   { key: 'colors', label: '非设计系统色值（是否在重复发明已有令牌）', cmd: ['node', 'scripts/check-colors.mjs'] },
   { key: 'icons', label: '图标套件（声明完整 / 文件存在 / theme-color 单源 / 不漂移）', cmd: ['node', 'scripts/check-icons.mjs'] },
+  { key: 'site-layers', label: '站点样式层（无层全局规则会反压 Tailwind 4 utility；含 5 站守卫副本漂移）', cmd: ['node', 'scripts/check-site-css-layers.mjs'] },
   { key: 'headers', label: '顶栏契约（高度令牌驱动 / position / 品牌标）', cmd: ['node', 'scripts/check-headers.mjs'] },
   { key: 'capabilities', label: '预设能力契约（模板用了需要插件的类，插件是否真的在）', cmd: ['node', 'scripts/check-preset-capabilities.mjs'] },
   { key: 'classnames', label: '类名可达性（裸色阶类名写了但生成不出来）', cmd: ['node', 'scripts/check-classnames.mjs'] },
