@@ -3196,6 +3196,25 @@ export interface PublicCertificationListResponse {
   total?: number;  // 总条数（平铺，便于直接读取）
 }
 
+// P2 四态评估（2026-10-27）—— 手改 additive：本源生成器 scripts/generate_api_ts.py
+// 仍在旧 monorepo（D:/go/auth_ms_new），多仓工作区不可用；字段与 compliance-service
+// swagger（PublicComplianceStatusResponse / SecurityScore）逐字段对齐，重生成前勿改形状。
+export interface AssessmentCoveragePublic {
+  assessed?: number;  // @example 7
+  percent?: number;  // @example 70
+  total?: number;  // @example 10
+}
+
+export interface FrameworkAssessmentPublic {
+  controlsAssessed?: number;  // @example 7
+  controlsTotal?: number;  // @example 10
+  controlsUnknown?: number;  // @example 3
+  displayName?: string;  // @example ISO/IEC 27001:2022
+  framework?: string;  // 门禁键；独立标准为空 | @example iso27001
+  standardId?: string;  // @example iso27001_2022
+  status?: string;  // compliant / non_compliant / not_assessed / evaluation_error | @example not_assessed
+}
+
 export interface PublicComplianceStatusDetailResponse {
   code?: number;
   data?: PublicComplianceStatusResponse;
@@ -3204,13 +3223,17 @@ export interface PublicComplianceStatusDetailResponse {
 }
 
 export interface PublicComplianceStatusResponse {
+  assessmentCoverage?: AssessmentCoveragePublic;
+  assessmentVersion?: string;  // @example assessment-v2
+  evaluationError?: boolean;  // 只表示"是否发生评估异常"，不含内部错误串 | @example False
+  frameworkAssessments?: FrameworkAssessmentPublic[];  // 已启用门禁的评估结果（四态 + 覆盖度）
   frameworksEnabled?: string[];  // @example ['["gdpr"', '"iso27001"', '"sox"]']
-  gdprCompliant?: boolean;  // @example True
+  gdprCompliant?: boolean;  // legacy：gate 已启用且状态为 compliant 才为 true | @example True
   iso27001Compliant?: boolean;  // @example True
   lastAuditDate?: string;  // @example 2026-03-15
   nextAuditDate?: string;  // @example 2026-09-15
   openIssuesRange?: string;  // @example 1-5
-  overallStatus?: string;  // @example compliant
+  overallStatus?: string;  // compliant / non_compliant / not_assessed / evaluation_error | @example compliant
   soxCompliant?: boolean;  // @example True
 }
 
@@ -3565,12 +3588,14 @@ export interface ScoreSnapshotItem {
 }
 
 export interface SecurityScore {
+  assessmentCoverage?: AssessmentCoveragePublic;
   calculatedAt?: string;  // @example 2026-05-09T12:00:00Z
   dimensions?: SecurityScoreDim[];
   grade?: string;  // @example A
   maxScore?: number;  // @example 100
-  methodologyVersion?: string;  // @example v1.0
+  methodologyVersion?: string;  // @example assessment-v2
   overallScore?: number;  // @example 94
+  scoreAvailable?: boolean;  // false = 无任何框架完成评估，overallScore 无意义 | @example True
 }
 
 export interface SecurityScoreDim {
