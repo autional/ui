@@ -182,6 +182,10 @@ export function createApiClient(baseUrl: string): AxiosInstance {
 	const instance = axios.create({
 		baseURL: baseUrl,
 		timeout: 30000,
+		// 平台跨源只认 Authorization 头（网关 cors.allow_credentials=false）：
+		// 显式关闭凭证，避免将来默认值/调用方改动把 cookie 带进跨源请求
+		// （带凭证的跨源要求网关回写 ACAC，而动态租户 origin 永不回写）。
+		withCredentials: false,
 		headers: { 'Content-Type': 'application/json' },
 	});
 	setupInterceptors(instance);
