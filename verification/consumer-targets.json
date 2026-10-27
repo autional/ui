@@ -77,7 +77,7 @@
     "$note": "各运行期样式表能否被站点直接 <link>（见 $modes.runtimeSheets）。未列出的路径会被 check-icons I22 判为「未分类」。",
     "tokens.css": {
       "linkable": true,
-      "why": "纯 :root 变量块 + 一段 base 层规则（html font-family / body 背景色·文字色·margin / :focus-visible），与 preflight 无实质冲突；实测 developer/docs/web 与 bundler 导入逐像素相同（0.000%）。"
+      "why": "@layer base 原样保留（CDN 不再摊平）：html font-family / body 背景色·文字色·margin / :focus-visible。Tailwind 4 把 utility 放进原生层，无层规则会压过它（与特异度无关）——摊平会让 body 上的 text-* 与 focus-visible:outline-none 失效（2026-10-27 实测 docs.autional.cn：body 计算色被 body 规则抢走、逃生口 outline-style 仍为 solid）。保留层后，base 与 preflight 的先后只影响同值规则（同为 Inter 字体栈 / margin 0）；profile 仍是纯 :root 变量，继续摊平。"
     },
     "profiles/docs.css": {
       "linkable": true,

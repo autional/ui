@@ -109,7 +109,15 @@ const PROFILES = [
 // 结论（已固化成闸门 check-icons I22）：**含 Tailwind @layer 语义的样式表不能当运行期
 // 外部样式表用**，必须由消费方的构建器处理。CDN 上这份 primitives.css 是留给
 // 非 Tailwind 消费方（Go demo 等）的尽力版本，门户不走它。
-// 令牌与 profile 没有这个问题：它们是纯 :root 变量块，与顺序无关。
+//
+// tokens.css 是例外（2026-10-27）：它不只有 :root 变量，还带一段 @layer base
+// （html / body / :focus-visible）。摊平会让这三条变成**无层规则**，而 Tailwind 4 的
+// utility 在原生 @layer 里 —— 无层永远赢（与特异度无关）。实测 docs.autional.cn：
+// body 的计算色被 tokens 抢走（.text-neutral-900 失效），`focus-visible:outline-none`
+// 探针的 outline-style 仍为 solid，DESIGN.md 的焦点环逃生口失效。因此 tokens.css
+// **保留 @layer base 原样托管**；带层后它与 preflight 的先后只影响同值规则
+// （同为 Inter 字体栈、同为 margin 0），不产生视觉差。profile 是纯 :root 变量，
+// 摊平与否等价，继续摊平。
 function flattenLayers(css) {
   const re = /@layer\s+[a-zA-Z0-9_,\s-]+\s*\{/;
   let out = css;
@@ -203,7 +211,12 @@ function emitCss(srcRel, destRel) {
   }
   emit(srcRel, destRel, () => flat);
 }
-for (const [s, d] of CSS) emitCss(s, d);
+// tokens.css 保留 @layer base（见上方说明）：emit 原样产出，其余 CSS 继续摊平。
+const KEEP_LAYERS = new Set(['packages/tokens/tokens.css']);
+for (const [s, d] of CSS) {
+  if (KEEP_LAYERS.has(s)) emit(s, d);
+  else emitCss(s, d);
+}
 for (const [s, d] of PROFILES) emitCss(s, d);
 for (const [s, d] of FONTS) emit(s, d);
 for (const [s, d] of ICONS) emit(s, d);
