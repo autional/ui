@@ -48,11 +48,17 @@ export function applyBrandColors(color: string, darkOverride?: string): void {
 	setColorVar(root, '--color-on-brand-dark', pickOnColor(dark));
 }
 
+export interface UseBrandingOptions {
+	/** 是否注入租户自定义 CSS；默认 true。认证器/验证码页应传 false。 */
+	applyCustomCss?: boolean;
+}
+
 /**
  * 把当前租户品牌落到 DOM（CSS 变量 / favicon / customCss）。
  * 需与 `<BrandingInitializer/>` 同时挂载：前者负责写 store，这里负责呈现。
  */
-export function useBranding(): void {
+export function useBranding(options?: UseBrandingOptions): void {
+	const applyCustomCss = options?.applyCustomCss ?? true;
 	const branding = useTenantBrandingStore((s) => s.branding);
 	const slug = useTenantSlugFromUrl();
 	const styleRef = useRef<HTMLStyleElement | null>(null);
@@ -84,18 +90,26 @@ export function useBranding(): void {
 			favicon.href = branding.faviconUrl;
 		}
 
-		if (branding.customCss) {
+		if (branding.customCss && applyCustomCss) {
 			if (!styleRef.current) {
 				styleRef.current = document.createElement('style');
 				styleRef.current.setAttribute('data-tenant-css', '');
 				document.head.appendChild(styleRef.current);
 			}
 			styleRef.current.textContent = branding.customCss;
+		} else if (styleRef.current) {
+			styleRef.current.textContent = '';
+			styleRef.current.remove();
+			styleRef.current = null;
 		}
 
 		return () => {
 			applyBrandColors('');
-			if (styleRef.current) styleRef.current.textContent = '';
+			if (styleRef.current) {
+				styleRef.current.textContent = '';
+				styleRef.current.remove();
+				styleRef.current = null;
+			}
 		};
-	}, [branding]);
+	}, [branding, applyCustomCss]);
 }

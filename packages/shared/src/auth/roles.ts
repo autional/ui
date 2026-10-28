@@ -92,14 +92,18 @@ export function isAuthLoginSurface(): boolean {
 	return segs.length === 2 && segs[1] === 'login'; // `/<slug>/login`
 }
 
-export function buildLoginUrl(returnUrl?: string, fromRequireAuth?: boolean): string {
+export function buildLoginUrl(
+	returnUrl?: string,
+	fromRequireAuth?: boolean,
+	tenantSlug?: string | null,
+): string {
 	const base = getPortalUrl('auth');
 	if (!base) return '/';
 
-	// 保留租户 slug：如果 returnUrl 落在 auth 域且首段是租户 slug，
-	// 跳转到 {base}/{slug}/login 而不是根路径（根路径是租户选择页）
-	let loginBase = base;
-	if (returnUrl) {
+	// 租户上下文优先级：显式 tenantSlug > returnUrl 首段推导 > auth 根（租户选择页）。
+	// 显式参数用于「站点在根路径（无 slug）但已知当前/最近租户」的场景。
+	let loginBase = tenantSlug ? `${base}/${encodeURIComponent(tenantSlug)}/login` : base;
+	if (!tenantSlug && returnUrl) {
 		try {
 			const clean = new URL(returnUrl, typeof window !== 'undefined' ? window.location.origin : '');
 			const baseOrigin = new URL(base).origin;
