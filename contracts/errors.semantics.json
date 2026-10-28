@@ -2651,6 +2651,15 @@
     "docs_path": "/errors/61000410"
   },
   {
+    "code": 61000411,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "name": "MFA_AUTHENTICATOR_DISABLED",
+    "retryable": false,
+    "docs_path": "/errors/61000411"
+  },
+  {
     "code": 61000501,
     "http_status": 404,
     "class": "not_found",

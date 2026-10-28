@@ -1,7 +1,7 @@
 // GENERATED FILE — DO NOT EDIT.
 // Source: contracts/errors.semantics.json（@autional/shared 仓内镜像，源 = service-core base/error/testdata/errors.semantics.json）
 // Regenerate: pnpm gen:errors · Verify: pnpm gen:errors:check
-// rows: 792 · source sha256: 962af7ad9e1f41b957fa8cacb6f1bdbf0f0a56cb8cbdf144107e1329df80c0cd
+// rows: 793 · source sha256: e5a0361790b7049cff49ccf9b0e5c26185e5a0d45837f04e6ee53ab4296bd280
 //
 // 单一真源链：service-core/base/error/semantics.go（Go）→ errors.semantics.json → 本文件。
 // ⚠️ 禁止在本文件或页面里手抄错误码分支：请消费 ERROR_SEMANTICS / UNPROVISIONED_CODES。
@@ -374,6 +374,7 @@ export const ERROR_SEMANTICS: Readonly<Record<number, ErrorSemantics>> = {
 	61000408: { code: 61000408, httpStatus: 404, class: 'not_found', absence: 'entity', uiObservation: 'not_found_page', retryable: false, docsPath: '/errors/61000408' },
 	61000409: { code: 61000409, httpStatus: 400, class: 'invalid', absence: '', uiObservation: 'form_error', name: 'MFA_CODE_ALREADY_USED', retryable: false, docsPath: '/errors/61000409' },
 	61000410: { code: 61000410, httpStatus: 429, class: 'limit', absence: '', uiObservation: 'rate_limited', name: 'MFA_ATTEMPTS_THROTTLED', retryable: true, docsPath: '/errors/61000410' },
+	61000411: { code: 61000411, httpStatus: 403, class: 'forbidden', absence: '', uiObservation: 'forbidden', name: 'MFA_AUTHENTICATOR_DISABLED', retryable: false, docsPath: '/errors/61000411' },
 	61000501: { code: 61000501, httpStatus: 404, class: 'not_found', absence: 'entity', uiObservation: 'not_found_page', retryable: false, docsPath: '/errors/61000501' },
 	61000502: { code: 61000502, httpStatus: 400, class: 'invalid', absence: '', uiObservation: 'form_error', retryable: false, docsPath: '/errors/61000502' },
 	61000601: { code: 61000601, httpStatus: 404, class: 'not_found', absence: 'entity', uiObservation: 'not_found_page', retryable: false, docsPath: '/errors/61000601' },
@@ -853,8 +854,8 @@ export const UNPROVISIONED_CODES: ReadonlySet<number> = new Set([]);
 export const EMPTY_STATE_CODES: ReadonlySet<number> = new Set([]);
 
 export const ERROR_SEMANTICS_META = {
-	rowCount: 792,
-	sourceSha256: '962af7ad9e1f41b957fa8cacb6f1bdbf0f0a56cb8cbdf144107e1329df80c0cd',
+	rowCount: 793,
+	sourceSha256: 'e5a0361790b7049cff49ccf9b0e5c26185e5a0d45837f04e6ee53ab4296bd280',
 } as const;
 
 /** 具名错误码常量（契约 name → code）。页面只消费常量，不写数字字面量。 */
@@ -865,6 +866,7 @@ export const ERROR_CODES = {
 	MFA_CHALLENGE_ATTEMPTS_EXCEEDED: 61000405,
 	MFA_CODE_ALREADY_USED: 61000409,
 	MFA_ATTEMPTS_THROTTLED: 61000410,
+	MFA_AUTHENTICATOR_DISABLED: 61000411,
 } as const;
 
 export type ErrorCodeName = keyof typeof ERROR_CODES;
