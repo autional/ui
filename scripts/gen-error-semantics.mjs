@@ -60,6 +60,7 @@ const UI = [
 ];
 const sorted = [...rows].sort((a, b) => a.code - b.code);
 const seen = new Set();
+const nameSeen = new Map();
 for (const r of sorted) {
   if (typeof r.code !== 'number' || !Number.isInteger(r.code)) throw new Error(`行缺少合法整数 code: ${JSON.stringify(r)}`);
   if (seen.has(r.code)) throw new Error(`契约含重复错误码: ${r.code}`);
@@ -75,6 +76,13 @@ for (const r of sorted) {
   if (typeof r.retryable !== 'boolean') throw new Error(`code=${r.code} retryable 非布尔`);
   // docs_path 必须非空：否则会静默生成 docsPath: 'undefined'。
   if (typeof r.docs_path !== 'string' || r.docs_path.trim() === '') throw new Error(`code=${r.code} docs_path 缺失或为空`);
+  if (r.name !== undefined) {
+    if (typeof r.name !== 'string' || !/^[A-Z0-9_]+$/.test(r.name)) {
+      throw new Error(`code=${r.code} name 非法: ${JSON.stringify(r.name)}（只允许 A-Z0-9_）`);
+    }
+    if (nameSeen.has(r.name)) throw new Error(`name 重复: ${r.name}（code=${r.code} 与 ${nameSeen.get(r.name)}）`);
+    nameSeen.set(r.name, r.code);
+  }
 }
 
 // 契约镜像完整性（防手工拷贝漏改）：contracts/errors.semantics.meta.json 钉住源与 sha256。
@@ -125,6 +133,7 @@ const body = [
   '\tclass: ErrorClass;',
   '\tabsence: Absence;',
   '\tuiObservation: UIObservation;',
+  '\tname?: string;',
   '\tretryable: boolean;',
   '\tdocsPath: string;',
   '}',
@@ -135,7 +144,7 @@ const body = [
     (r) =>
       `\t${r.code}: { code: ${r.code}, httpStatus: ${r.http_status}, class: ${lit(r.class)}, absence: ${lit(r.absence ?? '')}, uiObservation: ${lit(
         r.ui_observation,
-      )}, retryable: ${r.retryable}, docsPath: ${lit(r.docs_path)} },`,
+      )}, ${r.name ? `name: ${lit(r.name)}, ` : ''}retryable: ${r.retryable}, docsPath: ${lit(r.docs_path)} },`,
   ),
   '};',
   '',
@@ -152,6 +161,13 @@ const body = [
   `\trowCount: ${sorted.length},`,
   `\tsourceSha256: '${sha}',`,
   '} as const;',
+  '',
+  '/** 具名错误码常量（契约 name → code）。页面只消费常量，不写数字字面量。 */',
+  'export const ERROR_CODES = {',
+  ...sorted.filter((r) => r.name).map((r) => `\t${r.name}: ${r.code},`),
+  '} as const;',
+  '',
+  'export type ErrorCodeName = keyof typeof ERROR_CODES;',
   '',
 ].join('\n');
 

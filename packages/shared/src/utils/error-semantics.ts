@@ -16,14 +16,21 @@
 import { getHttpStatus, isForbiddenError, isRetryableError } from './query-state';
 import {
 	EMPTY_STATE_CODES,
+	ERROR_CODES,
 	ERROR_SEMANTICS,
 	ERROR_SEMANTICS_META,
 	UNPROVISIONED_CODES,
 } from '../generated/error-semantics';
-import type { Absence, ErrorClass, ErrorSemantics, UIObservation } from '../generated/error-semantics';
+import type {
+	Absence,
+	ErrorClass,
+	ErrorCodeName,
+	ErrorSemantics,
+	UIObservation,
+} from '../generated/error-semantics';
 
-export { EMPTY_STATE_CODES, ERROR_SEMANTICS, ERROR_SEMANTICS_META, UNPROVISIONED_CODES };
-export type { Absence, ErrorClass, ErrorSemantics, UIObservation };
+export { EMPTY_STATE_CODES, ERROR_CODES, ERROR_SEMANTICS, ERROR_SEMANTICS_META, UNPROVISIONED_CODES };
+export type { Absence, ErrorClass, ErrorCodeName, ErrorSemantics, UIObservation };
 export { getHttpStatus, isForbiddenError, isRetryableError };
 
 /** 单次查询最多重试次数（策略参数，唯一出处）。 */

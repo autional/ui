@@ -2576,6 +2576,7 @@
     "http_status": 400,
     "class": "invalid",
     "ui_observation": "form_error",
+    "name": "MFA_INVALID_CODE",
     "retryable": false,
     "docs_path": "/errors/61000402"
   },
@@ -2584,8 +2585,27 @@
     "http_status": 403,
     "class": "forbidden",
     "ui_observation": "reauth_required",
+    "name": "MFA_CHALLENGE_REQUIRED",
     "retryable": false,
     "docs_path": "/errors/61000403"
+  },
+  {
+    "code": 61000404,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "reauth_required",
+    "name": "MFA_CHALLENGE_USED",
+    "retryable": false,
+    "docs_path": "/errors/61000404"
+  },
+  {
+    "code": 61000405,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "reauth_required",
+    "name": "MFA_CHALLENGE_ATTEMPTS_EXCEEDED",
+    "retryable": false,
+    "docs_path": "/errors/61000405"
   },
   {
     "code": 61000406,
@@ -2611,6 +2631,24 @@
     "ui_observation": "not_found_page",
     "retryable": false,
     "docs_path": "/errors/61000408"
+  },
+  {
+    "code": 61000409,
+    "http_status": 400,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "name": "MFA_CODE_ALREADY_USED",
+    "retryable": false,
+    "docs_path": "/errors/61000409"
+  },
+  {
+    "code": 61000410,
+    "http_status": 429,
+    "class": "limit",
+    "ui_observation": "rate_limited",
+    "name": "MFA_ATTEMPTS_THROTTLED",
+    "retryable": true,
+    "docs_path": "/errors/61000410"
   },
   {
     "code": 61000501,
@@ -4140,6 +4178,14 @@
     "ui_observation": "not_found_page",
     "retryable": false,
     "docs_path": "/errors/61050014"
+  },
+  {
+    "code": 61050015,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/61050015"
   },
   {
     "code": 61050020,

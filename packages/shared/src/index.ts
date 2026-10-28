@@ -248,6 +248,7 @@ export type { PaginationInfo, ListResult } from './utils/response';
 
 export {
 	EMPTY_STATE_CODES,
+	ERROR_CODES,
 	ERROR_SEMANTICS,
 	ERROR_SEMANTICS_META,
 	MAX_RETRIES,
@@ -262,4 +263,4 @@ export {
 	semanticsOfError,
 	shouldRetry,
 } from './utils/error-semantics';
-export type { Absence, ErrorClass, ErrorSemantics, UIObservation } from './utils/error-semantics';
+export type { Absence, ErrorClass, ErrorCodeName, ErrorSemantics, UIObservation } from './utils/error-semantics';
