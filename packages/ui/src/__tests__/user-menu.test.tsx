@@ -247,4 +247,16 @@ describe('UserMenu', () => {
 		renderMenu({ user: { displayName: '   ', username: 'acme_admin', email: 'a@b.c' } });
 		expect(screen.getByText('acme_admin')).toBeInTheDocument();
 	});
+
+	// U447 类：头像 URL 打不开（404 / ORB）时禁止落碎图，必须回落首字母。
+	it('头像 URL 加载失败时回落首字母', () => {
+		const { container } = renderMenu({
+			user: { username: 'acme_admin', avatarUrl: 'https://avatars.invalid/admin.png' },
+		});
+		const img = container.querySelector('img');
+		expect(img).not.toBeNull();
+		fireEvent.error(img!);
+		expect(container.querySelector('img')).toBeNull();
+		expect(screen.getByText('A')).toBeInTheDocument();
+	});
 });

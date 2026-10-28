@@ -2,6 +2,7 @@ import type React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChevronDown, LogOut, Settings, UserRound } from 'lucide-react';
 import { useMenuButton } from '../internal/use-menu-button';
+import { Avatar } from '../atoms/Avatar';
 
 export interface UserMenuUserInfo {
 	displayName?: string | null;
@@ -93,13 +94,12 @@ export function UserMenu({
 				aria-label={text.userMenu}
 				className={`flex items-center gap-2 rounded-md p-1.5 transition-colors hover:bg-[var(--color-bg-muted)] ${className}`}
 			>
-				{user?.avatarUrl ? (
-					<img src={user.avatarUrl} alt="" className="h-8 w-8 rounded-full object-cover" />
-				) : (
-					<span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-brand)] text-xs font-medium text-[var(--color-text-inverse)]">
-						{initials}
-					</span>
-				)}
+				<Avatar
+					src={user?.avatarUrl}
+					fallbackText={initials}
+					size={32}
+					className="bg-[var(--color-brand)] text-xs font-medium text-[var(--color-text-inverse)]"
+				/>
 				<span
 					className={`max-w-[10rem] truncate text-sm text-[var(--color-text-primary)] ${nameClassName}`}
 				>

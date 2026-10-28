@@ -59,6 +59,10 @@ function shallowEqual(a: AuthSnapshot, b: AuthSnapshot): boolean {
 	if (a.currentTenantId !== b.currentTenantId) return false;
 	if (a.user?.username !== b.user?.username) return false;
 	if (a.user?.email !== b.user?.email) return false;
+	// 头像/展示名可在登录后原地更新（个人资料页上传头像、magic-link 补全资料）：
+	// 不参与比较时快照被判定"未变化"，顶部头像会停在旧值直到刷新页面。
+	if (a.user?.avatarUrl !== b.user?.avatarUrl) return false;
+	if (a.user?.displayName !== b.user?.displayName) return false;
 	if (a.permissions.length !== b.permissions.length) return false;
 	if (a.tenants.length !== b.tenants.length) return false;
 	// 简化的数组比较：内容变更时下个事件循环会触发重新计算

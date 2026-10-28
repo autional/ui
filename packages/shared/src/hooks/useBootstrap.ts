@@ -46,6 +46,33 @@ export function useBootstrap(): BootstrapState {
 		}
 	}, [tentsQuery.data]);
 
+	// U447：头像补读 —— 登录响应与 /auth/me 都不含 avatarUrl（头像存在 profile 服务），
+	// 认证快照里的头像只在上传当次或同浏览器持久化后才有值。启动时补读一次
+	// GET /profile/avatar 并写回快照，顶栏 UserMenu 才能显示账号真实头像；
+	// 失败静默（展示层回落首字母，不影响任何业务流程）。
+	// 用动态 import 引生成客户端：generated/api 反向 import '@autional/shared'，
+	// 静态导入会在包入口形成循环，动态导入等入口初始化完再求值。
+	useEffect(() => {
+		if (!hasToken) return;
+		let cancelled = false;
+		void import('../generated/api')
+			.then(({ profileAvatar }) => profileAvatar())
+			.then((res) => {
+				const avatarUrl = ((res as { avatarUrl?: string } | undefined)?.avatarUrl ?? '').trim();
+				if (cancelled || !avatarUrl) return;
+				const current = useAuthStore.getState().user;
+				if (current && current.avatarUrl !== avatarUrl) {
+					useAuthStore.getState().setUser({ ...current, avatarUrl });
+				}
+			})
+			.catch(() => {
+				/* 忽略：缺头像不影响启动 */
+			});
+		return () => {
+			cancelled = true;
+		};
+	}, [hasToken]);
+
 	// 无会话 = 无数据可引导：返回 'idle'，登录交棒由 RequireAuth/守卫决策（见上）。
 	// 不得返回 'loading'：Layout 消费者（platform-console）以 bootstrap==='loading'
 	// 挡 Outlet，而 RequireAuth 在 Outlet 里 ⇒ 无会话冷启动永停 Spin、守卫永不挂载（F-W5b）。
