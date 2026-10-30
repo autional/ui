@@ -2703,6 +2703,30 @@
     "docs_path": "/errors/61000702"
   },
   {
+    "code": 61000703,
+    "http_status": 413,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61000703"
+  },
+  {
+    "code": 61000704,
+    "http_status": 413,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61000704"
+  },
+  {
+    "code": 61000705,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/61000705"
+  },
+  {
     "code": 61000801,
     "http_status": 401,
     "class": "unauthorized",
@@ -5107,6 +5131,22 @@
     "ui_observation": "form_error",
     "retryable": false,
     "docs_path": "/errors/61100023"
+  },
+  {
+    "code": 61100024,
+    "http_status": 413,
+    "class": "invalid",
+    "ui_observation": "form_error",
+    "retryable": false,
+    "docs_path": "/errors/61100024"
+  },
+  {
+    "code": 61100025,
+    "http_status": 409,
+    "class": "conflict",
+    "ui_observation": "conflict",
+    "retryable": false,
+    "docs_path": "/errors/61100025"
   },
   {
     "code": 61110002,

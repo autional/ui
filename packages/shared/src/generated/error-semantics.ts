@@ -1,7 +1,7 @@
 // GENERATED FILE — DO NOT EDIT.
 // Source: contracts/errors.semantics.json（@autional/shared 仓内镜像，源 = service-core base/error/testdata/errors.semantics.json）
 // Regenerate: pnpm gen:errors · Verify: pnpm gen:errors:check
-// rows: 793 · source sha256: e5a0361790b7049cff49ccf9b0e5c26185e5a0d45837f04e6ee53ab4296bd280
+// rows: 798 · source sha256: e82f038da18dc0935623718a7516ede07d741ed071275aad4ca1610db00a8d5d
 //
 // 单一真源链：service-core/base/error/semantics.go（Go）→ errors.semantics.json → 本文件。
 // ⚠️ 禁止在本文件或页面里手抄错误码分支：请消费 ERROR_SEMANTICS / UNPROVISIONED_CODES。
@@ -380,6 +380,9 @@ export const ERROR_SEMANTICS: Readonly<Record<number, ErrorSemantics>> = {
 	61000601: { code: 61000601, httpStatus: 404, class: 'not_found', absence: 'entity', uiObservation: 'not_found_page', retryable: false, docsPath: '/errors/61000601' },
 	61000701: { code: 61000701, httpStatus: 404, class: 'not_found', absence: 'entity', uiObservation: 'not_found_page', retryable: false, docsPath: '/errors/61000701' },
 	61000702: { code: 61000702, httpStatus: 500, class: 'internal', absence: '', uiObservation: 'unexpected', retryable: false, docsPath: '/errors/61000702' },
+	61000703: { code: 61000703, httpStatus: 413, class: 'invalid', absence: '', uiObservation: 'form_error', retryable: false, docsPath: '/errors/61000703' },
+	61000704: { code: 61000704, httpStatus: 413, class: 'invalid', absence: '', uiObservation: 'form_error', retryable: false, docsPath: '/errors/61000704' },
+	61000705: { code: 61000705, httpStatus: 503, class: 'unavailable', absence: '', uiObservation: 'transient', retryable: true, docsPath: '/errors/61000705' },
 	61000801: { code: 61000801, httpStatus: 401, class: 'unauthorized', absence: '', uiObservation: 'session_expired', retryable: false, docsPath: '/errors/61000801' },
 	61000802: { code: 61000802, httpStatus: 401, class: 'unauthorized', absence: '', uiObservation: 'session_expired', retryable: false, docsPath: '/errors/61000802' },
 	61000803: { code: 61000803, httpStatus: 401, class: 'unauthorized', absence: '', uiObservation: 'session_expired', retryable: false, docsPath: '/errors/61000803' },
@@ -672,6 +675,8 @@ export const ERROR_SEMANTICS: Readonly<Record<number, ErrorSemantics>> = {
 	61100021: { code: 61100021, httpStatus: 404, class: 'not_found', absence: 'entity', uiObservation: 'not_found_page', retryable: false, docsPath: '/errors/61100021' },
 	61100022: { code: 61100022, httpStatus: 404, class: 'not_found', absence: 'entity', uiObservation: 'not_found_page', retryable: false, docsPath: '/errors/61100022' },
 	61100023: { code: 61100023, httpStatus: 413, class: 'invalid', absence: '', uiObservation: 'form_error', retryable: false, docsPath: '/errors/61100023' },
+	61100024: { code: 61100024, httpStatus: 413, class: 'invalid', absence: '', uiObservation: 'form_error', retryable: false, docsPath: '/errors/61100024' },
+	61100025: { code: 61100025, httpStatus: 409, class: 'conflict', absence: '', uiObservation: 'conflict', retryable: false, docsPath: '/errors/61100025' },
 	61110002: { code: 61110002, httpStatus: 401, class: 'unauthorized', absence: '', uiObservation: 'session_expired', retryable: false, docsPath: '/errors/61110002' },
 	61110003: { code: 61110003, httpStatus: 403, class: 'forbidden', absence: '', uiObservation: 'forbidden', retryable: false, docsPath: '/errors/61110003' },
 	61110004: { code: 61110004, httpStatus: 404, class: 'not_found', absence: 'entity', uiObservation: 'not_found_page', retryable: false, docsPath: '/errors/61110004' },
@@ -854,8 +859,8 @@ export const UNPROVISIONED_CODES: ReadonlySet<number> = new Set([]);
 export const EMPTY_STATE_CODES: ReadonlySet<number> = new Set([]);
 
 export const ERROR_SEMANTICS_META = {
-	rowCount: 793,
-	sourceSha256: 'e5a0361790b7049cff49ccf9b0e5c26185e5a0d45837f04e6ee53ab4296bd280',
+	rowCount: 798,
+	sourceSha256: 'e82f038da18dc0935623718a7516ede07d741ed071275aad4ca1610db00a8d5d',
 } as const;
 
 /** 具名错误码常量（契约 name → code）。页面只消费常量，不写数字字面量。 */
