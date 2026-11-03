@@ -57,9 +57,11 @@ const pkgJsonPaths = (siteDir) => {
 };
 
 const plan = [];
+let siteCount = 0;
 for (const site of existsSync(SITES) ? readdirSync(SITES).sort() : []) {
   const siteDir = join(SITES, site);
   if (!statSync(siteDir).isDirectory()) continue;
+  siteCount++;
 
   const depChanges = [];
   for (const pj of pkgJsonPaths(siteDir)) {
@@ -101,7 +103,7 @@ for (const [k, v] of fleet) console.log('  ' + k.padEnd(28) + v);
 console.log('');
 if (!existsSync(SITES)) { console.log('pin-fleet-deps：没有 sites/（' + SITES + '），跳过。'); process.exit(0); }
 if (!fleet.size) { console.log('舰队版本读不到（离线？）—— 无法判定，跳过。'); process.exit(0); }
-if (!plan.length) { console.log('14 个站已全部符合政策，无需改动。'); process.exit(0); }
+if (!plan.length) { console.log(siteCount + ' 个站已全部符合政策，无需改动。'); process.exit(0); }
 
 for (const p of plan) {
   console.log(p.site + '  [' + p.kind + ']  ' + relative(SITES, p.file).replace(/\\/g, '/'));
