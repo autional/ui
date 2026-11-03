@@ -29,7 +29,12 @@ const GENERATED = (source) =>
 
 const isRef = (v) => typeof v === 'string' && /^\{[^}]+\}$/.test(v);
 const refPath = (v) => v.slice(1, -1).split('.');
-const varName = (path) => `--${path.map(String).join('-')}`;
+// CSS 自定义属性名必须是合法 ident：`.` 不允许出现在标识符里。
+// 2026-11-03 线上事故：`space.0.5` → `--space-0.5`，Tailwind 3（postcss）宽容跳过该声明，
+// 但 Tailwind 4 的 Lightning CSS 直接**丢弃整条 `:root` 规则** —— 整个色板随之消失
+// （web 站没有 profile 兜底，整站失色）。非 [A-Za-z0-9_-] 一律折成 `-`。
+const safeSegment = (s) => String(s).replace(/[^A-Za-z0-9_-]/g, '-');
+const varName = (path) => `--${path.map(safeSegment).join('-')}`;
 
 const cssValue = (v) => {
   if (typeof v === 'string') return isRef(v) ? `var(${varName(refPath(v))})` : v;

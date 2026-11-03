@@ -1,6 +1,6 @@
 {
   "name": "@autional/tokens",
-  "version": "0.1.0-rc.17",
+  "version": "0.1.0-rc.18",
   "description": "Autional canonical design tokens �?CSS variables, Tailwind values, antd theme bridge, chart colors",
   "license": "AGPL-3.0",
   "main": "./dist/index.js",
