@@ -26,6 +26,7 @@ const STEPS = [
   { key: 'semantic-tones', label: '状态色语言（同一状态构造里不许混用语义令牌与品牌色阶）', cmd: ['node', 'scripts/check-semantic-tones.mjs'] },
   { key: 'cdn', label: 'CDN 资产契约（CORS / 不可变缓存 / manifest 字节一致）', cmd: ['node', 'scripts/check-cdn.mjs'] },
   { key: 'colors', label: '非设计系统色值（是否在重复发明已有令牌）', cmd: ['node', 'scripts/check-colors.mjs'] },
+  { key: 'sync-consumers', label: '消费方生成物（图标块 / 清单 / 副本与真源逐字节一致，--check 只读）', cmd: ['node', 'scripts/sync-consumers.mjs', '--check'] },
   { key: 'icons', label: '图标套件（声明完整 / 文件存在 / theme-color 单源 / 不漂移）', cmd: ['node', 'scripts/check-icons.mjs'] },
   { key: 'site-layers', label: '站点样式层（无层全局规则会反压 Tailwind 4 utility；含 5 站守卫副本漂移）', cmd: ['node', 'scripts/check-site-css-layers.mjs'] },
   { key: 'headers', label: '顶栏契约（高度令牌驱动 / position / 品牌标）', cmd: ['node', 'scripts/check-headers.mjs'] },
