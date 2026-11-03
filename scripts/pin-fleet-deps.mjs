@@ -21,6 +21,10 @@
 //   这条与舰队反复踩过的坑同型：**同一个值不该有两个来源**（theme_color、CDN 版本、
 //   tokens.json 的 schema 版本 vs npm 包版本，都是这一条）。
 //
+// 与 workspace 门禁 [82] 的分工（2026-11-03）：本脚本是**写入器**（跑在工作站）；
+// 构建机无 node，判定由 scripts/ci/check-fleet-versions.py 做（同读 registry 的 rc tag，
+// 不各自维护版本表）。改政策时两处都要同步：docs/FLEET-CONSISTENCY.md §2。
+//
 // 用法:
 //   node scripts/pin-fleet-deps.mjs            # 只报告（默认）
 //   node scripts/pin-fleet-deps.mjs --write    # 实际写入
