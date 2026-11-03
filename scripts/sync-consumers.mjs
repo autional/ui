@@ -203,7 +203,10 @@ for (const { site, sitePath } of iconTargets) {
   const items = ICON_SOURCES.map((s) => ({ to: s.to, buf: readFileSync(join(ROOT, s.from)) }));
   // site.webmanifest 是**生成**的而非拷贝：原始那份用相对路径是对的（本站就要相对路径），
   // 但它的 theme_color 是手填字面量。这里改成取自令牌。
-  items.push({ to: 'site.webmanifest', buf: Buffer.from(iconManifest(site), 'utf8') });
+  // PWA 站的清单由 vite-plugin-pwa 构建期生成（源 HTML 里没有 <link>），不写这份，
+  // 免得在 public/ 留一份“看起来像交付物、实际没人引用”的死文件。
+  const pwaSite = (CT.manifests || {})[site] && (CT.manifests || {})[site].delivery === 'vite-plugin-pwa';
+  if (!pwaSite) items.push({ to: 'site.webmanifest', buf: Buffer.from(iconManifest(site), 'utf8') });
   for (const { to, buf } of items) {
     const dst = join(pubPath, to);
     const b = existsSync(dst) ? readFileSync(dst) : null;
