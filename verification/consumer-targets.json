@@ -155,6 +155,10 @@
     "security": { "mode": "self", "headFile": "apps/security-dashboard/index.html" },
     "status": { "mode": "self", "headFile": "apps/status-page/index.html" },
     "trust": { "mode": "self", "headFile": "apps/trust-center/index.html" },
-    "docs": { "mode": "self", "headFile": "src/layouts/DocLayout.astro" }
+    "docs": { "mode": "self", "headFile": "src/layouts/DocLayout.astro" },
+    "developer": { "mode": "self", "headFile": "src/layouts/DevLayout.astro" },
+    "reference": { "mode": "self", "headFile": "src/layouts/RefLayout.astro" },
+    "web": { "mode": "self", "headFile": "src/layouts/LandingLayout.astro" },
+    "wiki": { "mode": "self", "headFile": "src/layouts/WikiLayout.astro" }
   }
 }
