@@ -31,6 +31,8 @@ import { ROOT } from './lib/tokens.mjs';
 import { PACKAGES, REGISTRY } from './lib/dist-tags.mjs';
 
 const WRITE = process.argv.includes('--write');
+// --check：只判定不改写；有漂移即 exit 1（发版波/CI 用）
+const CHECK = process.argv.includes('--check');
 const SITES = process.env.AUTIONAL_SITES_DIR || resolve(ROOT, '..', 'sites');
 const FROZEN = 'pnpm install --frozen-lockfile';
 
@@ -97,6 +99,8 @@ for (const site of existsSync(SITES) ? readdirSync(SITES).sort() : []) {
 console.log('舰队当前版本（rc 通道）：');
 for (const [k, v] of fleet) console.log('  ' + k.padEnd(28) + v);
 console.log('');
+if (!existsSync(SITES)) { console.log('pin-fleet-deps：没有 sites/（' + SITES + '），跳过。'); process.exit(0); }
+if (!fleet.size) { console.log('舰队版本读不到（离线？）—— 无法判定，跳过。'); process.exit(0); }
 if (!plan.length) { console.log('14 个站已全部符合政策，无需改动。'); process.exit(0); }
 
 for (const p of plan) {
@@ -108,6 +112,11 @@ for (const p of plan) {
 console.log('');
 console.log('合计 ' + plan.length + ' 个文件待改（' + plan.filter((p) => p.kind === 'deps').length + ' 个依赖声明 / ' + plan.filter((p) => p.kind === 'freeze').length + ' 个部署配置）');
 
+if (CHECK) {
+  console.log('');
+  console.log('[FAIL] 舰队依赖/部署配置与 rc 通道不一致（' + plan.length + ' 个文件）—— 跑 node scripts/pin-fleet-deps.mjs --write 后逐站提交。');
+  process.exit(1);
+}
 if (!WRITE) { console.log('\n（预演。加 --write 实际写入。）'); process.exit(0); }
 
 let n = 0;
