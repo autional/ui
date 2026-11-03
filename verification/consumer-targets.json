@@ -143,5 +143,9 @@
         "to": "favicon.svg"
       }
     ]
+  },
+  "iconDelivery": {
+    "$note": "图标套件 / site.webmanifest 的交付形态，按站登记，缺省 cdn。cdn = <head> 直链 cdn.autional.cn/ui/v<ver>/icons/*（站点 public/ 只作回滚）；self = <head> 直链本站 /favicon.*（由 sync-consumers 生成并写盘，运行期不再跨域）。2026-11-03 起新站一律 self：跨域资源被 CDN 安全策略（challenge）拦截时是不可自解的硬失败，而 favicon/tokens 属于关键资源。一致性由 check-icons 的 sha 断言与 sync-consumers --check 保证（ui/ 仍是唯一真源，站点里的副本是生成物）。迁移完成后本键删除，脚本只支持 self。",
+    "user": { "mode": "self", "headFile": "apps/end-user-portal/index.html" }
   }
 }

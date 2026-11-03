@@ -34,6 +34,9 @@ import { ROOT, loadTokens, resolvedIn } from './lib/tokens.mjs';
 const CONFIG = join(ROOT, 'verification', 'consumer-targets.json');
 
 const WRITE = process.argv.includes('--write');
+// --check：与 --write 互斥的**门禁用**模式——不写盘，只回答「有没有漂移」，有则退出码 1。
+// CI 用它守「生成物与真源一致」，避免“脚本能修”掩盖“已经漂了”。
+const CHECK = process.argv.includes('--check');
 // 回滚通道：npm 不可用时，把内置副本写回站点，让站点可以退回「自包含」形态。
 // 默认关闭——设计系统的唯一交付通道是 npm。
 const VENDOR = process.argv.includes('--rollback-vendor');
@@ -83,17 +86,29 @@ const FONT_SOURCES = [
 // status 的 /favicon-32x32.png 返回的是 SPA fallback（text/html 947B）——文件根本不存在，
 // 被前端路由掩盖了，肉眼看不出来。
 //
-// 2026-09 轮次 42：**运行期交付已改为 CDN**。14 个站点的 <head> 现在直接
-// <link href="https://cdn.autional.cn/ui/v<ver>/icons/…">，站点 public/ 里的这一份
-// 因此降级为**回滚通道**，默认不再写入（与 P4 对 packages/tailwind-preset 的处理同构）。
+// 2026-09 轮次 42：运行期交付曾改为 CDN，站点 public/ 降级为**回滚通道**，默认不写。
+// 2026-11-03 推翻（用户定调，线上事故驱动）：cdn.autional.cn 被 Vercel 安全策略 challenge 时，
+// 子资源请求**无法自解**（挑战要跑 JS，而 <link> 不执行 JS），整站直接失色/丢图标。
+// 结论：**关键资源不得跨域**。站点自包含（icons + manifest + tokens 同源），CDN 只留可降级资源
+// （字体）与 Go demo / skill 分发。
 //
-// 原先的理由是「favicon 是最基础的品牌资产，不该依赖一个外部源站的可用性」。
-// **这条已被明确推翻**（用户定调）：纯静态 CDN 的可用性不是主要风险，**一致性才是**；
-// 做「CDN 挂了回退本地」等于又造一个来源，那正是要消灭的东西。
-// 网络侧的异常（含 DNS 记录）不在本项目范围内。
-//
-// 来源清单仍放在 consumer-targets.json 里，sync（回滚下发）与 check-icons（漂移校验）共用同一份。
+// 这不违反「同一个值不该有两个来源」：真源仍是 ui/assets（+ tokens.json），站点里的副本是
+// **生成物**（由本脚本写入），不是手抄的第二来源；漂移由 check-icons 的 sha 断言与
+// `sync-consumers --check` 双向把关。
 const ICON_SOURCES = (JSON.parse(readFileSync(CONFIG, 'utf8')).iconSources || {}).files || [];
+// 图标/manifest 的交付形态（按站登记，缺省 cdn）。
+//   cdn  = <head> 直链 cdn.autional.cn/ui/v<ver>/icons/*（旧形态，仅迁移期残留）
+//   self = <head> 直链本站 /favicon.*，由本脚本生成并写盘（目标形态）
+const ICON_DELIVERY = (() => {
+  const raw = (JSON.parse(readFileSync(CONFIG, 'utf8')).iconDelivery || {});
+  const out = {};
+  for (const [k, v] of Object.entries(raw)) {
+    if (k[0] === '$') continue;
+    out[k] = typeof v === 'string' ? { mode: v, headFile: null } : { mode: v.mode || 'cdn', headFile: v.headFile || null };
+  }
+  return out;
+})();
+const deliveryOf = (site) => ICON_DELIVERY[site] || { mode: 'cdn', headFile: null };
 
 const sha = (buf) => createHash('sha256').update(buf).digest('hex').slice(0, 12);
 
@@ -178,9 +193,10 @@ const iconManifest = (site) => JSON.stringify({
 let iconChanged = 0;
 let iconSame = 0;
 const iconRows = [];
-// 默认不写：图标与 site.webmanifest 的运行期来源已是 CDN，本站 public/ 只是回滚通道。
-// 目标发现与执行都收在 VENDOR 里，避免「回滚通道」被误当成常规交付。
-for (const { site, sitePath } of (VENDOR ? targets : [])) {
+// 写盘条件：回滚通道（VENDOR）或本站已切换为自包含（self）。
+// self 站点每次同步都必须写——public/ 里的副本现在是**运行期资源**，不是回滚副本。
+const iconTargets = targets.filter(({ site }) => VENDOR || deliveryOf(site).mode === 'self');
+for (const { site, sitePath } of iconTargets) {
   const pub = PUBLIC_DIRS[site];
   if (!pub) { missing.push('consumer-targets.json 的 publicDirs 缺少站点 ' + site); continue; }
   const pubPath = join(sitePath, pub);
@@ -194,12 +210,66 @@ for (const { site, sitePath } of (VENDOR ? targets : [])) {
     if (b && sha(buf) === sha(b)) { iconSame++; continue; }
     iconChanged++;
     iconRows.push('  ' + site.padEnd(15) + to.padEnd(30) + (b ? b.length + 'B/' + sha(b) : '(不存在)').padEnd(22) + ' -> ' + buf.length + 'B/' + sha(buf));
-    if (WRITE) { mkdirSync(dirname(dst), { recursive: true }); writeFileSync(dst, buf); }
+    if (WRITE && !CHECK) { mkdirSync(dirname(dst), { recursive: true }); writeFileSync(dst, buf); }
   }
 }
 
+// ── <head> 图标块生成（仅 self 站）─────────────────────────────────────────
+// 6 条 <link> 不再手写：结构漂移（漏 32x32 / 顺序不同 / 指向旧 CDN）是最容易发生的不一致，
+// 而它没有编译期信号。站点里只留一对标记，块内容由这里生成、由 check-icons 断言。
+const MARK_START = '<!-- icons:start';
+const MARK_END = '<!-- icons:end -->';
+const iconLinks = (site) => {
+  const pwa = (CT.manifests || {})[site] && (CT.manifests || {})[site].delivery === 'vite-plugin-pwa';
+  const lines = [
+    '<link rel="icon" href="/favicon.ico" sizes="any" />',
+    '<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />',
+    '<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />',
+    '<link rel="icon" type="image/svg+xml" href="/favicon.svg" />',
+    '<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />',
+  ];
+  // PWA 站的 manifest 由 vite-plugin-pwa 构建期注入，源码里不该有第二条 <link>。
+  if (!pwa) lines.push('<link rel="manifest" href="/site.webmanifest" />');
+  return lines;
+};
+function renderIconsBlock(html, lines) {
+  const m = /(^[ \t]*)<!-- icons:start[^\n]*\n/m.exec(html);
+  if (!m) return null;
+  const endIdx = html.indexOf(MARK_END, m.index);
+  if (endIdx < 0) return null;
+  const indent = m[1];
+  const body = lines.map((l) => indent + l + '\n').join('');
+  return html.slice(0, m.index) +
+    indent + '<!-- icons:start（由 ui/scripts/sync-consumers.mjs 生成，勿手改） -->\n' +
+    body + indent + MARK_END +
+    html.slice(endIdx + MARK_END.length);
+}
+
+for (const { site, sitePath } of iconTargets) {
+  const d = deliveryOf(site);
+  if (d.mode !== 'self') continue;
+  if (!d.headFile) {
+    missing.push('iconDelivery.' + site + ' 缺少 headFile —— 不知道往哪个文件写图标块（Vite 站填 apps/<app>/index.html，Astro 站填承载 <head> 的 .astro 布局）');
+    continue;
+  }
+  const headPath = join(sitePath, d.headFile);
+  if (!existsSync(headPath)) { missing.push('iconDelivery.' + site + ' 的 headFile 不存在：' + d.headFile); continue; }
+  const html = readFileSync(headPath, 'utf8');
+  const next = renderIconsBlock(html, iconLinks(site));
+  if (next === null) {
+    missing.push(site + ' 的 ' + d.headFile + ' 缺少 <!-- icons:start --> / <!-- icons:end --> 标记对 —— 先把 6 条图标 link 换成这对标记');
+    continue;
+  }
+  if (next === html) { iconSame++; continue; }
+  iconChanged++;
+  iconRows.push('  ' + site.padEnd(15) + '<head> 图标块'.padEnd(28) + '(过期)'.padEnd(22) + ' -> 重新生成');
+  if (WRITE && !CHECK) writeFileSync(headPath, next);
+}
+
 console.log('交付同步：' + targets.length + ' 个站点' + (ONLY ? '（--site ' + ONLY + '）' : ''));
-console.log('  模式：' + (VENDOR ? '回滚通道（含内置副本 packages/tailwind-preset/ 与图标套件 public/）' : '常规（设计系统走 npm，运行期资产走 CDN；内置副本与 public/ 图标均已退役为回滚通道）'));
+console.log('  模式：' + (VENDOR ? '回滚通道（含内置副本 packages/tailwind-preset/ 与图标套件 public/）'
+  : '常规（设计系统走 npm；图标/manifest 按站登记：self=同源自包含，cdn=旧 CDN 形态）') +
+  (CHECK ? '  [--check：只读校验]' : ''));
 console.log('  共享组件层/回滚产物：逐字节一致 ' + same + ' 个 / 需要更新 ' + changed + ' 个');
 if (rows.length) {
   console.log('');
@@ -207,21 +277,22 @@ if (rows.length) {
   for (const r of rows) console.log(r);
 }
 console.log('');
-console.log(VENDOR
-  ? '图标套件下发（public/，回滚通道）：逐字节一致 ' + iconSame + ' 个 / 需要更新 ' + iconChanged + ' 个'
-  : '图标套件下发（public/）：已退役为回滚通道，本次未写入（需要时加 --rollback-vendor）');
+console.log('图标套件 / <head> 图标块（self 站常写，cdn 站只作回滚）：逐字节一致 ' + iconSame + ' 个 / 需要更新 ' + iconChanged + ' 个');
 if (iconRows.length) for (const r of iconRows) console.log(r);
 if (missing.length) {
   console.log('');
-  console.log('  [ERROR] 权威产物缺失，无法同步：');
+  console.log('  [ERROR] 无法同步：');
   for (const m of missing) console.log('    ' + m);
-  console.log('  → 检查 verification/consumer-targets.json 的 profile 映射；覆盖数为 0 的 profile 不会产出文件，应写 null。');
+  console.log('  → 检查 verification/consumer-targets.json 的 profile 映射 / iconDelivery.headFile；覆盖数为 0 的 profile 不会产出文件，应写 null。');
 }
 console.log('');
-if (WRITE) {
-  console.log((changed + iconChanged) ? '已写入 ' + (changed + iconChanged) + ' 个文件。请逐站构建并跑视觉回归后再提交。'
-    : '无需改动。');
+const drifted = changed + iconChanged;
+if (CHECK) {
+  console.log(drifted ? '[FAIL] 生成物与真源不一致（' + drifted + ' 处）—— 跑 node scripts/sync-consumers.mjs --write 后重新提交。'
+    : '[OK] 生成物与真源一致。');
+} else if (WRITE) {
+  console.log(drifted ? '已写入 ' + drifted + ' 个文件。请逐站构建并跑视觉回归后再提交。' : '无需改动。');
 } else {
-  console.log(changed ? '这是**预演**，未写盘。加 --write 才会写入。' : '全部一致，无需同步。');
+  console.log(drifted ? '这是**预演**，未写盘。加 --write 才会写入。' : '全部一致，无需同步。');
 }
-process.exit(missing.length ? 1 : 0);
+process.exit((missing.length || (CHECK && drifted)) ? 1 : 0);

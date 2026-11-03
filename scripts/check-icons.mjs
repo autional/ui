@@ -40,6 +40,13 @@
 // 离线：CDN 侧的内容从同级 ../cdn 仓库的工作区读，不联网。
 // 「CDN 能否连上」不在这里断言：网络可用性不是本项目的判据（用户已定调）。
 //
+// 2026-11-03 起支持两种交付形态（consumer-targets.json 的 iconDelivery，按站登记）：
+//   cdn  = <head> 直链 cdn.autional.cn/ui/v<ver>/icons/*（I15/I16/I17/I19/I20/I24 管它）
+//   self = 站内自包含（I29 禁止跨域图标、I21 禁止跨域样式表、I23 要求 npm 构建期引用；
+//          I12–I14 由「回滚副本校验」升级为「运行期资源校验」）
+// 事故驱动：cdn.autional.cn 被 Vercel 安全策略 challenge 时，子资源无法自解（挑战要跑 JS），
+// 整站失色/丢图标。关键资源不得跨域 —— self 是目标形态，cdn 只应作为迁移期残留。
+//
 // 用法: node scripts/check-icons.mjs [--json]
 
 import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
@@ -80,6 +87,18 @@ const THEME_COLORS = CT.themeColors || {};
 // manifest 交付方式。未登记的站点 = static（页面 <head> 里显式 <link>，指向 CDN 的共享清单）。
 const MANIFEST_DECL = Object.fromEntries(Object.entries(CT.manifests || {}).filter(([k]) => k[0] !== '$'));
 const ICON_SOURCES = (CT.iconSources || {}).files || [];
+// 交付形态（按站登记，缺省 cdn）。self = 站内自包含（2026-11-03 起的目标形态）：
+// 图标/manifest/令牌都不再从 cdn.autional.cn 取，跨域只剩可降级的字体。
+const ICON_DELIVERY = (() => {
+  const raw = CT.iconDelivery || {};
+  const out = {};
+  for (const [k, v] of Object.entries(raw)) {
+    if (k[0] === '$') continue;
+    out[k] = typeof v === 'string' ? v : (v && v.mode) || 'cdn';
+  }
+  return out;
+})();
+const isSelf = (site) => ICON_DELIVERY[site] === 'self';
 // 与 sync-consumers 用同一份声明，这样「theme-color 的唯一来源」是 consumer-targets.json，
 // 而不是散在 14 个站点的 HTML 里。页面 <meta> 是手写的，由本闸门断言它与声明一致。
 const RES = resolvedIn(loadTokens(), {});
@@ -153,6 +172,28 @@ function walk(d, out, depth) {
   return out;
 }
 
+// 自包含站的令牌必须走构建期依赖：扫描站点源码（含 SPA 的 apps/<app>/src）是否引用
+// @autional/tokens/tokens.css。只认源码引用，不认 node_modules —— 装了包却没用，等于没切换。
+function importsNpmTokens(dir) {
+  let found = false;
+  const scan = (d, depth) => {
+    if (found || depth > 6) return;
+    let es; try { es = readdirSync(d, { withFileTypes: true }); } catch (e) { return; }
+    for (const e of es) {
+      if (found) return;
+      if (SKIPDIR.has(e.name)) continue;
+      const p = join(d, e.name);
+      if (e.isDirectory()) { scan(p, depth + 1); continue; }
+      if (!/\.(ts|tsx|js|jsx|mjs|cjs|css|astro)$/.test(e.name)) continue;
+      try {
+        if (readFileSync(p, 'utf8').includes('@autional/tokens/tokens.css')) found = true;
+      } catch (err) { /* 读不到就跳过：权限/临时文件不影响判定 */ }
+    }
+  };
+  scan(dir, 0);
+  return found;
+}
+
 // 站点名单的唯一出处 = consumer-targets.json 的 publicDirs：**声明的才算站点**。
 // 用 readdirSync 枚举的后果（2026-10-27 实测）：工作区里还有 ui/ cdn/ armenian/ cyrillic/，
 // 每次全量跑都稳定产出 4 条 I0 假红 —— 一个永远带 ERROR 的闸门，真红就会被当成噪音。
@@ -200,12 +241,18 @@ for (const site of DECLARED) {
                     || (text.match(/<link\b[^>]*href=["']([^"']+)["'][^>]*rel=["']?manifest["']?/i) || [])[1];
   if (manifestHref) hrefs.push(manifestHref);
 
-  // 两类来源分开处理：CDN 的现交付路径，与 public/ 的回滚副本。
+  // 两类来源分开处理：CDN 的现交付路径（cdn 站），与站内自包含（self 站）。
+  const self = isSelf(site);
   const missingFiles = [];
   const cdnRefs = [];
   for (const h of new Set(hrefs)) {
     const isExternal = /^https?:/i.test(h);
     if (isExternal) {
+      if (self) {
+        problems.push('I29 ' + site + '：自包含站点仍有跨域图标引用 ' + h +
+          ' —— 子资源被 CDN 安全策略 challenge 时无法自解，关键资源必须同源（本站 /favicon.*）');
+        continue;
+      }
       const m = CDN_URL_RE.exec(h);
       if (!m) { problems.push('I15 ' + site + '：图标类 <link> 指向了非 canonical 的外部地址 ' + h +
         ' —— 运行期资产必须来自 https://cdn.autional.cn/ui/<版本>/icons/<文件>（' + rel + '）'); continue; }
@@ -245,12 +292,12 @@ for (const site of DECLARED) {
         '（' + a + '）不一致 —— 浏览器取的正是 CDN 那一份，重新发布：pnpm build:cdn');
     }
   }
-  // 站点仍然直连本地图标 = 没有真的换轨（回滚通道是显式动作，不该是默认形态）
+  // 站点仍然直连本地图标 = 没有真的换轨（对 cdn 站而言；self 站反过来，本地才是交付面）
   const localIconRefs = [...new Set(hrefs)].filter((h) => !/^https?:/i.test(h));
-  if (localIconRefs.length) {
+  if (!self && localIconRefs.length) {
     problems.push('I20 ' + site + '：仍有 ' + localIconRefs.length + ' 个图标类 <link> 指向本站相对路径（' +
-      localIconRefs.slice(0, 3).join(', ') + '）—— 运行期资产已改为 CDN 单一来源，' +
-      pubRel + '/ 里的副本只是回滚通道。');
+      localIconRefs.slice(0, 3).join(', ') + '）—— 本站登记为 cdn 交付，运行期资产应来自 CDN 单一来源，' +
+      pubRel + '/ 里的副本只是回滚通道。要改为自包含请把它登记到 iconDelivery 并迁移。');
   }
 
   // 回滚副本 site.webmanifest（public/）：它不参与运行期交付，但回滚时必须自洽。
@@ -279,6 +326,20 @@ for (const site of DECLARED) {
     .map((m) => m[1]);
   const SHEET_RE = /^https:\/\/cdn\.autional\.cn\/ui\/(v[^/]+)\/((?:profiles\/)?[A-Za-z0-9._-]+\.css)$/;
   const cdnSheets = [];
+  if (self) {
+    // 自包含站：样式表一律同源。任何跨域样式表都是要消灭的那类风险（挑战/抖动 → 整站失色）。
+    for (const h of new Set(sheetHrefs)) {
+      if (/^https?:/i.test(h)) {
+        problems.push('I21 ' + site + '：自包含站点仍有跨域样式表 ' + h +
+          ' —— 关键样式必须随应用打包（同源、带 hash），CDN 只留可降级资源');
+      }
+    }
+    // 令牌必须走构建期依赖（npm），否则「站点自包含」只是把 link 换了个地方。
+    if (!importsNpmTokens(dir)) {
+      problems.push('I23 ' + site + '：没有找到 @autional/tokens/tokens.css 的构建期引用 —— ' +
+        '自包含站点的令牌来源应为 npm 包（import 进应用 CSS），不是运行期 <link>');
+    }
+  } else {
   for (const h of new Set(sheetHrefs)) {
     const m = SHEET_RE.exec(h);
     if (!m) {
@@ -315,6 +376,7 @@ for (const site of DECLARED) {
     if (!cdnVersions.has(s.version)) cdnVersions.set(s.version, []);
     if (cdnVersions.get(s.version).indexOf(site) < 0) cdnVersions.get(s.version).push(site);
   }
+  }
 
   // ── I18 浏览器**真正读到**的那份清单里不得出现每站不同的值 ─────────────────
   // theme_color 在 DESIGN.md §13 里是「等于 PWA chrome 所在的表面色」，各站不同
@@ -328,7 +390,7 @@ for (const site of DECLARED) {
     if (cm) linkedManifestPath = join(CDN_DIR, 'ui', cm[1], cm[2]);
     else if (!/^https?:/i.test(manifestHref)) linkedManifestPath = join(pubDir, manifestHref.split('?')[0].split('#')[0].replace(/^\//, ''));
   }
-  if (linkedManifestPath && existsSync(linkedManifestPath)) {
+  if (!self && linkedManifestPath && existsSync(linkedManifestPath)) {
     try { linkedTc = JSON.parse(readFileSync(linkedManifestPath, 'utf8')).theme_color || null; } catch (e) { /* I16 已覆盖不存在的情况 */ }
     if (linkedTc) {
       problems.push('I18 ' + site + '：共享的 site.webmanifest 声明了 theme_color=' + linkedTc +
@@ -352,11 +414,12 @@ for (const site of DECLARED) {
     if (!existsSync(copyPath)) { problems.push('I13 ' + site + '：' + s.to + ' 未下发到 ' + pubRel + '/'); continue; }
     const a = createHash('sha256').update(readFileSync(authPath)).digest('hex').slice(0, 12);
     const b = createHash('sha256').update(readFileSync(copyPath)).digest('hex').slice(0, 12);
-    if (a !== b) problems.push('I14 ' + site + '：回滚副本 ' + s.to + ' 与权威不一致（' + b + ' != ' + a + '）——重新生成：pnpm sync:consumers --rollback-vendor --write');
+    if (a !== b) problems.push('I14 ' + site + '：' + (self ? '自包含站点的运行期图标 ' : '回滚副本 ') + s.to +
+      ' 与权威不一致（' + b + ' != ' + a + '）—— 重新生成：node scripts/sync-consumers.mjs --write');
   }
 
   rows.push({
-    site, icons: icons.length, apple, manifest: manifest || !!pwa, manifestDelivery: pwa ? 'vite-plugin-pwa' : 'static',
+    site, self, icons: icons.length, apple, manifest: manifest || !!pwa, manifestDelivery: pwa ? 'vite-plugin-pwa' : 'static',
     themeColor: tc, manifestThemeColor: wmTc, declared, head: rel,
     cdnVersion: cdnRefs.length ? [...new Set(cdnRefs.map((r) => r.version))].join(',') : null,
     cdnRefs: cdnRefs.length, linkedThemeColor: linkedTc
@@ -412,11 +475,11 @@ if (AS_JSON) console.log(JSON.stringify({ rows, problems, warns, info }, null, 2
 else {
   console.log('运行期资产交付闸门（图标 / 清单）：' + rows.length + ' 个站点');
   console.log('');
-  console.log('  站点'.padEnd(17) + 'icon  apple  manifest  走CDN  CDN版本        theme-color');
+  console.log('  站点'.padEnd(17) + 'icon  apple  manifest  交付   版本/形态       theme-color');
   for (const r of rows) {
     console.log('  ' + r.site.padEnd(15) + String(r.icons).padStart(4) + String(r.apple ? 'Y' : 'N').padStart(7) +
-      String(r.manifest ? 'Y' : 'N').padStart(10) + String(r.cdnRefs + '/6').padStart(7) + '  ' +
-      String(r.cdnVersion || '（无）').padEnd(13) + String(r.themeColor || '（无）'));
+      String(r.manifest ? 'Y' : 'N').padStart(10) + (r.self ? '  self ' : '   cdn ').padStart(7) + '  ' +
+      String(r.cdnVersion || (r.self ? '同源自包含' : '（无）')).padEnd(13) + String(r.themeColor || '（无）'));
   }
   console.log('');
   const pwaSites = rows.filter((r) => r.manifestDelivery === 'vite-plugin-pwa').map((r) => r.site);
@@ -424,6 +487,8 @@ else {
   for (const i of info) console.log('  [INFO ] ' + i);
   for (const w of warns) console.log('  [WARN ] ' + w);
   for (const p of problems) console.log('  [ERROR] ' + p);
-  console.log(problems.length ? '结论：运行期资产交付有 ' + problems.length + ' 项不达标' : '结论：运行期资产交付一致（' + rows.length + ' 站，全部走 CDN）');
+  console.log(problems.length ? '结论：运行期资产交付有 ' + problems.length + ' 项不达标'
+    : '结论：运行期资产交付一致（' + rows.length + ' 站；self ' + rows.filter((r) => r.self).length +
+      ' 站自包含 / cdn ' + rows.filter((r) => !r.self).length + ' 站待迁移）');
 }
 process.exit(problems.length ? 1 : 0);
