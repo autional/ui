@@ -301,11 +301,13 @@ describe('usePortalCatalog', () => {
 });
 
 describe('isPortalVisible', () => {
-	it('secret 与 admin/security 同属管理面：member 不可见、管理面角色可见', () => {
-		expect(isPortalVisible('secret', { role: 'member', isPlatformMember: false })).toBe(false);
-		expect(isPortalVisible('secret', { role: null, isPlatformMember: false })).toBe(false);
-		expect(isPortalVisible('secret', { role: 'security_admin', isPlatformMember: false })).toBe(true);
-		expect(isPortalVisible('secret', { role: 'admin', isPlatformMember: false })).toBe(true);
+	it('secret / config 与 admin/security 同属管理面：member 不可见、管理面角色可见', () => {
+		for (const code of ['secret', 'config']) {
+			expect(isPortalVisible(code, { role: 'member', isPlatformMember: false })).toBe(false);
+			expect(isPortalVisible(code, { role: null, isPlatformMember: false })).toBe(false);
+			expect(isPortalVisible(code, { role: 'security_admin', isPlatformMember: false })).toBe(true);
+			expect(isPortalVisible(code, { role: 'admin', isPlatformMember: false })).toBe(true);
+		}
 	});
 
 	it('其余门户不受限（叠加原则）', () => {
