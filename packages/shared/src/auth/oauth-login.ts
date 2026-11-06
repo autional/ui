@@ -32,6 +32,17 @@ const SK = {
 	CID: 'oauth_client_id',
 };
 
+/**
+ * 第一方门户登录申请的 scope —— **单一真源**。
+ *
+ * `read` 自 2026-11-06 起是必需项：平台读接口（rbac / identity / profile 等 18 个服务
+ * 与网关 BFF）统一 `RequireScopes("read")`，令牌不带 `read` 会直接 403。
+ * 所有第一方客户端在 `oauth_clients.scopes` 里都已登记 `read`，只是必须**申请**才会进令牌。
+ *
+ * 改这里之前先确认：服务端新增的 enforce scope 必须 ⊆ 本字符串（否则登录能成、接口 403）。
+ */
+export const OAUTH_LOGIN_SCOPES = 'openid profile email offline_access read';
+
 export interface OAuthInitiateOptions {
 	/** 「停留」取消本次跳转时回调（AUTH-03，调用方据此恢复 UI）；内部已先清预置物 |
 	 *  与待重试定时器（AUTH-08），再次交互可全新发起。 */
@@ -111,7 +122,7 @@ function getConfig() {
 		authorizeUrl: `${base}/oauth/api/v1/oauth/authorize`,
 		redirectUri:
 			callbackPath === '/' ? `${origin}/oauth/callback` : `${origin}${callbackPath}/oauth/callback`,
-		scope: 'openid profile email offline_access',
+		scope: OAUTH_LOGIN_SCOPES,
 	};
 }
 
