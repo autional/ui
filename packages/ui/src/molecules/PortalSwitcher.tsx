@@ -6,6 +6,7 @@ import {
 	Code2,
 	Globe,
 	KeyRound,
+	KeySquare,
 	LayoutGrid,
 	LogIn,
 	Settings,
@@ -53,6 +54,7 @@ const DEFAULT_PORTAL_ICONS: Record<string, React.ComponentType<{ className?: str
 	platform: Settings,
 	developer: Code2,
 	landing: Globe,
+	secret: KeySquare,
 };
 
 export function PortalSwitcher({

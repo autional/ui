@@ -21,7 +21,7 @@ export const ADMIN_PLANE_ROLES: readonly string[] = [
 /**
  * 门户可见性 = 入口门禁的镜像（谁能登录谁才看见）：
  * - platform：仅平台租户成员
- * - admin / security：仅管理面角色
+ * - admin / security / secret：仅管理面角色
  * - 其余 code：不限制（叠加原则，未知门户不误伤）
  */
 export function isPortalVisible(
@@ -29,7 +29,7 @@ export function isPortalVisible(
 	ctx: { role: string | null; isPlatformMember: boolean },
 ): boolean {
 	if (code === 'platform') return ctx.isPlatformMember;
-	if (code === 'admin' || code === 'security') {
+	if (code === 'admin' || code === 'security' || code === 'secret') {
 		return ctx.role !== null && ADMIN_PLANE_ROLES.includes(ctx.role);
 	}
 	return true;

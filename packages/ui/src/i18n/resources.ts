@@ -23,6 +23,7 @@ export const uiI18nResources: Record<'zh-CN' | 'en-US', Record<string, string>> 
 		'portal.names.developer': '开发者门户',
 		'portal.names.landing': '门户首页',
 		'portal.names.brand': '品牌站',
+		'portal.names.secret': '密钥中心',
 		// 整页占位（控制台的 PageLoading / PageError）。文案与 admin 站点里原有的
 		// pageStatus.* 三键**逐字一致** —— 合并只许改实现，不许顺手改用户看到的字。
 		'modal.close': '关闭',
@@ -57,6 +58,7 @@ export const uiI18nResources: Record<'zh-CN' | 'en-US', Record<string, string>> 
 		'portal.names.developer': 'Developer Portal',
 		'portal.names.landing': 'Home',
 		'portal.names.brand': 'Brand Site',
+		'portal.names.secret': 'Secret Center',
 		'modal.close': 'Close',
 		'pageStatus.loading': 'Loading...',
 		'pageStatus.loadError': 'Data loading failed',

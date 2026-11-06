@@ -92,6 +92,7 @@ const PORTAL_DEFAULTS: Record<string, PortalEntry> = {
 	trust: { host: 'trust', base: '' },
 	platform: { host: 'platform', base: '' },
 	brand: { host: 'brand', base: '' },
+	secret: { host: 'secret', base: '' },
 };
 
 let portalConfig: Record<string, PortalEntry> | null = null;
@@ -318,6 +319,7 @@ function getAllowedRedirectOrigins(): string[] {
 		'trust',
 		'platform',
 		'brand',
+		'secret',
 	];
 	return portalIds
 		.map((id) => {

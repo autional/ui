@@ -3,7 +3,7 @@ import React from 'react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, waitFor, cleanup } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { usePortalCatalog, PLATFORM_TENANT_ID } from '../usePortalCatalog';
+import { usePortalCatalog, isPortalVisible, PLATFORM_TENANT_ID } from '../usePortalCatalog';
 import { useAuthStore } from '../../auth/store';
 import { apiClient } from '../../api/client';
 
@@ -297,5 +297,19 @@ describe('usePortalCatalog', () => {
 		await waitFor(() => expect(result.current.portals).toHaveLength(2));
 		// 当前租户 t1 role=super_admin → admin 可见；另一成员租户为平台租户 → platform 可见
 		expect(result.current.portals.map((p) => p.code)).toEqual(['admin', 'platform']);
+	});
+});
+
+describe('isPortalVisible', () => {
+	it('secret 与 admin/security 同属管理面：member 不可见、管理面角色可见', () => {
+		expect(isPortalVisible('secret', { role: 'member', isPlatformMember: false })).toBe(false);
+		expect(isPortalVisible('secret', { role: null, isPlatformMember: false })).toBe(false);
+		expect(isPortalVisible('secret', { role: 'security_admin', isPlatformMember: false })).toBe(true);
+		expect(isPortalVisible('secret', { role: 'admin', isPlatformMember: false })).toBe(true);
+	});
+
+	it('其余门户不受限（叠加原则）', () => {
+		expect(isPortalVisible('brand', { role: null, isPlatformMember: false })).toBe(true);
+		expect(isPortalVisible('status', { role: 'member', isPlatformMember: false })).toBe(true);
 	});
 });
