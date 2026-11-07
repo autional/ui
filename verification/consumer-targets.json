@@ -72,7 +72,9 @@
     "trust": "apps/trust-center/public",
     "user": "apps/end-user-portal/public",
     "web": "public",
-    "wiki": "public"
+    "wiki": "public",
+    "config": "apps/config-console/public",
+    "secret": "apps/secret-console/public"
   },
   "runtimeSheets": {
     "$note": "各运行期样式表能否被站点直接 <link>（见 $modes.runtimeSheets）。未列出的路径会被 check-icons I22 判为「未分类」。",
@@ -95,17 +97,31 @@
   },
   "manifests": {
     "$note": "manifest 交付方式（见 $modes.manifests）。未登记的站点 = static。这四个是 PWA 站：manifest 由 vite-plugin-pwa 在构建期生成并注入，config 指向声明它的 vite 配置 —— 闸门读它来断言清单内容，不执行它。",
-    "auth": { "delivery": "vite-plugin-pwa", "config": "apps/auth-pages/vite.config.ts" },
-    "authenticator": { "delivery": "vite-plugin-pwa", "config": "apps/authenticator-app/vite.config.ts" },
-    "brand": { "delivery": "vite-plugin-pwa", "config": "apps/brand-portal/vite.config.ts" },
-    "status": { "delivery": "vite-plugin-pwa", "config": "apps/status-page/vite.config.ts" }
+    "auth": {
+      "delivery": "vite-plugin-pwa",
+      "config": "apps/auth-pages/vite.config.ts"
+    },
+    "authenticator": {
+      "delivery": "vite-plugin-pwa",
+      "config": "apps/authenticator-app/vite.config.ts"
+    },
+    "brand": {
+      "delivery": "vite-plugin-pwa",
+      "config": "apps/brand-portal/vite.config.ts"
+    },
+    "status": {
+      "delivery": "vite-plugin-pwa",
+      "config": "apps/status-page/vite.config.ts"
+    }
   },
   "themeColors": {
     "$note": "每站 theme-color 的**单一来源**。theme-color 由浏览器消费、必须写字面量（写 var() 会被直接忽略），所以它无法直接引用 CSS 变量——这里的做法是：在这里声明一次（值可以是 {令牌路径} 引用），sync-consumers 解析后写进 site.webmanifest，check-icons 闸门再断言各站 <meta> 与之一致。三处非默认值是刻意的平台差异，不是心情：authenticator 是纯黑底暗色应用、user 是 indigo 品牌体系、web 是白底营销站。",
     "default": "{color.primary.700}",
     "authenticator": "#0a0a0a",
     "user": "#4f46e5",
-    "web": "{color.neutral.0}"
+    "web": "{color.neutral.0}",
+    "config": "#003153",
+    "secret": "#003153"
   },
   "iconSources": {
     "$note": "图标套件的权威来源 → 站点 public/ 内的目标名。favicon 在修复前**完全没有交付通道**（U65④）：14 站各自手工放置，实测只有 3 站有完整图标组。2026-09 轮次 42 起，运行期交付改为 CDN（14 站 <head> 直接 link https://cdn.autional.cn/ui/v<ver>/icons/…），站点 public/ 里的这一份降级为**回滚通道**：sync-consumers 默认不再写入（加 --rollback-vendor 才写）。check-icons 同时守两条：I16/I17 校验**浏览器实际会取的那一份**（CDN 上的字节 vs 本表 from 指向的权威），I12–I14 校验回滚副本不漂移。只守后者会在换轨后照样全绿——而浏览器早就拿到别的东西了。",
@@ -146,19 +162,69 @@
   },
   "iconDelivery": {
     "$note": "图标套件 / site.webmanifest 的交付形态，按站登记，缺省 cdn。cdn = <head> 直链 cdn.autional.cn/ui/v<ver>/icons/*（站点 public/ 只作回滚）；self = <head> 直链本站 /favicon.*（由 sync-consumers 生成并写盘，运行期不再跨域）。2026-11-03 起新站一律 self：跨域资源被 CDN 安全策略（challenge）拦截时是不可自解的硬失败，而 favicon/tokens 属于关键资源。一致性由 check-icons 的 sha 断言与 sync-consumers --check 保证（ui/ 仍是唯一真源，站点里的副本是生成物）。迁移完成后本键删除，脚本只支持 self。",
-    "user": { "mode": "self", "headFile": "apps/end-user-portal/index.html" },
-    "admin": { "mode": "self", "headFile": "apps/admin-console/index.html" },
-    "auth": { "mode": "self", "headFile": "apps/auth-pages/index.html" },
-    "authenticator": { "mode": "self", "headFile": "apps/authenticator-app/index.html" },
-    "brand": { "mode": "self", "headFile": "apps/brand-portal/index.html" },
-    "platform": { "mode": "self", "headFile": "apps/platform-console/index.html" },
-    "security": { "mode": "self", "headFile": "apps/security-dashboard/index.html" },
-    "status": { "mode": "self", "headFile": "apps/status-page/index.html" },
-    "trust": { "mode": "self", "headFile": "apps/trust-center/index.html" },
-    "docs": { "mode": "self", "headFile": "src/layouts/DocLayout.astro" },
-    "developer": { "mode": "self", "headFile": "src/layouts/DevLayout.astro" },
-    "reference": { "mode": "self", "headFile": "src/layouts/RefLayout.astro" },
-    "web": { "mode": "self", "headFile": "src/layouts/LandingLayout.astro" },
-    "wiki": { "mode": "self", "headFile": "src/layouts/WikiLayout.astro" }
+    "user": {
+      "mode": "self",
+      "headFile": "apps/end-user-portal/index.html"
+    },
+    "admin": {
+      "mode": "self",
+      "headFile": "apps/admin-console/index.html"
+    },
+    "auth": {
+      "mode": "self",
+      "headFile": "apps/auth-pages/index.html"
+    },
+    "authenticator": {
+      "mode": "self",
+      "headFile": "apps/authenticator-app/index.html"
+    },
+    "brand": {
+      "mode": "self",
+      "headFile": "apps/brand-portal/index.html"
+    },
+    "platform": {
+      "mode": "self",
+      "headFile": "apps/platform-console/index.html"
+    },
+    "security": {
+      "mode": "self",
+      "headFile": "apps/security-dashboard/index.html"
+    },
+    "status": {
+      "mode": "self",
+      "headFile": "apps/status-page/index.html"
+    },
+    "trust": {
+      "mode": "self",
+      "headFile": "apps/trust-center/index.html"
+    },
+    "docs": {
+      "mode": "self",
+      "headFile": "src/layouts/DocLayout.astro"
+    },
+    "developer": {
+      "mode": "self",
+      "headFile": "src/layouts/DevLayout.astro"
+    },
+    "reference": {
+      "mode": "self",
+      "headFile": "src/layouts/RefLayout.astro"
+    },
+    "web": {
+      "mode": "self",
+      "headFile": "src/layouts/LandingLayout.astro"
+    },
+    "wiki": {
+      "mode": "self",
+      "headFile": "src/layouts/WikiLayout.astro"
+    },
+    "config": {
+      "mode": "self",
+      "headFile": "apps/config-console/index.html"
+    },
+    "secret": {
+      "mode": "self",
+      "headFile": "apps/secret-console/index.html"
+    }
   }
 }
