@@ -36,6 +36,10 @@ const AUTH_ROUTE_RESERVED = new Set([
 	'recover-account',
 	'account-deletion',
 	'verify-identity',
+	// auth 站裸路由：/activity（活动页，原 /security 改名）与 /security（旧路径重定向）。
+	// 缺这两段会把首段当租户 slug，生成 /activity/login、/security/login（未知租户页）。
+	'activity',
+	'security',
 ]);
 
 /**

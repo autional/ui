@@ -123,6 +123,18 @@ describe('buildLoginUrl', () => {
 			);
 		});
 
+		// 回归锁（2026-11-08）：/activity 与 /security 是 auth 站裸路由，
+		// 缺登记会被当成租户 slug → /activity/login、/security/login（未知租户页）。
+		it('treats /activity and /security as reserved auth routes', () => {
+			for (const route of ['activity', 'security']) {
+				mockWindow('auth.autional.local', 'https:', 'https://auth.autional.local', AUTH_CONFIG);
+				const target = `https://auth.autional.local/${route}`;
+				expect(buildLoginUrl(target)).toBe(
+					'https://auth.autional.local?redirect=' + encodeURIComponent(target),
+				);
+			}
+		});
+
 		it('preserves cross-domain returnUrl behavior (app domain)', () => {
 			mockWindow('auth.autional.local', 'https:', 'https://auth.autional.local', AUTH_CONFIG);
 			const url = buildLoginUrl('https://app.autional.com/admin');
