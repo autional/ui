@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import React from 'react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { renderHook, cleanup, waitFor } from '@testing-library/react';
+import { renderHook, cleanup, waitFor, act } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // ============================================================
@@ -97,6 +97,18 @@ describe('useBootstrap（F-W5b 无会话语义）', () => {
 		expect(result.current).toBe('loading');
 	});
 
+	// P1-2 回归锁（2026-11-08 线上复现）：权限/租户两个查询都失败时，
+	// 旧实现返回 'loading' ⇒ 状态机永停 bootstrap ⇒ RequireAuth 恒 render null
+	// ⇒ 后端 5xx 时整站白屏。必须返回 'error' 让守卫渲染可恢复错误页。
+	it('两个 bootstrap 查询都失败 → error（不得 loading）', () => {
+		useAuthStore.setState({ accessToken: 'token-xyz' });
+		mockQueries.perms = { data: undefined, isError: true };
+		mockQueries.tenants = { data: undefined, isError: true };
+		const { result } = renderHook(() => useBootstrap(), { wrapper });
+		expect(result.current).toBe('error');
+		expect(result.current).not.toBe('loading');
+	});
+
 	// U447：登录响应与 /auth/me 都不含 avatarUrl —— 启动必须补读一次 profile 头像，
 	// 否则换浏览器/新登录后顶栏头像恒为首字母。
 	it('U447：有会话 → 补读 /profile/avatar 并写回认证快照', async () => {
@@ -124,5 +136,52 @@ describe('useBootstrap（F-W5b 无会话语义）', () => {
 		renderHook(() => useBootstrap(), { wrapper });
 		await waitFor(() => expect(mockProfileAvatar).toHaveBeenCalled());
 		expect(useAuthStore.getState().user?.avatarUrl).toBeUndefined();
+	});
+
+	// 首屏 avatar 3 次请求的回归锁：多个消费组件同时调 useBootstrap 时，
+	// 同一 userId+tenantId 只允许发一次 GET /profile/avatar。
+	it('U447：多个消费组件并发启动 → 头像只请求一次', async () => {
+		useAuthStore.setState({
+			accessToken: 'token-xyz',
+			user: { id: 'u-1', username: 'demo', email: 'demo@example.com', status: 'active' },
+			permissions: ['user.read'],
+			tenants: [{ id: 't1', name: 'demo', role: 'member' }],
+		});
+		let resolveAvatar!: (v: { avatarUrl: string }) => void;
+		mockProfileAvatar.mockImplementation(
+			() =>
+				new Promise<{ avatarUrl: string }>((resolve) => {
+					resolveAvatar = resolve;
+				}),
+		);
+
+		renderHook(() => useBootstrap(), { wrapper });
+		renderHook(() => useBootstrap(), { wrapper });
+
+		await waitFor(() => expect(mockProfileAvatar).toHaveBeenCalledTimes(1));
+		resolveAvatar({ avatarUrl: 'https://cdn.example.com/b.png' });
+		await waitFor(() =>
+			expect(useAuthStore.getState().user?.avatarUrl).toBe('https://cdn.example.com/b.png'),
+		);
+		expect(mockProfileAvatar).toHaveBeenCalledTimes(1);
+	});
+
+	it('切换租户 → 头像重新补读（缓存按 userId+tenantId 隔离）', async () => {
+		useAuthStore.setState({
+			accessToken: 'token-xyz',
+			user: { id: 'u-1', username: 'demo', email: 'demo@example.com', status: 'active' },
+			currentTenantId: 't1',
+			permissions: ['user.read'],
+			tenants: [{ id: 't1', name: 'demo', role: 'member' }],
+		});
+		mockProfileAvatar.mockResolvedValue({ avatarUrl: 'https://cdn.example.com/c.png' });
+
+		renderHook(() => useBootstrap(), { wrapper });
+		await waitFor(() => expect(mockProfileAvatar).toHaveBeenCalledTimes(1));
+
+		act(() => {
+			useAuthStore.setState({ currentTenantId: 't2' });
+		});
+		await waitFor(() => expect(mockProfileAvatar).toHaveBeenCalledTimes(2));
 	});
 });

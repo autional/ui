@@ -7,6 +7,27 @@ import { usePermissionsQuery, useTenantsQuery } from '../auth/auth-queries';
 
 export type BootstrapState = 'idle' | 'loading' | 'ready' | 'error';
 
+// 头像补读的 in-flight 去重：useBootstrap 被多个消费组件同时调用时（顶栏/侧栏/页面），
+// 同一个 userId+tenantId 只发一次 GET /profile/avatar；请求结束即释放，
+// 后续挂载/切换用户或租户会重新补读（与原实现同语义，只是去掉并发重复）。
+const avatarRequests = new Map<string, Promise<string | null>>();
+
+function fetchAvatarOnce(key: string): Promise<string | null> {
+	const existing = avatarRequests.get(key);
+	if (existing) return existing;
+
+	const promise = import('../generated/api')
+		.then(({ profileAvatar }) => profileAvatar())
+		.then((res) => (((res as { avatarUrl?: string } | undefined)?.avatarUrl ?? '').trim() || null))
+		.catch(() => null) // 忽略：缺头像不影响启动
+		.finally(() => {
+			avatarRequests.delete(key);
+		});
+
+	avatarRequests.set(key, promise);
+	return promise;
+}
+
 /**
  * 应用启动数据加载 Hook。
  *
@@ -52,26 +73,23 @@ export function useBootstrap(): BootstrapState {
 	// 失败静默（展示层回落首字母，不影响任何业务流程）。
 	// 用动态 import 引生成客户端：generated/api 反向 import '@autional/shared'，
 	// 静态导入会在包入口形成循环，动态导入等入口初始化完再求值。
+	// 并发去重见 fetchAvatarOnce：同一 userId+tenantId 只发一次请求。
+	const userId = useAuthStore((s) => s.user?.id);
 	useEffect(() => {
 		if (!hasToken) return;
+		const cacheKey = `${userId ?? ''}|${currentTenantId ?? ''}`;
 		let cancelled = false;
-		void import('../generated/api')
-			.then(({ profileAvatar }) => profileAvatar())
-			.then((res) => {
-				const avatarUrl = ((res as { avatarUrl?: string } | undefined)?.avatarUrl ?? '').trim();
-				if (cancelled || !avatarUrl) return;
-				const current = useAuthStore.getState().user;
-				if (current && current.avatarUrl !== avatarUrl) {
-					useAuthStore.getState().setUser({ ...current, avatarUrl });
-				}
-			})
-			.catch(() => {
-				/* 忽略：缺头像不影响启动 */
-			});
+		void fetchAvatarOnce(cacheKey).then((avatarUrl) => {
+			if (cancelled || !avatarUrl) return;
+			const current = useAuthStore.getState().user;
+			if (current && current.avatarUrl !== avatarUrl) {
+				useAuthStore.getState().setUser({ ...current, avatarUrl });
+			}
+		});
 		return () => {
 			cancelled = true;
 		};
-	}, [hasToken]);
+	}, [hasToken, userId, currentTenantId]);
 
 	// 无会话 = 无数据可引导：返回 'idle'，登录交棒由 RequireAuth/守卫决策（见上）。
 	// 不得返回 'loading'：Layout 消费者（platform-console）以 bootstrap==='loading'
@@ -90,10 +108,13 @@ export function useBootstrap(): BootstrapState {
 		return 'ready';
 	}
 
-	// 两个请求都失败 — keep reporting loading to prevent re-render loops
-	// (OAuth PKCE or BFF redirect will resolve the page before error matters)
+	// 两个请求都失败 —— 语义是「启动失败」，不是「仍在加载」。
+	// 旧实现返回 'loading'（原注释：防重渲染循环），使状态机永停 bootstrap、
+	// RequireAuth 恒 render null ⇒ 后端 5xx 时整站白屏（P1-2，2026-11-08 线上复现：
+	// 四个 bootstrap 接口全 500 → #root 只剩空容器，无提示/无重试）。
+	// 返回 'error' 是稳定值（不会抖动），由 RequireAuth 渲染可恢复错误页。
 	if (permsQuery.isError && tentsQuery.isError) {
-		return 'loading';
+		return 'error';
 	}
 
 	// 等待中
