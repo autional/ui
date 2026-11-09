@@ -17,7 +17,12 @@ interface RequireAuthProps {
 	loadingFallback?: React.ReactNode;
 	/** 确定性未知 slug（by-slug HTTP 404）时渲染的 404 页；缺省用内置极简 404 兜底 */
 	notFound?: React.ReactNode;
+	/** 启动数据（权限/租户）加载失败或超时时的错误页；缺省用内置可恢复错误页兜底 */
+	bootstrapError?: React.ReactNode;
 }
+
+/** 启动等待上限：超过即认定「卡住」，降级到可恢复错误页（P1-2）。 */
+const BOOTSTRAP_TIMEOUT_MS = 10_000;
 
 /**
  * 内置极简 404（零依赖，供未注入 notFound 的站点兜底 —— shared 不能 import 各
@@ -96,17 +101,83 @@ function DefaultSignInRequired({ onSignIn }: { onSignIn: () => void }) {
 	);
 }
 
+/**
+ * P1-2（2026-11-08 线上复现）：启动数据（权限/租户）加载失败或超时时，原实现
+ * 恒 render null ⇒ 后端任一 5xx 就让整站变成空白页（无提示、无重试、不跳登录）。
+ * 此组件给最小可恢复 UI：说明 + 重试（整页重载，重建查询与状态机）。
+ * 零依赖、CSS 变量主题；按钮固定 #2563eb（白字 5.17:1 过 AA），不引品牌色。
+ */
+function DefaultBootstrapError({ onRetry }: { onRetry: () => void }) {
+	const zh =
+		typeof document !== 'undefined' &&
+		(document.documentElement.lang || '').toLowerCase().startsWith('zh');
+	return (
+		<div
+			role="alert"
+			style={{
+				display: 'flex',
+				flexDirection: 'column',
+				alignItems: 'center',
+				justifyContent: 'center',
+				minHeight: '40vh',
+				gap: '0.75rem',
+				width: '100%',
+			}}
+		>
+			<h1 style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--color-text-primary)' }}>
+				{zh ? '加载失败' : 'Failed to load'}
+			</h1>
+			<p style={{ color: 'var(--color-text-secondary)', fontSize: '0.875rem', margin: 0 }}>
+				{zh ? '无法加载账号信息，请检查网络后重试' : 'Could not load your account. Check your connection and retry.'}
+			</p>
+			<button
+				type="button"
+				onClick={onRetry}
+				style={{
+					border: 0,
+					borderRadius: 6,
+					padding: '8px 18px',
+					fontSize: '0.875rem',
+					cursor: 'pointer',
+					background: '#2563eb',
+					color: '#fff',
+				}}
+			>
+				{zh ? '重试' : 'Retry'}
+			</button>
+		</div>
+	);
+}
+
 export function RequireAuth({
 	children,
 	allowedRoles,
 	fallback,
 	loadingFallback,
 	notFound,
+	bootstrapError,
 }: RequireAuthProps) {
 	const machine = useAuthMachine();
 	const tenantRoute = useTenantRoute();
 	// 「停留」已选（被动登录跳转被用户取消）——渲染恢复态而非空白（AUTH-03）
 	const [stayed, setStayed] = useState(false);
+
+	// P1-2：启动数据加载失败/卡住时不得 render null（整站白屏）。
+	// ① bootstrapState==='error'（两个查询都失败）立即给错误页；
+	// ② checking/bootstrap 超过 10s 视为卡住（单查询挂起等），同样降级。
+	const [bootstrapTimedOut, setBootstrapTimedOut] = useState(false);
+	const waitingBootstrap = machine.status === 'checking' || machine.status === 'bootstrap';
+	useEffect(() => {
+		if (!waitingBootstrap) {
+			setBootstrapTimedOut(false);
+			return;
+		}
+		const timer = setTimeout(() => setBootstrapTimedOut(true), BOOTSTRAP_TIMEOUT_MS);
+		return () => clearTimeout(timer);
+	}, [waitingBootstrap]);
+	const retryBootstrap = useCallback(() => {
+		if (typeof window !== 'undefined') window.location.reload();
+	}, []);
 
 	// 登录跳转的单一出口：effect（进入未认证态）与恢复态「前往登录」按钮共用。
 	// force=true 跳过 OAuth 10s 防重入窗口（用户显式重试）。
@@ -178,6 +249,13 @@ export function RequireAuth({
 
 		triggerLogin(false);
 	}, [machine.status, tenantRoute, triggerLogin]);
+
+	// P1-2：启动数据失败 / 等待超时 → 可恢复错误页（不得空白）。
+	// 放在所有 status 分支之前：机器在 BOOTSTRAP_ERROR 时会降级到 ready，
+	// 此时仍是「启动失败」语义，不能直接放行子路由。
+	if (machine.bootstrapState === 'error' || bootstrapTimedOut) {
+		return bootstrapError ? <>{bootstrapError}</> : <DefaultBootstrapError onRetry={retryBootstrap} />;
+	}
 
 	if (machine.status === 'checking' || machine.status === 'bootstrap') {
 		return loadingFallback ? <>{loadingFallback}</> : null;
