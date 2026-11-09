@@ -2808,6 +2808,15 @@
     "docs_path": "/errors/61000904"
   },
   {
+    "code": 61000905,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "name": "QR_LOGIN_TENANT_MISMATCH",
+    "retryable": false,
+    "docs_path": "/errors/61000905"
+  },
+  {
     "code": 61001001,
     "http_status": 401,
     "class": "unauthorized",

@@ -1,7 +1,7 @@
 // GENERATED FILE — DO NOT EDIT.
 // Source: contracts/errors.semantics.json（@autional/shared 仓内镜像，源 = service-core base/error/testdata/errors.semantics.json）
 // Regenerate: pnpm gen:errors · Verify: pnpm gen:errors:check
-// rows: 801 · source sha256: 812f1ec64dade2b940ae6f12af43fb170e9f0f7f658b707fc29f1f0fd48c50b5
+// rows: 802 · source sha256: d1d69d0eedc43e211b89c0efa5ade53b95a0d2ff31ea706800ba29b04c97f20f
 //
 // 单一真源链：service-core/base/error/semantics.go（Go）→ errors.semantics.json → 本文件。
 // ⚠️ 禁止在本文件或页面里手抄错误码分支：请消费 ERROR_SEMANTICS / UNPROVISIONED_CODES。
@@ -393,6 +393,7 @@ export const ERROR_SEMANTICS: Readonly<Record<number, ErrorSemantics>> = {
 	61000902: { code: 61000902, httpStatus: 410, class: 'gone', absence: '', uiObservation: 'expired', retryable: false, docsPath: '/errors/61000902' },
 	61000903: { code: 61000903, httpStatus: 409, class: 'conflict', absence: '', uiObservation: 'conflict', retryable: false, docsPath: '/errors/61000903' },
 	61000904: { code: 61000904, httpStatus: 400, class: 'invalid', absence: '', uiObservation: 'form_error', retryable: false, docsPath: '/errors/61000904' },
+	61000905: { code: 61000905, httpStatus: 403, class: 'forbidden', absence: '', uiObservation: 'forbidden', name: 'QR_LOGIN_TENANT_MISMATCH', retryable: false, docsPath: '/errors/61000905' },
 	61001001: { code: 61001001, httpStatus: 401, class: 'unauthorized', absence: '', uiObservation: 'session_expired', retryable: false, docsPath: '/errors/61001001' },
 	61001002: { code: 61001002, httpStatus: 429, class: 'limit', absence: '', uiObservation: 'rate_limited', retryable: true, docsPath: '/errors/61001002' },
 	61001003: { code: 61001003, httpStatus: 409, class: 'conflict', absence: '', uiObservation: 'conflict', retryable: false, docsPath: '/errors/61001003' },
@@ -862,8 +863,8 @@ export const UNPROVISIONED_CODES: ReadonlySet<number> = new Set([]);
 export const EMPTY_STATE_CODES: ReadonlySet<number> = new Set([]);
 
 export const ERROR_SEMANTICS_META = {
-	rowCount: 801,
-	sourceSha256: '812f1ec64dade2b940ae6f12af43fb170e9f0f7f658b707fc29f1f0fd48c50b5',
+	rowCount: 802,
+	sourceSha256: 'd1d69d0eedc43e211b89c0efa5ade53b95a0d2ff31ea706800ba29b04c97f20f',
 } as const;
 
 /** 具名错误码常量（契约 name → code）。页面只消费常量，不写数字字面量。 */
@@ -875,6 +876,7 @@ export const ERROR_CODES = {
 	MFA_CODE_ALREADY_USED: 61000409,
 	MFA_ATTEMPTS_THROTTLED: 61000410,
 	MFA_AUTHENTICATOR_DISABLED: 61000411,
+	QR_LOGIN_TENANT_MISMATCH: 61000905,
 } as const;
 
 export type ErrorCodeName = keyof typeof ERROR_CODES;
