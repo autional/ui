@@ -54,6 +54,7 @@ describe('useBootstrap（F-W5b 无会话语义）', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		resetAuthStore();
+		queryClient.clear();
 		mockQueries.perms = { data: undefined, isError: false };
 		mockQueries.tenants = { data: undefined, isError: false };
 		mockProfileAvatar.mockReset();
@@ -62,6 +63,7 @@ describe('useBootstrap（F-W5b 无会话语义）', () => {
 
 	afterEach(() => {
 		cleanup();
+		queryClient.clear();
 		resetAuthStore();
 	});
 
