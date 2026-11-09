@@ -4553,15 +4553,6 @@ export async function adminRoleActivations(params?: {
 }
 
 /**
- * 批准角色激活
- * 管理员批准待处理的角色激活请求
- */
-export async function adminRoleActivationsApproveByRoleActivationsPost(roleActivationId: string) {
-  const res = await api.post(`/identity/api/v1/admin/role-activations/${roleActivationId}/approve`);
-  return res.data;
-}
-
-/**
  * 撤销角色激活
  * 管理员撤销正在生效的角色激活，立即移除用户的提权权限
  */
@@ -5152,15 +5143,6 @@ export async function authLogoutPost() {
 }
 
 /**
- * 发送魔法链接
- * 接收邮箱，生成一次性 magic link token 并发送到用户邮箱（dev模式打印到日志）
- */
-export async function authMagicLinkPost(data: MagicLinkRequest) {
-  const res = await api.post(`/identity/api/v1/auth/magic-link`, data);
-  return res.data;
-}
-
-/**
  * 魔法链接回调 (GET→POST 双步跳转)
  * GET: 渲染中转HTML页面 (无泄露), POST: 验证token生成JWT
  */
@@ -5179,17 +5161,6 @@ export async function authMagicLinkCallbackPost(params?: {
   token?: string;  // 魔法链接令牌 (GET)
 }) {
   const res = await api.post(`/identity/api/v1/auth/magic-link/callback`, undefined, { params });
-  return res.data;
-}
-
-/**
- * 验证魔法链接
- * 验证 token 有效性，返回 JWT 令牌和用户信息
- */
-export async function authMagicLinkConfirm(params?: {
-  token: string;  // 魔法链接令牌
-}) {
-  const res = await api.get(`/identity/api/v1/auth/magic-link/confirm`, { params });
   return res.data;
 }
 
@@ -6967,62 +6938,6 @@ export async function mfaTrustedDevicesByTrustedDevicesDelete(trustedDeviceId: s
  */
 export async function mfaTrustedDevicesByTrustedDevices(trustedDeviceId: string) {
   const res = await api.get(`/mfa/api/v1/mfa/trusted-devices/${trustedDeviceId}`);
-  return res.data;
-}
-
-/**
- * 列出WebAuthn凭证
- * 列出用户所有已注册的WebAuthn/通行密钥凭证，包含名称和最后使用时间。参考：W3C WebAuthn Level 2、FIDO2 CTAP 2.1。
- */
-export async function mfaWebauthnCredentials(params?: {
-  page?: number;  // 页码
-  page_size?: number;  // 每页条数
-}) {
-  const res = await api.get(`/mfa/api/v1/mfa/webauthn/credentials`, { params });
-  return res.data;
-}
-
-/**
- * 开始WebAuthn凭证注册
- * 生成 WebAuthn credential creation options (challenge, rp, user, pubKeyCredParams)
- */
-export async function mfaWebauthnCredentialsRegisterPost(data: BeginWebAuthnRegistrationRequest) {
-  const res = await api.post(`/mfa/api/v1/mfa/webauthn/credentials/register`, data);
-  return res.data;
-}
-
-/**
- * 完成WebAuthn凭证注册
- * 验证 attestation 响应并存储凭证。需要先调用 /mfa/webauthn/credentials/register 获取 creation options。
- */
-export async function mfaWebauthnCredentialsRegisterVerifyPost(data: FinishWebAuthnRegistrationRequest) {
-  const res = await api.post(`/mfa/api/v1/mfa/webauthn/credentials/register/verify`, data);
-  return res.data;
-}
-
-/**
- * 删除WebAuthn凭证
- * 删除指定WebAuthn凭证。参考：W3C WebAuthn Level 2、FIDO2 CTAP 2.1。
- */
-export async function mfaWebauthnCredentialsByCredentialsDelete(webauthnCredentialId: string) {
-  await api.delete(`/mfa/api/v1/mfa/webauthn/credentials/${webauthnCredentialId}`);
-}
-
-/**
- * 获取WebAuthn凭证详情
- * 根据ID获取指定WebAuthn凭证的详细信息。参考：W3C WebAuthn Level 2、FIDO2 CTAP 2.1。
- */
-export async function mfaWebauthnCredentialsByCredentials(webauthnCredentialId: string) {
-  const res = await api.get(`/mfa/api/v1/mfa/webauthn/credentials/${webauthnCredentialId}`);
-  return res.data;
-}
-
-/**
- * 重命名WebAuthn凭证
- * 重命名指定WebAuthn凭证的设备名称。参考：W3C WebAuthn Level 2、FIDO2 CTAP 2.1。
- */
-export async function mfaWebauthnCredentialsByCredentialsPut(webauthnCredentialId: string, data: UpdateWebAuthnCredentialRequest) {
-  const res = await api.put(`/mfa/api/v1/mfa/webauthn/credentials/${webauthnCredentialId}`, data);
   return res.data;
 }
 

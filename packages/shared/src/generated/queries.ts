@@ -2157,14 +2157,6 @@ export function useAuthMagic_linkCallback(params?: any) {
   });
 }
 
-/** 验证魔法链接 */
-export function useAuthMagic_linkConfirm(params?: any) {
-  return useQuery({
-    queryKey: ['identity-service', params] as const,
-    queryFn: () => api.authMagicLinkConfirm(params),
-  });
-}
-
 /** 获取当前登录用户信息 */
 export function useAuthMe() {
   return useQuery({
@@ -2690,22 +2682,6 @@ export function useMfaTrusted_devicesByTrustedDevices(trustedDeviceId: string) {
   return useQuery({
     queryKey: ['mfa-service', 'by_' + trustedDeviceId] as const,
     queryFn: () => api.mfaTrustedDevicesByTrustedDevices(trustedDeviceId),
-  });
-}
-
-/** 列出WebAuthn凭证 */
-export function useMfaWebauthnCredentials(params?: any) {
-  return useQuery({
-    queryKey: ['mfa-service', params] as const,
-    queryFn: () => api.mfaWebauthnCredentials(params),
-  });
-}
-
-/** 获取WebAuthn凭证详情 */
-export function useMfaWebauthnCredentialsByCredentials(webauthnCredentialId: string) {
-  return useQuery({
-    queryKey: ['mfa-service', 'by_' + webauthnCredentialId] as const,
-    queryFn: () => api.mfaWebauthnCredentialsByCredentials(webauthnCredentialId),
   });
 }
 
@@ -7213,17 +7189,6 @@ export function usePostAdminRobotsIntentRevokeByRobots() {
   });
 }
 
-/** 批准角色激活 */
-export function usePostAdminRole_activationsApproveByRoleActivations() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (roleActivationId: string) => api.adminRoleActivationsApproveByRoleActivationsPost(roleActivationId),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['identity-service'] });
-    },
-  });
-}
-
 /** 撤销角色激活 */
 export function usePostAdminRole_activationsRevokeByRoleActivations() {
   const qc = useQueryClient();
@@ -7669,17 +7634,6 @@ export function usePostAuthLogout() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: () => api.authLogoutPost(),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['identity-service'] });
-    },
-  });
-}
-
-/** 发送魔法链接 */
-export function usePostAuthMagic_link() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (data: any) => api.authMagicLinkPost(data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['identity-service'] });
     },
@@ -9077,50 +9031,6 @@ export function useDeleteMfaTrusted_devicesByTrustedDevices() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (trustedDeviceId: string) => api.mfaTrustedDevicesByTrustedDevicesDelete(trustedDeviceId),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['mfa-service'] });
-    },
-  });
-}
-
-/** 开始WebAuthn凭证注册 */
-export function usePostMfaWebauthnCredentialsRegister() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (data: any) => api.mfaWebauthnCredentialsRegisterPost(data),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['mfa-service'] });
-    },
-  });
-}
-
-/** 完成WebAuthn凭证注册 */
-export function usePostMfaWebauthnCredentialsRegisterVerify() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (data: any) => api.mfaWebauthnCredentialsRegisterVerifyPost(data),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['mfa-service'] });
-    },
-  });
-}
-
-/** 删除WebAuthn凭证 */
-export function useDeleteMfaWebauthnCredentialsByCredentials() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (webauthnCredentialId: string) => api.mfaWebauthnCredentialsByCredentialsDelete(webauthnCredentialId),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['mfa-service'] });
-    },
-  });
-}
-
-/** 重命名WebAuthn凭证 */
-export function usePutMfaWebauthnCredentialsByCredentials() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: ({ webauthnCredentialId, data }: { webauthnCredentialId: string, data: any }) => api.mfaWebauthnCredentialsByCredentialsPut(webauthnCredentialId, data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['mfa-service'] });
     },

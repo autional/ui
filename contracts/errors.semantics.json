@@ -1029,6 +1029,30 @@
     "docs_path": "/errors/20800004"
   },
   {
+    "code": 20900001,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/20900001"
+  },
+  {
+    "code": 20900002,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/20900002"
+  },
+  {
+    "code": 21000002,
+    "http_status": 503,
+    "class": "unavailable",
+    "ui_observation": "transient",
+    "retryable": true,
+    "docs_path": "/errors/21000002"
+  },
+  {
     "code": 21000004,
     "http_status": 503,
     "class": "unavailable",

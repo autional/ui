@@ -1,7 +1,7 @@
 // GENERATED FILE — DO NOT EDIT.
 // Source: contracts/errors.semantics.json（@autional/shared 仓内镜像，源 = service-core base/error/testdata/errors.semantics.json）
 // Regenerate: pnpm gen:errors · Verify: pnpm gen:errors:check
-// rows: 798 · source sha256: e82f038da18dc0935623718a7516ede07d741ed071275aad4ca1610db00a8d5d
+// rows: 801 · source sha256: 812f1ec64dade2b940ae6f12af43fb170e9f0f7f658b707fc29f1f0fd48c50b5
 //
 // 单一真源链：service-core/base/error/semantics.go（Go）→ errors.semantics.json → 本文件。
 // ⚠️ 禁止在本文件或页面里手抄错误码分支：请消费 ERROR_SEMANTICS / UNPROVISIONED_CODES。
@@ -177,6 +177,9 @@ export const ERROR_SEMANTICS: Readonly<Record<number, ErrorSemantics>> = {
 	20600007: { code: 20600007, httpStatus: 400, class: 'invalid', absence: '', uiObservation: 'form_error', retryable: false, docsPath: '/errors/20600007' },
 	20600008: { code: 20600008, httpStatus: 400, class: 'invalid', absence: '', uiObservation: 'form_error', retryable: false, docsPath: '/errors/20600008' },
 	20800004: { code: 20800004, httpStatus: 404, class: 'not_found', absence: 'entity', uiObservation: 'not_found_page', retryable: false, docsPath: '/errors/20800004' },
+	20900001: { code: 20900001, httpStatus: 503, class: 'unavailable', absence: '', uiObservation: 'transient', retryable: true, docsPath: '/errors/20900001' },
+	20900002: { code: 20900002, httpStatus: 503, class: 'unavailable', absence: '', uiObservation: 'transient', retryable: true, docsPath: '/errors/20900002' },
+	21000002: { code: 21000002, httpStatus: 503, class: 'unavailable', absence: '', uiObservation: 'transient', retryable: true, docsPath: '/errors/21000002' },
 	21000004: { code: 21000004, httpStatus: 503, class: 'unavailable', absence: '', uiObservation: 'transient', retryable: true, docsPath: '/errors/21000004' },
 	21100004: { code: 21100004, httpStatus: 500, class: 'internal', absence: '', uiObservation: 'unexpected', retryable: false, docsPath: '/errors/21100004' },
 	21100006: { code: 21100006, httpStatus: 404, class: 'not_found', absence: 'entity', uiObservation: 'not_found_page', retryable: false, docsPath: '/errors/21100006' },
@@ -859,8 +862,8 @@ export const UNPROVISIONED_CODES: ReadonlySet<number> = new Set([]);
 export const EMPTY_STATE_CODES: ReadonlySet<number> = new Set([]);
 
 export const ERROR_SEMANTICS_META = {
-	rowCount: 798,
-	sourceSha256: 'e82f038da18dc0935623718a7516ede07d741ed071275aad4ca1610db00a8d5d',
+	rowCount: 801,
+	sourceSha256: '812f1ec64dade2b940ae6f12af43fb170e9f0f7f658b707fc29f1f0fd48c50b5',
 } as const;
 
 /** 具名错误码常量（契约 name → code）。页面只消费常量，不写数字字面量。 */
