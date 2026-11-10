@@ -275,6 +275,80 @@ describe('usePortalCatalog', () => {
 		expect(result.current.portals[0]!.code).toBe('user');
 	});
 
+	// 数据驱动可见性：服务端目录带 config.portal.audience 时**优先于**注册表
+	// （ADR §9-1：后端把受众写进目录后，加/调门户不再需要前端发版）。
+	it('目录自带 audience=admin → member 看不见（即使注册表里该 code 是 public）', async () => {
+		getMock.mockResolvedValue({
+			data: {
+				items: [
+					{ code: 'user', name: '用户门户', order: 1, config: { portal: { audience: 'admin' } } },
+				],
+			},
+		});
+		const { result } = renderHook(() => usePortalCatalog({ tenantId: 't1', role: 'member' }), {
+			wrapper: makeWrapper(),
+		});
+		await waitFor(() => expect(result.current.isLoading).toBe(false));
+		expect(result.current.portals).toEqual([]);
+	});
+
+	it('目录自带 audience=public → member 也看得见（覆盖注册表的 admin 判定）', async () => {
+		getMock.mockResolvedValue({
+			data: {
+				items: [
+					{ code: 'config', name: '配置中心', order: 1, config: { portal: { audience: 'public' } } },
+				],
+			},
+		});
+		const { result } = renderHook(() => usePortalCatalog({ tenantId: 't1', role: 'member' }), {
+			wrapper: makeWrapper(),
+		});
+		await waitFor(() => expect(result.current.portals).toHaveLength(1));
+		expect(result.current.portals[0]!.code).toBe('config');
+	});
+
+	it('目录自带 audience=platform → 非平台租户成员看不见', async () => {
+		getMock.mockResolvedValue({
+			data: {
+				items: [
+					{ code: 'platform', name: '平台控制台', order: 1, config: { portal: { audience: 'platform' } } },
+				],
+			},
+		});
+		const { result } = renderHook(() => usePortalCatalog({ tenantId: 't1', role: 'super_admin' }), {
+			wrapper: makeWrapper(),
+		});
+		await waitFor(() => expect(result.current.isLoading).toBe(false));
+		expect(result.current.portals).toEqual([]);
+	});
+
+	it('目录 audience 是脏值（未知字符串）→ 回落注册表判定', async () => {
+		getMock.mockResolvedValue({
+			data: {
+				items: [
+					{ code: 'config', name: '配置中心', order: 1, config: { portal: { audience: 'root' } } },
+				],
+			},
+		});
+		const { result } = renderHook(() => usePortalCatalog({ tenantId: 't1', role: 'member' }), {
+			wrapper: makeWrapper(),
+		});
+		await waitFor(() => expect(result.current.isLoading).toBe(false));
+		// 注册表里 config 属管理面 ⇒ member 不可见
+		expect(result.current.portals).toEqual([]);
+	});
+
+	it('目录无 config → 完全按注册表（向后兼容旧后端）', async () => {
+		getMock.mockResolvedValue({
+			data: { items: [{ code: 'config', name: '配置中心', order: 1 }] },
+		});
+		const { result } = renderHook(() => usePortalCatalog({ tenantId: 't1', role: 'member' }), {
+			wrapper: makeWrapper(),
+		});
+		await waitFor(() => expect(result.current.isLoading).toBe(false));
+		expect(result.current.portals).toEqual([]);
+	});
+
 	it('role 缺省回退 store 当前角色（useCurrentRole），平台租户成员判定不依赖当前租户', async () => {
 		useAuthStore.setState({
 			tenants: [

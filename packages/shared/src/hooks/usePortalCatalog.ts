@@ -8,6 +8,7 @@ import { getPortalUrl } from '../config';
 import {
 	ADMIN_PLANE_ROLES as ADMIN_PLANE_ROLES_REGISTRY,
 	getSwitcherExcludedCodes,
+	isPortalVisibleByAudience,
 	isPortalVisibleForAudience,
 } from '../portal/registry';
 import { useCurrentRole } from './useCurrentRole';
@@ -89,10 +90,23 @@ interface RawPortalApplication {
 	name: string;
 	description?: string;
 	order?: number;
-	/** allowedRoles 为 apiClient camelCase 归一后的键（snake 形态兼容后端透出前的原始键） */
+	/**
+	 * 服务端目录里的门户元数据（tenant-service `ApplicationResponse.config.portal`，2026-11 起透出）。
+	 * `audience` 存在时**优先于**前端注册表；缺失回落注册表（新旧后端都能跑）。
+	 * allowedRoles 为 apiClient camelCase 归一后的键（snake 形态兼容原始键）。
+	 */
 	config?: {
-		portal?: { allowedRoles?: readonly string[]; allowed_roles?: readonly string[] };
+		portal?: {
+			audience?: string;
+			allowedRoles?: readonly string[];
+			allowed_roles?: readonly string[];
+		};
 	} | null;
+}
+
+/** 只认白名单内的受众值；脏值/缺失 ⇒ undefined（回落注册表）。 */
+function toKnownAudience(raw: string | undefined | null): 'public' | 'admin' | 'platform' | undefined {
+	return raw === 'public' || raw === 'admin' || raw === 'platform' ? raw : undefined;
 }
 
 function toEntry(app: RawPortalApplication, slug?: string): PortalCatalogEntry {
@@ -164,13 +178,18 @@ export function usePortalCatalog(options: UsePortalCatalogOptions = {}): UsePort
 		return (query.data ?? []).filter((app) => !excluded.has(app.code));
 	}, [query.data, exclude]);
 
-	// 可见性（入口门禁镜像）+ allowed_roles 叠加
-	// （allowed_roles 数据通路后端尚未透出——tenant-service 列表 DTO 无 config 字段；
-	//   存在时叠加生效，见 usePortalCatalog 审计记录）
+	// 可见性 = 受众判定 + allowed_roles 叠加。
+	// 受众来源**优先数据**（服务端 `config.portal.audience`），缺失才回落注册表 ——
+	// 这样后端把受众写进目录后，加门户/调可见性不再需要前端发版（ADR §9-1）。
 	const visiblePortals = useMemo(
 		() =>
 			excludedPortals.filter((app) => {
-				if (!isPortalVisible(app.code, { role, isPlatformMember })) return false;
+				const ctx = { role, isPlatformMember };
+				const dataAudience = toKnownAudience(app.config?.portal?.audience);
+				const visible = dataAudience
+					? isPortalVisibleByAudience(dataAudience, ctx)
+					: isPortalVisible(app.code, ctx);
+				if (!visible) return false;
 				const allowedRoles =
 					app.config?.portal?.allowedRoles ?? app.config?.portal?.allowed_roles;
 				return !allowedRoles || allowedRoles.includes(role ?? '');

@@ -325,13 +325,25 @@ export function getLegacyEnvKey(code: string): string | undefined {
 	return BY_CODE.get(code)?.legacyEnvKey;
 }
 
-/** 门户可见性（入口门禁镜像）：未登记的门户默认放行（叠加原则，不误伤）。 */
+/**
+ * 按**受众**判定可见性（入口门禁镜像）。
+ *
+ * 同一函数服务两个数据源：注册表的 `audience` 与服务端目录里的 `config.portal.audience`。
+ * 未知/缺失受众一律按 `public`（叠加原则，不误伤新门户）。
+ */
+export function isPortalVisibleByAudience(
+	audience: string | null | undefined,
+	ctx: { role: string | null; isPlatformMember: boolean },
+): boolean {
+	if (audience === 'platform') return ctx.isPlatformMember;
+	if (audience === 'admin') return ctx.role !== null && ADMIN_PLANE_ROLES.includes(ctx.role);
+	return true;
+}
+
+/** 未登记的门户默认放行（叠加原则，不误伤）。 */
 export function isPortalVisibleForAudience(
 	code: string,
 	ctx: { role: string | null; isPlatformMember: boolean },
 ): boolean {
-	const audience = BY_CODE.get(code)?.audience ?? 'public';
-	if (audience === 'platform') return ctx.isPlatformMember;
-	if (audience === 'admin') return ctx.role !== null && ADMIN_PLANE_ROLES.includes(ctx.role);
-	return true;
+	return isPortalVisibleByAudience(BY_CODE.get(code)?.audience, ctx);
 }
