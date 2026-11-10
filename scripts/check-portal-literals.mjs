@@ -54,11 +54,27 @@ const SCAN_DIRS = (() => {
 const SKIP_DIR = new Set(['node_modules', 'dist', '__tests__', 'test', 'generated']);
 const SKIP_FILE = /(\.test\.|\.spec\.|\.d\.ts$)/;
 
+/**
+ * shared 的注册表可能落在：ui 仓自身源码 / 站点仓根 node_modules（pnpm 提升）/
+ * 站点仓 apps/<app>/node_modules（pnpm workspace 的常规位置）/ 将来若出 dist。
+ */
+function installedCandidates() {
+	const out = [];
+	const rel = join('@autional', 'shared');
+	const variants = [join('src', 'portal', 'registry.ts'), join('dist', 'portal', 'registry.js')];
+	const bundlers = [
+		join(ROOT, 'node_modules'),
+		...(existsSync(join(ROOT, 'apps')) ? readdirSync(join(ROOT, 'apps')).map((d) => join(ROOT, 'apps', d, 'node_modules')) : []),
+		...(existsSync(join(ROOT, 'packages')) ? readdirSync(join(ROOT, 'packages')).map((d) => join(ROOT, 'packages', d, 'node_modules')) : []),
+	];
+	for (const base of bundlers) for (const v of variants) out.push(join(base, rel, v));
+	return out;
+}
+
 const REGISTRY_CANDIDATES = [
 	argValue('--codes'),
 	join(ROOT, 'packages', 'shared', 'src', 'portal', 'registry.ts'),
-	join(ROOT, 'node_modules', '@autional', 'shared', 'src', 'portal', 'registry.ts'),
-	join(ROOT, 'node_modules', '@autional', 'shared', 'dist', 'portal', 'registry.js'),
+	...installedCandidates(),
 ].filter(Boolean);
 
 /** 从 registry 提取门户 code（避免本脚本自己维护第二份清单）。 */
@@ -156,18 +172,36 @@ function stripComments(src) {
 	return out;
 }
 
-function findViolations(file, codes) {
-	const src = stripComments(readFileSync(file, 'utf8'));
+function findViolations(file, codes, exemptions) {
+	const rawSrc = readFileSync(file, 'utf8');
+	const src = stripComments(rawSrc); // 扫描用：注释已剥离
 	const violations = [];
 	const blocks = [
 		...src.matchAll(/new Set\(\s*\[[\s\S]{0,4000}?\]\s*\)/g),
 		...src.matchAll(/\[[^[\]]{0,4000}\]/g),
 	];
 	for (const block of blocks) {
-		const hits = codes.filter((code) => new RegExp(`['"]${code}['"]`).test(block[0]));
+		// 取块内所有字符串字面量：**全部**都是门户 code 才算「门户清单」。
+		// 只要求「含 ≥2 个 code」会在站点仓大量误报（'status'/'secret'/'user'/'admin' 也是业务名词：
+		// 服务名清单、用户菜单项都会命中）。全量匹配才能区分「门户清单」与「恰好撞词的业务枚举」。
+		const strings = [...block[0].matchAll(/['"]([^'"]*)['"]/g)].map((m) => m[1]);
+		const hits = strings.filter((s) => codes.includes(s));
 		if (hits.length < 2) continue;
+		if (strings.some((s) => !codes.includes(s))) continue;
 		const upTo = (block.index ?? 0) + block[0].length;
 		const line = src.slice(0, upTo).split(/\r?\n/).length;
+		// 显式豁免：块起始行前 4 行内写 `portal-literals-ok: <理由>`。
+		// 只给「不是可见性策略、但确实要写死几条门户」的场景（如目录失败时的静态兜底）；
+		// 与 eslint-disable 同性质：理由在代码里、评审可见，豁免数在输出里单独报。
+		const allLines = rawSrc.split(/\r?\n/); // 豁免标记在注释里 ⇒ 必须查原文
+		const startLine = src.slice(0, block.index ?? 0).split(/\r?\n/).length;
+		const exempt = allLines
+			.slice(Math.max(0, startLine - 4), startLine)
+			.some((l) => /portal-literals-ok/.test(l));
+		if (exempt) {
+			exemptions.push({ line, codes: hits });
+			continue;
+		}
 		violations.push({
 			line,
 			codes: hits,
@@ -197,17 +231,22 @@ if (codes.length === 0) {
 const registryAbs = registry ? resolve(registry) : null;
 const files = SCAN_DIRS.flatMap((dir) => walk(dir)).filter((f) => resolve(f) !== registryAbs);
 const results = [];
+const exemptions = [];
 for (const file of files) {
-	const violations = findViolations(file, codes);
+	const violations = findViolations(file, codes, exemptions);
 	if (violations.length > 0) results.push({ file: relative(ROOT, file), violations });
 }
 
 if (process.argv.includes('--json')) {
-	console.log(JSON.stringify({ codes, results }, null, 2));
+	console.log(JSON.stringify({ codes, results, exemptions }, null, 2));
 } else if (results.length === 0) {
-	console.log(`check-portal-literals：PASS（${files.length} 个文件，门户 code 字面量 0 处）`);
+	console.log(
+		`check-portal-literals：PASS（${files.length} 个文件，门户 code 字面量 0 处` +
+			`${exemptions.length ? `；显式豁免 ${exemptions.length} 处` : ''}）`,
+	);
 } else {
 	console.error(`check-portal-literals：FAIL（${results.length} 个文件仍持有门户字面量清单）`);
+	if (exemptions.length) console.error(`  （另有显式豁免 ${exemptions.length} 处）`);
 	for (const { file, violations } of results) {
 		for (const v of violations) {
 			console.error(`  ${file}:${v.line}  [${v.codes.join(', ')}]  ${v.text}`);
