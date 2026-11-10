@@ -33,6 +33,7 @@ export const ROLE_SECURITY_FULL = ['super_admin', 'security_admin'] as const;
  * Portal Guard 配置。
  * 如需新增 Guard，在此添加 role 集即可。
  */
+/** @deprecated 与命名 Guard 同属死面（17 仓 0 消费）；角色集请就近声明或走 RBAC。下个 minor 删除（ADR §9-3）。 */
 export const ADMIN_GUARDS = {
 	admin: { roles: ROLE_SUPER_ADMIN },
 	userMgmt: { roles: ROLE_USER_MGMT },
@@ -41,10 +42,12 @@ export const ADMIN_GUARDS = {
 	securityAdmin: { roles: ROLE_SECURITY_FULL }, // admin-console 安全配置管理
 } as const;
 
+/** @deprecated 与命名 Guard 同属死面（17 仓 0 消费）；角色集请就近声明或走 RBAC。下个 minor 删除（ADR §9-3）。 */
 export const PLATFORM_GUARDS = {
 	superAdmin: { roles: ROLE_SUPER_ADMIN },
 } as const;
 
+/** @deprecated 与命名 Guard 同属死面（17 仓 0 消费）；角色集请就近声明或走 RBAC。下个 minor 删除（ADR §9-3）。 */
 export const SECURITY_GUARDS = {
 	security: { roles: ROLE_SECURITY_ENTRY }, // 基础准入（不含 admin）
 	auditRead: { roles: ROLE_AUDIT_READ }, // 审计证据页（auditor 只读）
@@ -55,6 +58,7 @@ export const SECURITY_GUARDS = {
 // ============ Portal Config ============
 
 /** 所有 Portal 的认证配置映射 */
+/** @deprecated 与命名 Guard 同属死面（17 仓 0 消费）；角色集请就近声明或走 RBAC。下个 minor 删除（ADR §9-3）。 */
 export const PORTAL_AUTH_CONFIG = {
 	'admin-console': { guards: ADMIN_GUARDS },
 	'platform-console': { guards: PLATFORM_GUARDS },

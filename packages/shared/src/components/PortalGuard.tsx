@@ -12,6 +12,9 @@
  *   <AdminGuard allowedRoles={['user_mgmt']}><UsersPage /></AdminGuard>  // 覆盖默认角色
  *
  * @see portal-config.ts
+ *
+ * @deprecated 整个模块已无消费方（17 仓实测 0 处）。角色准入请直接用 `<RequireAuth allowedRoles>`。
+ * 下个 minor 删除；见 docs/CONSOLE-KIT-DECISION.md §9-3。
  */
 
 'use client';
@@ -32,6 +35,7 @@ interface PortalGuardProps {
 /**
  * Admin Console Guard — 默认 roles: ['super_admin', 'admin']
  */
+/** @deprecated 全站 0 消费（17 仓实测）；用 `<RequireAuth allowedRoles={...}>` 代替，下个 minor 删除（ADR §9-3）。 */
 export function AdminGuard({ children, allowedRoles, ...rest }: PortalGuardProps) {
 	return (
 		<RequireAuth allowedRoles={allowedRoles || ADMIN_GUARDS.admin.roles} {...rest}>
@@ -43,6 +47,7 @@ export function AdminGuard({ children, allowedRoles, ...rest }: PortalGuardProps
 /**
  * 用户管理 Guard — roles: ['super_admin', 'admin', 'user_manager']
  */
+/** @deprecated 全站 0 消费（17 仓实测）；用 `<RequireAuth allowedRoles={...}>` 代替，下个 minor 删除（ADR §9-3）。 */
 export function UserMgmtGuard({ children, allowedRoles, ...rest }: PortalGuardProps) {
 	return (
 		<RequireAuth allowedRoles={allowedRoles || ADMIN_GUARDS.userMgmt.roles} {...rest}>
@@ -54,6 +59,7 @@ export function UserMgmtGuard({ children, allowedRoles, ...rest }: PortalGuardPr
 /**
  * 安全只读 Guard — roles: ['super_admin', 'admin', 'security_admin']
  */
+/** @deprecated 全站 0 消费（17 仓实测）；用 `<RequireAuth allowedRoles={...}>` 代替，下个 minor 删除（ADR §9-3）。 */
 export function SecurityGuard({ children, allowedRoles, ...rest }: PortalGuardProps) {
 	return (
 		<RequireAuth allowedRoles={allowedRoles || SECURITY_GUARDS.security.roles} {...rest}>
@@ -65,6 +71,7 @@ export function SecurityGuard({ children, allowedRoles, ...rest }: PortalGuardPr
 /**
  * Platform Console Guard — roles: ['super_admin', 'admin']
  */
+/** @deprecated 全站 0 消费（17 仓实测）；用 `<RequireAuth allowedRoles={...}>` 代替，下个 minor 删除（ADR §9-3）。 */
 export function PlatformGuard({ children, allowedRoles, ...rest }: PortalGuardProps) {
 	return (
 		<RequireAuth allowedRoles={allowedRoles || PLATFORM_GUARDS.superAdmin.roles} {...rest}>
@@ -77,6 +84,7 @@ export function PlatformGuard({ children, allowedRoles, ...rest }: PortalGuardPr
  * Security Admin Guard — roles: ['super_admin', 'security_admin']
  * 用于 security-dashboard 中仅 security_admin 可访问的平台级页面
  */
+/** @deprecated 全站 0 消费（17 仓实测）；用 `<RequireAuth allowedRoles={...}>` 代替，下个 minor 删除（ADR §9-3）。 */
 export function SecurityAdminGuard({ children, allowedRoles, ...rest }: PortalGuardProps) {
 	return (
 		<RequireAuth allowedRoles={allowedRoles || SECURITY_GUARDS.securityAdmin.roles} {...rest}>
@@ -89,6 +97,7 @@ export function SecurityAdminGuard({ children, allowedRoles, ...rest }: PortalGu
  * Auditor Guard — roles: ['auditor']
  * 仅 auditor 可访问的纯审计页面（只读）
  */
+/** @deprecated 全站 0 消费（17 仓实测）；用 `<RequireAuth allowedRoles={...}>` 代替，下个 minor 删除（ADR §9-3）。 */
 export function AuditorGuard({ children, allowedRoles, ...rest }: PortalGuardProps) {
 	return (
 		<RequireAuth allowedRoles={allowedRoles || SECURITY_GUARDS.auditor.roles} {...rest}>
@@ -100,6 +109,7 @@ export function AuditorGuard({ children, allowedRoles, ...rest }: PortalGuardPro
 /**
  * Token-only Guard — 仅需登录，无角色限制
  */
+/** @deprecated 全站 0 消费（17 仓实测）；用 `<RequireAuth allowedRoles={...}>` 代替，下个 minor 删除（ADR §9-3）。 */
 export function AuthGuard({ children, ...rest }: PortalGuardProps) {
 	return <RequireAuth {...rest}>{children}</RequireAuth>;
 }
