@@ -1969,6 +1969,14 @@
     "docs_path": "/errors/40800305"
   },
   {
+    "code": 40800306,
+    "http_status": 403,
+    "class": "forbidden",
+    "ui_observation": "forbidden",
+    "retryable": false,
+    "docs_path": "/errors/40800306"
+  },
+  {
     "code": 40800401,
     "http_status": 404,
     "class": "not_found",

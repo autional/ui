@@ -1,7 +1,7 @@
 // GENERATED FILE — DO NOT EDIT.
 // Source: contracts/errors.semantics.json（@autional/shared 仓内镜像，源 = service-core base/error/testdata/errors.semantics.json）
 // Regenerate: pnpm gen:errors · Verify: pnpm gen:errors:check
-// rows: 802 · source sha256: d1d69d0eedc43e211b89c0efa5ade53b95a0d2ff31ea706800ba29b04c97f20f
+// rows: 803 · source sha256: f4e10203c9d4a888df05ff40bf16d5b997c0606859a31e1ff1061bd12f791665
 //
 // 单一真源链：service-core/base/error/semantics.go（Go）→ errors.semantics.json → 本文件。
 // ⚠️ 禁止在本文件或页面里手抄错误码分支：请消费 ERROR_SEMANTICS / UNPROVISIONED_CODES。
@@ -292,6 +292,7 @@ export const ERROR_SEMANTICS: Readonly<Record<number, ErrorSemantics>> = {
 	40800302: { code: 40800302, httpStatus: 404, class: 'not_found', absence: 'entity', uiObservation: 'not_found_page', retryable: false, docsPath: '/errors/40800302' },
 	40800303: { code: 40800303, httpStatus: 401, class: 'unauthorized', absence: '', uiObservation: 'session_expired', retryable: false, docsPath: '/errors/40800303' },
 	40800305: { code: 40800305, httpStatus: 409, class: 'conflict', absence: '', uiObservation: 'conflict', retryable: false, docsPath: '/errors/40800305' },
+	40800306: { code: 40800306, httpStatus: 403, class: 'forbidden', absence: '', uiObservation: 'forbidden', retryable: false, docsPath: '/errors/40800306' },
 	40800401: { code: 40800401, httpStatus: 404, class: 'not_found', absence: 'entity', uiObservation: 'not_found_page', retryable: false, docsPath: '/errors/40800401' },
 	40800501: { code: 40800501, httpStatus: 429, class: 'limit', absence: '', uiObservation: 'rate_limited', retryable: true, docsPath: '/errors/40800501' },
 	40800502: { code: 40800502, httpStatus: 403, class: 'forbidden', absence: '', uiObservation: 'forbidden', retryable: false, docsPath: '/errors/40800502' },
@@ -863,8 +864,8 @@ export const UNPROVISIONED_CODES: ReadonlySet<number> = new Set([]);
 export const EMPTY_STATE_CODES: ReadonlySet<number> = new Set([]);
 
 export const ERROR_SEMANTICS_META = {
-	rowCount: 802,
-	sourceSha256: 'd1d69d0eedc43e211b89c0efa5ade53b95a0d2ff31ea706800ba29b04c97f20f',
+	rowCount: 803,
+	sourceSha256: 'f4e10203c9d4a888df05ff40bf16d5b997c0606859a31e1ff1061bd12f791665',
 } as const;
 
 /** 具名错误码常量（契约 name → code）。页面只消费常量，不写数字字面量。 */

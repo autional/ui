@@ -2,7 +2,7 @@
   "$comment": "错误语义契约镜像元数据：钉住来源与 sha256，防止手工拷贝/改文件后漂移。",
   "source": "github.com/autional/service-core :: base/error/testdata/errors.semantics.json",
   "generator": "github.com/autional/service-core :: base/error/semantics.go (ExportSemanticsJSON)",
-  "sourceSha256": "d1d69d0eedc43e211b89c0efa5ade53b95a0d2ff31ea706800ba29b04c97f20f",
-  "rows": 802,
-  "syncedAt": "2026-11-09T05:54:37Z"
+  "sourceSha256": "f4e10203c9d4a888df05ff40bf16d5b997c0606859a31e1ff1061bd12f791665",
+  "rows": 803,
+  "syncedAt": "2026-11-10T00:05:45Z"
 }
