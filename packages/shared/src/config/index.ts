@@ -3,6 +3,13 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import {
+	PORTALS,
+	getLegacyEnvKey,
+	getRouterPortalCodes,
+	isSlugScopedPortal,
+} from '../portal/registry';
+
 // ─── Runtime Config ───
 function getRuntimeConfig(): Record<string, string> | undefined {
 	try {
@@ -50,8 +57,8 @@ const getEnv = (key: string, fallback: string): string => {
 // ─── Base Path ───
 export const BASE_PATH = getEnv('BASE_PATH', '/');
 
-const APP_PORTAL_SLUGS = ['admin', 'developer', 'security', 'platform', 'status', 'trust'] as const;
-void APP_PORTAL_SLUGS;
+// `/<tenant>/<portal>` 路由 basename 解析用的门户表 —— 派生自注册表（勿再写字面量）。
+const APP_PORTAL_SLUGS: readonly string[] = getRouterPortalCodes();
 
 export function getRouterBasename(): string {
 	const base = BASE_PATH.replace(/\/$/, '') || '/';
@@ -80,21 +87,13 @@ export interface PortalEntry {
 	base: string;
 }
 
-const PORTAL_DEFAULTS: Record<string, PortalEntry> = {
-	auth: { host: 'auth', base: '' },
-	admin: { host: 'admin', base: '' },
-	developer: { host: 'developer', base: '' },
-	user: { host: 'user', base: '' },
-	security: { host: 'security', base: '' },
-	status: { host: 'status', base: '' },
-	landing: { host: '', base: '' },
-	authenticator: { host: 'authenticator', base: '' },
-	trust: { host: 'trust', base: '' },
-	platform: { host: 'platform', base: '' },
-	brand: { host: 'brand', base: '' },
-	secret: { host: 'secret', base: '' },
-	config: { host: 'config', base: '' },
-};
+/**
+ * 门户 host/base 默认值 —— 派生自注册表（`src/portal/registry.ts`）。
+ * 顺序与内容与迁移前字面量逐项等价（oracle 测试锁定），env / 运行时 API 仍可覆盖。
+ */
+const PORTAL_DEFAULTS: Record<string, PortalEntry> = Object.fromEntries(
+	PORTALS.map((p) => [p.code, { host: p.host, base: p.base }] as const),
+);
 
 let portalConfig: Record<string, PortalEntry> | null = null;
 
@@ -130,19 +129,13 @@ export async function initPortalConfig(
 	portalConfig = PORTAL_DEFAULTS;
 }
 
-// 旧 env.js 直连 URL 键（VITE_*_URL）→ portalId 映射（向后兼容）
-const PORTAL_KEY_MAP: Record<string, string> = {
-	auth: 'VITE_AUTH_PAGES_URL',
-	admin: 'VITE_ADMIN_CONSOLE_URL',
-	developer: 'VITE_DEVELOPER_PORTAL_URL',
-	user: 'VITE_END_USER_PORTAL_URL',
-	security: 'VITE_SECURITY_DASHBOARD_URL',
-	status: 'VITE_STATUS_PAGE_URL',
-	landing: 'VITE_LANDING_SITE_URL',
-	authenticator: 'VITE_AUTHENTICATOR_APP_URL',
-	trust: 'VITE_TRUST_CENTER_URL',
-	platform: 'VITE_PLATFORM_CONSOLE_URL',
-};
+// 旧 env.js 直连 URL 键（VITE_*_URL）→ portalId 映射（向后兼容）—— 派生自注册表 legacyEnvKey。
+const PORTAL_KEY_MAP: Record<string, string> = Object.fromEntries(
+	PORTALS.flatMap((p) => {
+		const key = getLegacyEnvKey(p.code);
+		return key ? [[p.code, key] as const] : [];
+	}),
+);
 
 /**
  * 读取构建期注入的 VITE_PORTAL_CONFIG（env.js → window.__APP_CONFIG__）。
@@ -191,15 +184,10 @@ function resolvePortalUrl(entry: PortalEntry, hostname: string, slug?: string): 
 // （legacy seed 049 requires_slug:true），且 OAuth client 按 slug 解析 —— 不拼租户段时
 // 控制台拿不到 client，裸根入口退化为登录死循环。其余门户（status/trust/developer/
 // brand/landing）是域根应用，拼租户段会命中不存在的路由 ⇒ 空白/404。
-// 新增租户段门户时须同步在此登记。
-const SLUG_PORTALS: ReadonlySet<string> = new Set([
-	'auth',
-	'admin',
-	'user',
-	'security',
-	'authenticator',
-	'platform',
-]);
+// 登记处 = 注册表 `slugScoped` 字段（本集合由它派生，勿再写字面量）。
+const SLUG_PORTALS: ReadonlySet<string> = new Set(
+	PORTALS.filter((p) => isSlugScopedPortal(p.code)).map((p) => p.code),
+);
 
 export function getPortalUrl(portalId: string, slug?: string): string {
 	if (typeof window === 'undefined') return '';
@@ -251,7 +239,8 @@ function getPortalEntries(): Record<string, PortalEntry> {
 }
 
 export function getAppPortalSlugs(): string[] {
-	return ['admin', 'developer', 'security', 'platform', 'status', 'trust'];
+	// 派生自注册表 routerSlug（勿再写字面量）；顺序与迁移前一致。
+	return [...APP_PORTAL_SLUGS];
 }
 
 export function getRootDomain(hostname: string, _rootParts?: number): string {
@@ -306,24 +295,14 @@ export function getRootDomain(hostname: string, _rootParts?: number): string {
 	return hostname;
 }
 
-/** Resolve all portal URLs for redirect origin validation. */
+/**
+ * Resolve all portal URLs for redirect origin validation.
+ *
+ * 白名单 = 注册表全部门户（新增门户自动获得 redirect 合法性）。
+ * 迁移前是手写 13 项；现为派生，且补齐了此前漏登记的 4 个内容站。
+ */
 function getAllowedRedirectOrigins(): string[] {
-	const portalIds = [
-		'auth',
-		'admin',
-		'developer',
-		'user',
-		'security',
-		'status',
-		'landing',
-		'authenticator',
-		'trust',
-		'platform',
-		'brand',
-		'secret',
-		'config',
-	];
-	return portalIds
+	return PORTALS.map((p) => p.code)
 		.map((id) => {
 			try {
 				return getPortalUrl(id);

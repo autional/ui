@@ -1,5 +1,13 @@
 // API
 export { apiClient, createApiClient } from './api/client';
+// fetch 版传输层（与 axios client 并存；默认透传，供零依赖控制台用）
+export { createFetchClient, FetchApiError } from './api/fetch-client';
+export type {
+	FetchClient,
+	FetchClientOptions,
+	FetchRequestOptions,
+	FetchQueryValue,
+} from './api/fetch-client';
 export {
 	setTraceParentProvider,
 	getTraceParentHeader,
@@ -19,6 +27,19 @@ export {
 	logout,
 	isTokenExpired,
 	refreshAccessToken,
+	// 存储位置可选（默认 local ⇒ 既有 9 个消费方行为不变）
+	configureAuthStore,
+	getAuthStore,
+	getAuthStorageMode,
+	resetAuthStore,
+} from './auth/store';
+export { createAuthStore } from './auth/create-auth-store';
+export type {
+	AuthState,
+	AuthStorageMode,
+	CreateAuthStoreOptions,
+	AuthStoreApi,
+	AuthStoreHook,
 } from './auth/store';
 export { AuthService } from './auth/service';
 export { generatePKCE, generateCodeChallenge } from './auth/pkce';
@@ -88,6 +109,23 @@ export type {
 	UsePortalCatalogOptions,
 	UsePortalCatalogResult,
 } from './hooks/usePortalCatalog';
+// 门户注册表（单一真源）——各站据此替代本地 CONSOLE_PORTALS 白名单
+export {
+	PORTALS,
+	PORTAL_CODES,
+	getPortalDefinition,
+	isConsolePortal,
+	isSlugScopedPortal,
+	getConsolePortalCodes,
+	getSwitcherIncludedCodes,
+	getSwitcherExcludedCodes,
+	isPortalVisibleForAudience,
+} from './portal/registry';
+export type {
+	PortalAudience,
+	PortalDefinition,
+	PortalFamily,
+} from './portal/registry';
 
 // Constants
 export { API as API_PATHS } from './constants/api-paths';

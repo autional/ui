@@ -5,34 +5,35 @@ import { useQuery } from '@tanstack/react-query';
 import { getAccessToken, useAuthStore } from '../auth/store';
 import { apiClient } from '../api/client';
 import { getPortalUrl } from '../config';
+import {
+	ADMIN_PLANE_ROLES as ADMIN_PLANE_ROLES_REGISTRY,
+	getSwitcherExcludedCodes,
+	isPortalVisibleForAudience,
+} from '../portal/registry';
 import { useCurrentRole } from './useCurrentRole';
 
 /** 平台租户 well-known ULID（service-core base/constant TenantPlatformID，全环境同值） */
 export const PLATFORM_TENANT_ID = '01KSQCBNVMS6SX64PJS937CE33';
 
-/** 管理面平面角色集（admin/security 门户）——与登录入口门禁同集：member/guest 登录被拒 40000503 */
-export const ADMIN_PLANE_ROLES: readonly string[] = [
-	'super_admin',
-	'admin',
-	'security_admin',
-	'user_manager',
-];
+/**
+ * 管理面平面角色集（admin/security/config/secret 门户）——与登录入口门禁同集：
+ * member/guest 登录被拒 40000503。定义在注册表（单一真源），此处保留导出以兼容既有 import。
+ */
+export const ADMIN_PLANE_ROLES: readonly string[] = ADMIN_PLANE_ROLES_REGISTRY;
 
 /**
  * 门户可见性 = 入口门禁的镜像（谁能登录谁才看见）：
- * - platform：仅平台租户成员
- * - admin / security / secret / config：仅管理面角色
- * - 其余 code：不限制（叠加原则，未知门户不误伤）
+ * - `audience: 'platform'`：仅平台租户成员
+ * - `audience: 'admin'`：仅管理面角色（admin / security / config / secret …）
+ * - 其余（含未登记 code）：不限制（叠加原则，未知门户不误伤）
+ *
+ * 判定数据源 = 注册表 `audience`；本函数不再持有门户 code 字面量。
  */
 export function isPortalVisible(
 	code: string,
 	ctx: { role: string | null; isPlatformMember: boolean },
 ): boolean {
-	if (code === 'platform') return ctx.isPlatformMember;
-	if (code === 'admin' || code === 'security' || code === 'secret' || code === 'config') {
-		return ctx.role !== null && ADMIN_PLANE_ROLES.includes(ctx.role);
-	}
-	return true;
+	return isPortalVisibleForAudience(code, ctx);
 }
 
 /** 平台门户目录项（映射自 tenant-service 应用列表响应，is_platform=true） */
@@ -77,9 +78,10 @@ export interface UsePortalCatalogResult {
 	refetch: () => void;
 }
 
-// 「切换门户」清单默认排除：auth/landing 非切换目标；authenticator 为移动 App 形态
-// （TOTP/push），与其他门户功能形态不同，不列入桌面门户清单
-const DEFAULT_EXCLUDE: readonly string[] = ['auth', 'landing', 'authenticator'];
+// 「切换门户」清单默认排除 = 注册表 `inSwitcher === false` 的门户
+// （auth/landing 非切换目标；authenticator 为移动 App 形态 TOTP/push，不列入桌面清单）。
+// 派生结果与迁移前字面量逐项等价（oracle 测试锁定）。
+const DEFAULT_EXCLUDE: readonly string[] = getSwitcherExcludedCodes();
 const PORTAL_CATALOG_STALE_TIME = 60_000;
 
 interface RawPortalApplication {

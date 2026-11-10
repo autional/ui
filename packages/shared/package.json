@@ -10,6 +10,7 @@
 		".": "./src/index.ts",
 		"./branding": "./src/branding/index.ts",
 		"./slug-from-url": "./src/auth/slug-from-url.ts",
+		"./portal": "./src/portal/registry.ts",
 		"./generated/api": "./src/generated/api.ts",
 		"./generated/types": "./src/generated/types.ts",
 		"./generated/queries": "./src/generated/queries.ts",

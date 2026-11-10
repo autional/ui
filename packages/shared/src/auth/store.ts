@@ -4,146 +4,125 @@
  *
  * 职责划分（AC-008）：前端角色（tenants[].role 派生）仅用于 UX 呈现；
  * 安全判断由后端 rbac-backed 授权强制，前端不做凭角色放行的敏感操作。
+ *
+ * 存储位置（docs/CONSOLE-KIT-DECISION.md §4-1）：
+ * 默认 localStorage（与迁移前完全一致）；需要 sessionStorage 的站（配置中心）在**入口最早期**
+ * 调用 `configureAuthStore({ storage: 'session' })`，此后所有 shared 导出（含 AuthService、
+ * useAuth / usePermission / usePortalCatalog）都读同一个实例。
  */
 
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { useStore } from 'zustand';
+import type { StoreApi } from 'zustand';
 import type { User } from '../types';
 import { traceRedirect } from './auth-trace';
 import { decodeJwtPayload } from './jwt-payload';
+import {
+	createAuthStore,
+	type AuthState,
+	type AuthStorageMode,
+	type CreateAuthStoreOptions,
+} from './create-auth-store';
 
-interface AuthState {
-	// State
-	user: User | null;
-	accessToken: string | null;
-	refreshToken: string | null;
-	tenants: Array<{ id: string; name: string; role: string }>;
-	currentTenantId: string | null;
-	permissions: string[];
-	isAuthenticated: boolean;
+export type { AuthState, AuthStorageMode, CreateAuthStoreOptions } from './create-auth-store';
 
-	// Actions
-	setAuth: (accessToken: string, refreshToken: string, user: User) => void;
-	setTokens: (accessToken: string, refreshToken: string) => void;
-	setUser: (user: User) => void;
-	setTenants: (tenants: Array<{ id: string; name: string; role: string }>) => void;
-	setCurrentTenant: (tenantId: string) => void;
-	switchTenant: (tenantId: string) => void;
-	setPermissions: (permissions: string[]) => void;
-	clearAuth: () => void;
+export type AuthStoreApi = StoreApi<AuthState>;
+
+/**
+ * 当前生效实例 + 其存储模式。
+ * 惰性创建：首次访问时才实例化，保证 `configureAuthStore()` 能先于任何读取生效。
+ */
+let activeStore: AuthStoreApi | null = null;
+let activeStorageMode: AuthStorageMode | null = null;
+
+/**
+ * 配置并返回认证 store（**幂等**：已创建则原样返回，不重复建实例）。
+ *
+ * 必须在应用入口、任何认证态读取之前调用；形态：
+ *
+ *   configureAuthStore({ storage: 'session' });  // 配置中心
+ *   // 其余站不调用即可 —— 默认 local，行为与迁移前一致
+ *
+ * 若在 store 已创建后再以不同 storage 调用：**生产也告警**并沿用已创建实例
+ * （避免"两套 auth 同时写 token"导致一半页面登出；静默降级等于悄悄退回 localStorage）。
+ */
+export function configureAuthStore(options: CreateAuthStoreOptions = {}): AuthStoreApi {
+	const mode = options.storage ?? 'local';
+	if (activeStore) {
+		if (activeStorageMode !== mode) {
+			// **生产也告警**：静默降级等于把 sessionStorage 的安全取舍悄悄退回 localStorage
+			// （关标签仍存活），日志里必须留痕。
+			console.warn(
+				`[auth] configureAuthStore({ storage: '${mode}' }) 早于 store 创建才生效；` +
+					`当前实例已是 '${String(activeStorageMode)}'，本次忽略。` +
+					'请在应用入口最早期调用。',
+			);
+		}
+		return activeStore;
+	}
+	activeStore = createAuthStore({ ...options, storage: mode });
+	activeStorageMode = mode;
+	return activeStore;
 }
 
-export const useAuthStore = create<AuthState>()(
-	persist(
-		(set) => ({
-			user: null,
-			accessToken: null,
-			refreshToken: null,
-			tenants: [],
-			currentTenantId: null,
-			permissions: [],
-			isAuthenticated: false,
+/** 当前生效 store（未配置则按默认 local 惰性创建）。 */
+export function getAuthStore(): AuthStoreApi {
+	return activeStore ?? configureAuthStore();
+}
 
-			setAuth: (accessToken, refreshToken, user) => {
-				if (!user) return;
-				const validToken = accessToken && accessToken !== 'undefined' && accessToken !== 'null';
-				set({
-					accessToken: validToken ? accessToken : null,
-					refreshToken: validToken ? refreshToken : null,
-					user,
-					isAuthenticated: true,
-				});
-			},
+/** 当前生效存储模式（测试与诊断用）。 */
+export function getAuthStorageMode(): AuthStorageMode {
+	getAuthStore();
+	return activeStorageMode ?? 'local';
+}
 
-			setTokens: (accessToken, refreshToken) => set({ accessToken, refreshToken }),
+/** 丢弃当前实例（**仅测试**：隔离用例之间的存储/状态串扰）。 */
+export function resetAuthStore(): void {
+	activeStore = null;
+	activeStorageMode = null;
+}
 
-			setUser: (user) => set({ user }),
+/** 兼容旧调用点的 hook 形状：可当 hook 用，也可 `.getState()` / `.setState()` / `.subscribe()`。 */
+export type AuthStoreHook = {
+	<T>(selector: (state: AuthState) => T): T;
+	(): AuthState;
+	getState: () => AuthState;
+	getInitialState: () => AuthState;
+	setState: AuthStoreApi['setState'];
+	subscribe: AuthStoreApi['subscribe'];
+	/** persist 中间件附加 API（rehydrate / hasHydrated …）；未使用 persist 时为 undefined。 */
+	persist?: unknown;
+};
 
-			setTenants: (tenants) => set({ tenants }),
+const identity = (state: AuthState): AuthState => state;
 
-			setCurrentTenant: (tenantId) => set({ currentTenantId: tenantId }),
-
-			switchTenant: (tenantId) => set({ currentTenantId: tenantId }),
-
-			setPermissions: (permissions) => set({ permissions }),
-
-			clearAuth: () =>
-				set({
-					user: null,
-					accessToken: null,
-					refreshToken: null,
-					tenants: [],
-					currentTenantId: null,
-					permissions: [],
-					isAuthenticated: false,
-				}),
-		}),
-		{
-			name: 'autional-auth-v1',
-			version: 1,
-			// Custom merge: validate persisted data integrity before merging into store.
-			// This prevents corrupted localStorage entries from silently breaking auth.
-			merge: (persisted, current) => {
-				if (!persisted || typeof persisted !== 'object') return current;
-				const state = { ...current, ...persisted };
-
-				// Fix: has accessToken but isAuthenticated is false
-				if (state.accessToken && !state.isAuthenticated) {
-					state.isAuthenticated = true;
-				}
-				// Fix: no accessToken but isAuthenticated is true (token was evicted)
-				if (!state.accessToken && state.isAuthenticated) {
-					state.isAuthenticated = false;
-				}
-				// Fix: has accessToken but user is missing — recover from JWT
-				if (state.accessToken && !state.user) {
-					const payload = decodeJwtPayload(state.accessToken);
-					if (payload) {
-						state.user = {
-							id: (payload.sub || payload.user_id) as string,
-							username: ((payload.custom as Record<string, unknown> | undefined)?.username ||
-								payload.username) as string,
-							email: (payload.email as string) || '',
-							status: 'active',
-						};
-					}
-				}
-
-				return state;
-			},
-			migrate: (persisted) => {
-				// v0 → v1: no structural changes, data is compatible
-				return persisted as any;
-			},
-			partialize: (state) => {
-				return {
-					accessToken:
-						state.accessToken && state.accessToken !== 'undefined' && state.accessToken !== 'null'
-							? state.accessToken
-							: null,
-					refreshToken:
-						state.refreshToken &&
-						state.refreshToken !== 'undefined' &&
-						state.refreshToken !== 'null'
-							? state.refreshToken
-							: null,
-					user: state.user,
-					tenants: state.tenants,
-					currentTenantId: state.currentTenantId,
-					permissions: state.permissions,
-					isAuthenticated: state.isAuthenticated,
-				};
-			},
-			onRehydrateStorage: () => (state, error) => {
-				if (error || !state) return;
-				// merge already handles all fixups; this is a safety net
-				if (state.accessToken && !state.isAuthenticated) {
-					useAuthStore.setState({ isAuthenticated: true });
-				}
-			},
-		},
-	),
+const authStoreHook = Object.assign(
+	<T>(selector?: (state: AuthState) => T): T | AuthState => {
+		// 始终只调一次 useStore（同一 hook 位置），避免选择器有无变化导致 hook 顺序不一致
+		const store = getAuthStore();
+		const pick = (selector ?? identity) as (state: AuthState) => T | AuthState;
+		return useStore(store, pick);
+	},
+	{
+		getState: () => getAuthStore().getState(),
+		getInitialState: () => getAuthStore().getInitialState(),
+		setState: ((partial: unknown, replace?: boolean) =>
+			(0, getAuthStore().setState)(partial as never, replace as never)) as AuthStoreApi['setState'],
+		subscribe: ((listener: Parameters<AuthStoreApi['subscribe']>[0]) =>
+			getAuthStore().subscribe(listener)) as AuthStoreApi['subscribe'],
+	},
 );
+
+// persist 中间件把 API 挂在 store api 上。
+// **必须用 defineProperty 定义 getter** —— 若写成 `Object.assign(fn, { get persist() {…} })`，
+// Object.assign 会在**模块求值期**读取该 getter，于是导入 store 就立刻创建了 store（默认 local），
+// 之后站点再 `configureAuthStore({storage:'session'})` 只会命中"已建实例"分支 ⇒ sessionStorage 静默失效。
+Object.defineProperty(authStoreHook, 'persist', {
+	configurable: true,
+	enumerable: false,
+	get: () => (getAuthStore() as unknown as { persist?: unknown }).persist,
+});
+
+export const useAuthStore: AuthStoreHook = authStoreHook as unknown as AuthStoreHook;
 
 /**
  * 获取 access token

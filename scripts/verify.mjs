@@ -43,6 +43,7 @@ const STEPS = [
   { key: 'token-tiers', label: '令牌档位（圆角/阴影/间距只走档位：DS 硬零 + 站点棘轮）', cmd: ['node', 'scripts/check-token-tiers.mjs'] },
   { key: 'consistency', label: '跨 portal 视觉一致性（antd 主题 / 入口台账棘轮 / 硬编码色 / 组件库份数 / 令牌覆盖 / 分块策略）', cmd: ['node', 'scripts/check-consistency.mjs'] },
   { key: 'hook-naming', label: 'hooks 命名口径（文件名 kebab-case / hook 函数名 useXxx）', cmd: ['node', 'scripts/check-hook-naming.mjs'] },
+  { key: 'portal-literals', label: '门户清单单一真源（禁止再写字面量数组/Set；真源 = shared/portal/registry.ts）', cmd: ['node', 'scripts/check-portal-literals.mjs'] },
   { key: 'typecheck', label: '类型检查（ui 工作区 + 四个在册门户）', cmd: ['node', 'scripts/check-typecheck.mjs'] },
   { key: 'shell', label: '外壳归属（四个在册门户的外壳必须归 AppShell）', cmd: ['node', 'scripts/check-shell.mjs'] },
   { key: 'lint', label: 'lint（error 必须为 0；warning 按台账棘轮）', cmd: ['node', 'scripts/check-lint.mjs'] },
