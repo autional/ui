@@ -237,23 +237,103 @@ for (const file of files) {
 	if (violations.length > 0) results.push({ file: relative(ROOT, file), violations });
 }
 
-if (process.argv.includes('--json')) {
-	console.log(JSON.stringify({ codes, results, exemptions }, null, 2));
-} else if (results.length === 0) {
-	console.log(
-		`check-portal-literals：PASS（${files.length} 个文件，门户 code 字面量 0 处` +
-			`${exemptions.length ? `；显式豁免 ${exemptions.length} 处` : ''}）`,
-	);
-} else {
-	console.error(`check-portal-literals：FAIL（${results.length} 个文件仍持有门户字面量清单）`);
-	if (exemptions.length) console.error(`  （另有显式豁免 ${exemptions.length} 处）`);
-	for (const { file, violations } of results) {
-		for (const v of violations) {
-			console.error(`  ${file}:${v.line}  [${v.codes.join(', ')}]  ${v.text}`);
+/**
+ * 站点面：ui 仓的 verify 在**舰队机器**上要连带扫 6 个站点仓，
+ * 否则「各站自己扫」又会变成 6 份实现（正是本门要消灭的东西）。
+ * 站点清单优先取 AUTIONAL_SITES_DIR，回退 <ui>/../sites；不存在就跳过（与其它闸门同约定：
+ * 跳过必须在输出里看得见）。
+ */
+function scanSites() {
+	const sitesDir =
+		process.env.AUTIONAL_SITES_DIR || resolve(ROOT, '..', 'sites');
+	if (!existsSync(sitesDir)) return null;
+	const out = [];
+	for (const entry of readdirSync(sitesDir, { withFileTypes: true })) {
+		const siteRoot = join(sitesDir, entry.name);
+		// 舰队树里各站常是 junction / symlink ⇒ Dirent.isDirectory() 为 false，必须再 stat 一次
+		const isDir = entry.isDirectory() || (entry.isSymbolicLink() && statSync(siteRoot).isDirectory());
+		if (!isDir) continue;
+		if (!existsSync(join(siteRoot, 'apps')) && !existsSync(join(siteRoot, 'src'))) continue;
+		const siteCodes = readPortalCodesFor(siteRoot) ?? codes;
+		const dirs = ['packages', 'apps', 'src']
+			.filter((d) => existsSync(join(siteRoot, d)))
+			.map((d) => join(siteRoot, d));
+		const siteFiles = dirs.flatMap((d) => walk(d));
+		const siteExemptions = [];
+		const siteViolations = [];
+		for (const file of siteFiles) {
+			const v = findViolations(file, siteCodes, siteExemptions);
+			if (v.length) siteViolations.push({ file: relative(siteRoot, file), violations: v });
 		}
+		out.push({
+			site: entry.name,
+			files: siteFiles.length,
+			exemptions: siteExemptions.length,
+			results: siteViolations,
+		});
 	}
-	console.error('  修法：改用 @autional/shared[/portal] 的派生函数' +
-		'（isConsolePortal / getConsolePortalCodes / getSwitcherExcludedCodes / ADMIN_PLANE_ROLES）');
+	return out;
 }
 
-process.exit(results.length === 0 ? 0 : 1);
+/** 站点自己的 shared 安装（pnpm workspace 常在 apps/<app>/node_modules）。 */
+function readPortalCodesFor(siteRoot) {
+	const candidates = [
+		join(siteRoot, 'node_modules', '@autional', 'shared', 'src', 'portal', 'registry.ts'),
+		...(existsSync(join(siteRoot, 'apps'))
+			? readdirSync(join(siteRoot, 'apps')).map((d) =>
+					join(siteRoot, 'apps', d, 'node_modules', '@autional', 'shared', 'src', 'portal', 'registry.ts'),
+				)
+			: []),
+	];
+	const found = candidates.find((p) => existsSync(p));
+	if (!found) return null;
+	const src = readFileSync(found, 'utf8');
+	return [...new Set([...src.matchAll(/code:\s*['"]([a-z0-9-]+)['"]/g)].map((m) => m[1]))];
+}
+
+const sites = scanSites();
+const siteFailures = (sites ?? []).filter((s) => s.results.length > 0);
+
+if (process.argv.includes('--json')) {
+	console.log(JSON.stringify({ codes, results, exemptions, sites }, null, 2));
+} else {
+	if (results.length === 0) {
+		console.log(
+			`check-portal-literals：PASS（${files.length} 个文件，门户 code 字面量 0 处` +
+				`${exemptions.length ? `；显式豁免 ${exemptions.length} 处` : ''}）`,
+		);
+	} else {
+		console.error(`check-portal-literals：FAIL（${results.length} 个文件仍持有门户字面量清单）`);
+		if (exemptions.length) console.error(`  （另有显式豁免 ${exemptions.length} 处）`);
+		for (const { file, violations } of results) {
+			for (const v of violations) {
+				console.error(`  ${file}:${v.line}  [${v.codes.join(', ')}]  ${v.text}`);
+			}
+		}
+		console.error('  修法：改用 @autional/shared[/portal] 的派生函数' +
+			'（isConsolePortal / getConsolePortalCodes / getSwitcherExcludedCodes / ADMIN_PLANE_ROLES）');
+	}
+
+	if (sites === null) {
+		console.log('check-portal-literals：站点面跳过（本机无 sites/；舰队机器上会连带扫 6 站）');
+	} else {
+		for (const s of sites) {
+			const suffix = s.exemptions ? `；显式豁免 ${s.exemptions} 处` : '';
+			if (s.results.length === 0) {
+				console.log(`  [${s.site}] PASS（${s.files} 个文件，0 处${suffix}）`);
+				continue;
+			}
+			console.error(`  [${s.site}] FAIL（${s.results.length} 个文件）${suffix}`);
+			for (const { file, violations } of s.results) {
+				for (const v of violations) {
+					console.error(`    ${file}:${v.line}  [${v.codes.join(', ')}]  ${v.text}`);
+				}
+			}
+		}
+		console.log(
+			`check-portal-literals：站点面 ${sites.length} 站，${siteFailures.length ? `${siteFailures.length} 站有清单` : '全部 0 处'}`,
+		);
+	}
+}
+
+process.exit(results.length === 0 && siteFailures.length === 0 ? 0 : 1);
