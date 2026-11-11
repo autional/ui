@@ -1,6 +1,6 @@
 {
 	"name": "@autional/shared",
-	"version": "0.1.0-rc.63",
+	"version": "0.1.0-rc.65",
 	"description": "Autional shared layer — API client, auth, types, hooks, utils",
 	"license": "AGPL-3.0",
 	"main": "./src/index.ts",
@@ -12,6 +12,9 @@
 		"./slug-from-url": "./src/auth/slug-from-url.ts",
 		"./portal": "./src/portal/registry.ts",
 		"./fetch": "./src/api/fetch-client.ts",
+		"./jwt": "./src/auth/jwt-payload.ts",
+		"./pkce": "./src/auth/pkce.ts",
+		"./console-auth": "./src/console-auth/claims.ts",
 		"./generated/api": "./src/generated/api.ts",
 		"./generated/types": "./src/generated/types.ts",
 		"./generated/queries": "./src/generated/queries.ts",
