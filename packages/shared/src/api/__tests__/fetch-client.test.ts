@@ -193,6 +193,20 @@ describe('createFetchClient', () => {
 		expect(onUnauthorized).not.toHaveBeenCalled();
 	});
 
+
+	it('refresh 收到 401 错误本身（可按业务码决定要不要续期）', async () => {
+		stubFetch(() => jsonResponse({ code: '30000001', detail: 'secret not found' }, 401));
+		const refresh = vi.fn(async (_error: FetchApiError) => null);
+		const onUnauthorized = vi.fn();
+		const client = createFetchClient({ baseUrl: '/api', refresh, onUnauthorized });
+
+		await expect(client.get('/x')).rejects.toMatchObject({ status: 401 });
+
+		expect(refresh).toHaveBeenCalledTimes(1);
+		expect(refresh.mock.calls[0]![0]).toMatchObject({ status: 401, code: '30000001' });
+		expect(onUnauthorized).toHaveBeenCalledTimes(1);
+	});
+
 	it('401 + refresh 返回 null：不重试，抛 401 并通知一次', async () => {
 		stubFetch(() => jsonResponse({ message: 'expired' }, 401));
 		const onUnauthorized = vi.fn();

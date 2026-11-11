@@ -60,8 +60,12 @@ export interface FetchClientOptions {
 	 * 可救回的 401 静默续期，不打扰用户。
 	 */
 	onUnauthorized?: (error: FetchApiError) => void;
-	/** 401 静默续期：返回新 token 则重试一次；返回 null/抛错则放弃。 */
-	refresh?: () => Promise<string | null>;
+	/**
+	 * 401 静默续期：返回新 token 则重试一次；返回 null/抛错则放弃。
+	 * 入参是本次 401 的错误（含 `code` / `body`）—— 调用方可据此区分「会话过期」与
+	 * 「业务 401」（如密钥服务的 `30000001 secret not found` 不该续期、更不该踢下线）。
+	 */
+	refresh?: (error: FetchApiError) => Promise<string | null>;
 	/** 默认超时，20s（与两站现状一致）。 */
 	timeoutMs?: number;
 	/**
@@ -249,7 +253,7 @@ export function createFetchClient(options: FetchClientOptions): FetchClient {
 			if (!retried && refresh) {
 				let nextToken: string | null = null;
 				try {
-					nextToken = await refresh();
+					nextToken = await refresh(unauthorized);
 				} catch {
 					nextToken = null;
 				}
