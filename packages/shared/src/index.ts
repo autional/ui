@@ -97,6 +97,8 @@ export type { BootstrapState } from './hooks/useBootstrap';
 export { useSodMode, useIsAuditRestricted } from './hooks/useSodMode';
 export type { SodMode } from './hooks/useSodMode';
 export { useCurrentRole } from './hooks/useCurrentRole';
+export { useSessionActivity } from './hooks/useSessionActivity';
+export type { UseSessionActivityOptions } from './hooks/useSessionActivity';
 export {
 	usePortalCatalog,
 	isPortalVisible,
