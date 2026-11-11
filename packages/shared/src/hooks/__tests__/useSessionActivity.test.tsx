@@ -42,7 +42,7 @@ describe('useSessionActivity', () => {
 		vi.advanceTimersByTime(5 * 60_000);
 
 		expect(fetchMock).toHaveBeenCalledTimes(1);
-		const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+		const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
 		expect(url).toBe('/bff/session/api/v1/admin/sessions/me/activity');
 		expect(init.method).toBe('POST');
 		expect((init.headers as Record<string, string>).Authorization).toBe('Bearer ' + token);
