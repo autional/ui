@@ -1,6 +1,6 @@
 {
 	"name": "@autional/shared",
-	"version": "0.1.0-rc.58",
+	"version": "0.1.0-rc.59",
 	"description": "Autional shared layer — API client, auth, types, hooks, utils",
 	"license": "AGPL-3.0",
 	"main": "./src/index.ts",
@@ -15,6 +15,9 @@
 		"./generated/types": "./src/generated/types.ts",
 		"./generated/queries": "./src/generated/queries.ts",
 		"./package.json": "./package.json"
+	},
+	"bin": {
+		"autional-check-portal-literals": "./src/portal/check-literals.mjs"
 	},
 	"files": [
 		"src"
