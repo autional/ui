@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
 	expiresAtFromToken,
+	mergeTokenClaims,
 	pickClaimRoles,
 	pickClaimString,
 	sessionExpiryAt,
@@ -134,5 +135,38 @@ describe('sessionExpiryAt', () => {
 
 	it('令牌无 exp 时回落记录值', () => {
 		expect(sessionExpiryAt(jwt({ sub: 'u' }), 12345)).toBe(12345);
+	});
+});
+
+describe('mergeTokenClaims', () => {
+	it('id_token 优先，access_token 补缺（tenant_id 只在 access 里也拿得到）', () => {
+		const access = jwt({ sub: 'u1', tenant_id: 't-1', roles: ['admin'] });
+		const id = jwt({ sub: 'u1', name: '张三', nonce: 'n-1' });
+		expect(mergeTokenClaims(access, id)).toMatchObject({
+			name: '张三',
+			tenant_id: 't-1',
+			nonce: 'n-1',
+			roles: ['admin'],
+		});
+	});
+
+	it('同名字段以 id_token 为准', () => {
+		const access = jwt({ sub: 'u1', name: '来自 access' });
+		const id = jwt({ sub: 'u1', name: '来自 id' });
+		expect(mergeTokenClaims(access, id)?.name).toBe('来自 id');
+	});
+
+	it('只有一份令牌时用它', () => {
+		const access = jwt({ sub: 'u1', tenant_id: 't-1' });
+		expect(mergeTokenClaims(access, undefined)?.tenant_id).toBe('t-1');
+		expect(mergeTokenClaims(undefined, access)?.tenant_id).toBe('t-1');
+	});
+
+	it('两份都缺 → null', () => {
+		expect(mergeTokenClaims(undefined, undefined)).toBeNull();
+	});
+
+	it('坏令牌不抛错', () => {
+		expect(() => mergeTokenClaims('bad', 'also-bad')).not.toThrow();
 	});
 });

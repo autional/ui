@@ -76,6 +76,25 @@ export function userFromClaims(
 }
 
 /**
+ * 合并 access_token 与 id_token 的声明：**id_token 优先，access_token 补缺**。
+ *
+ * 为什么需要：登录换票时若只取 id_token，一旦签发方的 id_token 是精简版
+ * （只有 sub/name/email，没有 tenant_id / roles），`X-Tenant-ID` 就会丢，
+ * 后续请求直接 403——而同样的信息在 access_token 里明明有。
+ * 反过来只取 access_token 又会丢掉 id_token 的 nonce、更完整的展示名。
+ * 所以按字段合并，而不是二选一。
+ */
+export function mergeTokenClaims(
+	accessToken?: string,
+	idToken?: string,
+): Record<string, unknown> | null {
+	const access = accessToken ? decodeJwtPayload(accessToken) : null;
+	const id = idToken ? decodeJwtPayload(idToken) : null;
+	if (!access && !id) return null;
+	return { ...(access ?? {}), ...(id ?? {}) };
+}
+
+/**
  * 过期时刻（epoch ms）。
  *
  * 优先级：access_token 的 `exp`（服务端真实 TTL，权威） → `expires_in` → 兜底值。
