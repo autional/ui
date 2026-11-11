@@ -257,6 +257,25 @@ describe('createFetchClient', () => {
 		await expect(client.get('/x')).rejects.toMatchObject({ status: 200, code: 'invalid_json' });
 	});
 
+
+	it('responseType=text：原样返回字符串（导出文件体），不解析 JSON', async () => {
+		const body = 'key: value' + String.fromCharCode(10) + 'other: 1' + String.fromCharCode(10);
+		stubFetch(() => textResponse(body));
+		const client = createFetchClient({ baseUrl: '/api' });
+
+		await expect(client.get('/export', { responseType: 'text' })).resolves.toBe(body);
+	});
+
+	it('responseType=text 时非 2xx 仍归一为 FetchApiError（错误体为文本）', async () => {
+		stubFetch(() => textResponse('upstream unavailable', 503));
+		const client = createFetchClient({ baseUrl: '/api' });
+
+		await expect(client.get('/export', { responseType: 'text' })).rejects.toMatchObject({
+			status: 503,
+			body: 'upstream unavailable',
+		});
+	});
+
 	it('空响应体 ⇒ null（删除成功类）', async () => {
 		stubFetch(() => textResponse('', 204));
 		const client = createFetchClient({ baseUrl: '/api' });

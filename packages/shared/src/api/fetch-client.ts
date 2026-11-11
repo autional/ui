@@ -40,6 +40,8 @@ export interface FetchRequestOptions {
 	headers?: Record<string, string>;
 	/** 单次覆盖超时（ms）。 */
 	timeoutMs?: number;
+	/** 响应解析方式：`text` = 原样返回字符串（导出 JSON/YAML 文件体用）。默认 `json`。 */
+	responseType?: 'json' | 'text';
 	signal?: AbortSignal;
 }
 
@@ -260,8 +262,12 @@ export function createFetchClient(options: FetchClientOptions): FetchClient {
 		}
 
 		const raw = await safeText(response);
+		const isText = init.responseType === 'text';
 		let parsed: unknown = null;
-		if (raw !== '') {
+		if (isText) {
+			// 文本模式：不解析 JSON（导出接口返回文件体）；错误仍按 text 承载
+			parsed = raw;
+		} else if (raw !== '') {
 			try {
 				parsed = JSON.parse(raw);
 			} catch {
@@ -277,7 +283,7 @@ export function createFetchClient(options: FetchClientOptions): FetchClient {
 		}
 
 		let result: unknown = parsed;
-		if (unwrap && parsed && typeof parsed === 'object') {
+		if (unwrap && !isText && parsed && typeof parsed === 'object') {
 			const envelope = parsed as { code?: unknown; data?: unknown; items?: unknown; message?: string };
 			// 业务码：number 0 / 字符串 '0' 视为成功；其余非空值为错误（部分服务把 code 序列化成字符串）
 			const code = envelope.code;
@@ -293,7 +299,7 @@ export function createFetchClient(options: FetchClientOptions): FetchClient {
 			// 列表信封（`{items,total,pagination}`）：保持原形，由调用方取 items
 		}
 
-		return (caseConversion === 'camel' ? camelizeKeys<T>(result) : result) as T;
+		return (caseConversion === 'camel' && !isText ? camelizeKeys<T>(result) : result) as T;
 	}
 
 	const request = <T,>(path: string, init: FetchRequestOptions = {}): Promise<T> =>
