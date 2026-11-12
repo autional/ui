@@ -6,6 +6,10 @@ interface ToggleProps {
 	disabled?: boolean;
 	size?: 'sm' | 'md';
 	className?: string;
+	/** 开关的可访问名（屏幕阅读器朗读）。用 `ariaLabelledBy` 指向外部标题时可不填。 */
+	ariaLabel?: string;
+	/** 指向可见标签元素 id，优先级高于 `ariaLabel`。 */
+	ariaLabelledBy?: string;
 }
 
 const sizeClasses: Record<string, { track: string; circle: string; translate: string }> = {
@@ -19,6 +23,8 @@ export const Toggle = React.memo(function Toggle({
 	disabled = false,
 	size = 'md',
 	className = '',
+	ariaLabel,
+	ariaLabelledBy,
 }: ToggleProps) {
 	const s = sizeClasses[size];
 
@@ -27,6 +33,8 @@ export const Toggle = React.memo(function Toggle({
 			type="button"
 			role="switch"
 			aria-checked={checked}
+			aria-label={ariaLabelledBy ? undefined : ariaLabel}
+			aria-labelledby={ariaLabelledBy}
 			disabled={disabled}
 			onClick={onChange}
 			className={`relative inline-flex shrink-0 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
