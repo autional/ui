@@ -25,6 +25,25 @@
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import reactHooks from 'eslint-plugin-react-hooks';
+import jsxA11y from 'eslint-plugin-jsx-a11y';
+
+// jsx-a11y recommended 的「降级为 warn」版本。
+// 关键：只把 **error → warn**，插件自己设成 off 的规则（如已废弃的 label-has-for）保持 off ——
+// 一律改成 warn 会把插件主动关掉的规则重新点亮（实测：试过一次，试点仓凭空多出 4 条告警，
+// 与试点自己跑出的 0 条对不上，等于两个口径打架）。
+const a11yRecommendedAtWarn = Object.fromEntries(
+	Object.entries(jsxA11y.flatConfigs.recommended.rules).map(([rule, sev]) => {
+		const first = Array.isArray(sev) ? sev[0] : sev;
+		const isError = first === 'error' || first === 2;
+		if (!isError) {
+			return [rule, sev]; // off / warn 原样保留
+		}
+		// 降级时必须保留选项：直接写 'warn' 会把 [2, {options}] 变成裸 warn，
+		// 规则退回默认配置 —— 实测踩到：no-noninteractive-element-interactions 丢掉了
+		// {img:['onError','onLoad']} 白名单，凭空报出 1 条假红。
+		return [rule, Array.isArray(sev) ? ['warn', ...sev.slice(1)] : 'warn'];
+	}),
+);
 
 export default tseslint.config(
 	{
@@ -46,7 +65,7 @@ export default tseslint.config(
 		files: ['**/*.{ts,tsx,js,jsx,mjs,cjs}'],
 		// flat config 里插件必须显式登记：只写 rules 里的 'react-hooks/…' 而不注册插件，
 		// ESLint 会把它当成「规则不存在」并**报成 error**（实测踩到 —— 5+3 条假红）。
-		plugins: { 'react-hooks': reactHooks },
+		plugins: { 'react-hooks': reactHooks, 'jsx-a11y': jsxA11y },
 		languageOptions: {
 			parserOptions: { ecmaFeatures: { jsx: true } },
 		},
@@ -72,6 +91,15 @@ export default tseslint.config(
 			// 那时它只会报「规则不存在」；装上插件之后这些注释才真正开始起作用）。
 			'react-hooks/rules-of-hooks': 'error',
 			'react-hooks/exhaustive-deps': 'warn',
+
+			// ── 无障碍（AC C-28 / ui-denominator G5·G6，2026-11-12 引入）──────────────
+			// 为什么是 warn 而不是 error：这类规则在每个仓的**存量**不同（试点 admin-console
+			// 首次全量实测 11 条，全部是「链接/卡片当按钮用」，已在本仓修掉；其余 11 个 app 未测）。
+			// 按舰队既有登记制：先把规则点亮（warn 有输出、可棘轮、可统计），各仓清到 0 后再转 error；
+			// 试点仓 admin-console 已用 `eslint.a11y.config.mjs` 以 **error + --max-warnings 0** 独立门禁，
+			// 所以舰队里"有没有 a11y 闸门"这件事不依赖本行是 warn 还是 error。
+			// 转 error 的条件（写死在这里防遗忘）：任一仓 lint 输出 jsx-a11y 命中 = 0 且连续两个发布周期无回归。
+			...a11yRecommendedAtWarn,
 		},
 	},
 	{

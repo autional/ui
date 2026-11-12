@@ -1,6 +1,6 @@
 {
   "name": "@autional/eslint-config",
-  "version": "0.1.0-rc.1",
+  "version": "0.2.0-rc.1",
   "description": "Autional fleet ESLint flat config — one source of truth for lint rules",
   "license": "AGPL-3.0",
   "type": "module",
@@ -14,6 +14,7 @@
   ],
   "dependencies": {
     "@eslint/js": "10.0.1",
+    "eslint-plugin-jsx-a11y": "6.10.2",
     "eslint-plugin-react-hooks": "7.0.1"
   },
   "devDependencies": {
