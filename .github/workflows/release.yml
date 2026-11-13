@@ -1,12 +1,25 @@
 name: release
 
-# 计划 §P3.3 的载体。ui 仓此前只有 verify.yml，发布是纯手工的
-# （pnpm release + 手工推 cdn + 手工切 14 个站的 <link>）——
-# 「有脚本但没有载体」等于「只在有人记得手动跑的时候才生效」，
-# 这正是 verify.yml 当初被建出来的理由。
+# 发布载体。发布是**不可逆的对外动作**，只允许发生在显式的人为决策点上。
 #
-# 触发：推一个 v* tag。**不用 push to main** —— 发布是不可逆的对外动作，
-# 必须落在一个显式的人为决策点上。
+# 触发：`workflow_dispatch`（GitHub UI 手动运行）。
+#
+# 为什么**不再**由 `push: tags: ['v*']` 触发（2026-11-13 改）：
+#   本仓是 monorepo，`v0.1.0-rc.N` 是**单一命名空间**，却服务 5 条独立版本线
+#   （ui / tokens / tailwind-preset / shared / eslint-config）—— 谁 bump 都可能是「下一个 N」，
+#   编号由人脑估算，与包版本没有绑定关系。
+#   2026-11-13 取证结论：
+#     · `v0.1.0-rc.57` / `v0.1.0-rc.58` 是 lightweight tag，打在 **shared** 的 bump 提交上；
+#       真正的 ui 发版提交（f85bac4 / 523a8c3）**从未被打过 tag**，偏差 30+ 个提交；
+#     · 任何一次 tag push 都会跑完整条发布链（verify → publish-npm → build:cdn → 推 autional/cdn
+#       → Vercel 生产部署）；历史上 rc.44 / rc.45 是 **shared** 的版本号，却触发了 **ui** 的发布。
+#   ⇒ 结论：git tag **不是**版本真源，真源 = 各包 package.json + npm dist-tag。
+#     历史 tag 保留作遗迹，**勿增勿删**；若确需打标记，用 `<pkg>-v<version>`（例 `ui-v0.1.0-rc.58`），
+#     不以 `v` 开头，故不会被旧规则误触。
+#   口径与操作手册见 docs/RELEASING.md。
+#
+# 版本号从各包 package.json 读（publish-npm.mjs 自己判断「已上架则跳过」），**不从 ref 名推导** ——
+# 所以从任何分支、任何 ref 手动触发都不会把版本弄错。
 #
 # 前置 secret（缺任何一个都会在 preflight 硬失败，不会静默跳过）：
 #   NPM_TOKEN       @autional 作用域的 publish 权限
@@ -14,8 +27,6 @@ name: release
 #                   （跨仓推送不能用 GITHUB_TOKEN）
 
 on:
-  push:
-    tags: ['v*']
   workflow_dispatch:
 
 permissions:
@@ -54,6 +65,17 @@ jobs:
           repository: autional/cdn
           path: cdn
           token: ${{ secrets.CDN_PUSH_TOKEN }}
+
+      # 手动触发的可审计锚点：tag 不再承担「版本标记」职责，所以把 ref / sha / 各包版本
+      # 写进 job 日志，事后能从 run 记录里还原「这次发的是哪份代码、哪些版本」。
+      - name: 发布上下文自证（ref / sha / 各包版本）
+        working-directory: ui
+        run: |
+          echo "ref=${GITHUB_REF}"
+          echo "sha=${GITHUB_SHA}"
+          for p in ui tokens tailwind-preset shared; do
+            printf '%-16s %s\n' "$p" "$(node -p "require('./packages/$p/package.json').version")"
+          done
 
       - uses: pnpm/action-setup@v4
         with:
