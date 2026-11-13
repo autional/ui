@@ -37,7 +37,7 @@ export const Toggle = React.memo(function Toggle({
 			aria-labelledby={ariaLabelledBy}
 			disabled={disabled}
 			onClick={onChange}
-			className={`relative inline-flex shrink-0 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
+			className={`relative inline-flex shrink-0 items-center rounded-full transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring-color)] disabled:pointer-events-none disabled:opacity-50 ${
 				checked ? 'bg-primary-600' : 'bg-neutral-200 dark:bg-neutral-600'
 			} ${s.track} ${className}`}
 		>

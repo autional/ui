@@ -7,12 +7,14 @@
 // 关键纪律：**高度/内边距/圆角只由一个地方发出来**（这里），调用方的 className 不得与它冲突 ——
 // 否则胜负由 Tailwind 的生成顺序决定，那是无声的。
 
-// ⚠️ 拆 BASE 的时候差点丢掉两个状态样式（focus-visible 环、disabled）——
+// ⚠️ 拆 BASE 的时候差点丢掉两个状态样式（焦点环、disabled）——
 // 「重写一个常量的整行」时最容易漏掉的就是**行尾那几个**。它们与尺寸/形状不冲突，
 // 所以留在 STRUCT 里，一处不少。
+// 焦点环走 tokens 规范（2px outline + 2px offset + --focus-ring-color），不再自绘 ring ——
+// ring-offset 的白色间隙在深色主题上是错的。
 const STRUCT =
 	'flex w-full border bg-[var(--color-bg-surface)] text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] ' +
-	'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand)] focus-visible:ring-offset-2 ' +
+	'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring-color)] ' +
 	'disabled:cursor-not-allowed disabled:opacity-50';
 
 /** 尺寸档：高度是**定值**（不是 padding 撑出来的）—— 同一行里的控件要对齐，定值才可预测。 */

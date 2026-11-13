@@ -45,7 +45,18 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 		return (
 			<div className="w-full">
 				{hasSlot ? (
-					<div className={fieldControlClassFor(size, shape, !!error, 'items-center gap-2 ' + className)}>
+					// ⚠️ 焦点环必须挂在**容器**上：点输入框时聚焦的是内层 <input>，
+					// 外层 div 的 `focus-visible` 不触发 ⇒ 这个分支会完全没有可见焦点。用 focus-within 补。
+					<div
+						className={fieldControlClassFor(
+							size,
+							shape,
+							!!error,
+							'items-center gap-2 ' +
+								className +
+								' focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[var(--focus-ring-color)]',
+						)}
+					>
 						{prefix != null && (
 							<span className="shrink-0 text-[var(--color-text-muted)]" aria-hidden="true">{prefix}</span>
 						)}
