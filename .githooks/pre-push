@@ -1,0 +1,24 @@
+#!/bin/sh
+# 拦「推 v* tag」——版本真源是 package.json + npm dist-tag，不是 git tag。
+# 背景：release.yml 历史上由 on: push: tags: ['v*'] 触发，一次 tag push 会跑完整生产发布链。
+# 放行：分支推送、以及 <pkg>-v<version> 形式的 tag；确需绕过用 AUTIONAL_ALLOW_TAG_PUSH=1。
+set -u
+blocked=0
+while read -r local_ref local_sha remote_ref remote_sha; do
+  case "$remote_ref" in
+    refs/tags/v*)
+      echo "[pre-push] 拒绝推送 $remote_ref" >&2
+      echo "           版本真源 = package.json + npm dist-tag；git tag 不是真源。" >&2
+      echo "           确需标记请用 <pkg>-v<version>（例 ui-v0.1.0-rc.58）；细则 docs/RELEASING.md" >&2
+      blocked=1
+      ;;
+  esac
+done
+if [ "$blocked" = 1 ]; then
+  if [ "${AUTIONAL_ALLOW_TAG_PUSH:-0}" = "1" ]; then
+    echo "[pre-push] AUTIONAL_ALLOW_TAG_PUSH=1：已放行（请确认这是有意为之）" >&2
+    exit 0
+  fi
+  exit 1
+fi
+exit 0

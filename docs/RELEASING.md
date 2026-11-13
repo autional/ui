@@ -35,3 +35,9 @@
 - npm：不可撤（已发布版本不能删除）。补救 = 发下一个版本，并把消费方钉回旧版本。
 - 消费方回滚：`git revert` 抬版提交 + `pnpm install` + 重新构建。
 - CDN：`git revert` cdn 仓的发布提交（Vercel 随之回退）。
+
+## 5. 机器守卫
+
+- 仓内 `.githooks/pre-push` 拒绝推送 `refs/tags/v*`（首次克隆启用：`git config core.hooksPath .githooks`）。
+- 临时放行：`AUTIONAL_ALLOW_TAG_PUSH=1 git push …`（请确认是有意为之）。
+- agent 侧口径同时写在：根 `CLAUDE.md#共享包发版纪律`、根 `AGENTS.md`、本仓 `AGENTS.md`。
