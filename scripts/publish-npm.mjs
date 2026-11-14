@@ -23,7 +23,6 @@
 import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { pathToFileURL } from 'node:url';
 import { isMain } from './lib/is-main.mjs';
 import { ROOT } from './lib/tokens.mjs';
 import { REGISTRY } from './lib/dist-tags.mjs';

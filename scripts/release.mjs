@@ -27,7 +27,6 @@
 import { execFileSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
-import { pathToFileURL } from 'node:url';
 import { isMain } from './lib/is-main.mjs';
 import { ROOT } from './lib/tokens.mjs';
 

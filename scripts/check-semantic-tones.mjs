@@ -28,7 +28,6 @@
 
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, extname } from 'node:path';
-import { pathToFileURL } from 'node:url';
 import { isMain } from './lib/is-main.mjs';
 import { ROOT, loadTokens } from './lib/tokens.mjs';
 import { makeSkip, ARTIFACT_DIRS, TEST_RE, SRC_EXTS } from './lib/scan-scope.mjs';
