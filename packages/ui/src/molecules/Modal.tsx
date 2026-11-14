@@ -138,6 +138,12 @@ export const Modal = React.memo(function Modal({
 	const content = (
 		<div className="fixed inset-0 z-50 flex items-center justify-center bg-scrim/50 p-4">
 			<div className="absolute inset-0" onClick={onClose} />
+			{/*
+			 * 刻意 outline-none：本面板是 role="dialog" + tabIndex={-1} 的**程序化焦点目标**
+			 * （打开时把焦点移进来做焦点陷阱），不是可交互控件 —— 给它画焦点环会盖住内容，
+			 * 也与内部控件自己的焦点环重复。可交互控件（Button/Input/Toggle）一律走 tokens 焦点环，
+			 * 回归锁见 atoms/__tests__/focus-ring.test.tsx。
+			 */}
 			<div
 				ref={panelRef}
 				role="dialog"
