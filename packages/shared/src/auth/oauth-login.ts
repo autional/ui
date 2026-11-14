@@ -43,12 +43,36 @@ const SK = {
  */
 export const OAUTH_LOGIN_SCOPES = 'openid profile email offline_access read';
 
+/** 把 `extra` 并入基础登录 scope：去重、保持顺序（基础项在前，新增项按传入次序追加）。 */
+export function withOAuthScopes(...extra: string[]): string {
+	const seen = new Set<string>();
+	const out: string[] = [];
+	for (const raw of [OAUTH_LOGIN_SCOPES, ...extra]) {
+		for (const s of String(raw ?? '')
+			.trim()
+			.split(/\s+/)
+			.filter(Boolean)) {
+			if (seen.has(s)) continue;
+			seen.add(s);
+			out.push(s);
+		}
+	}
+	return out.join(' ');
+}
+
 export interface OAuthInitiateOptions {
 	/** 「停留」取消本次跳转时回调（AUTH-03，调用方据此恢复 UI）；内部已先清预置物 |
 	 *  与待重试定时器（AUTH-08），再次交互可全新发起。 */
 	onStay?: () => void;
 	/** 跳过 10s 防重入窗口（用户显式点「前往登录」重试时用，AUTH-03）。 */
 	force?: boolean;
+	/**
+	 * 本次登录申请的 scope（缺省 = `OAUTH_LOGIN_SCOPES`，即既有行为）。
+	 * 用 `withOAuthScopes('write')` 生成，供需要写 scope 的第一方客户端使用
+	 * （例：authenticator-app 的推送登记 / stream-ticket 需 `write`）。
+	 * 空串或纯空白视同未传。服务端仍会按 `oauth_clients.scopes` 校验，未登记项会被拒绝。
+	 */
+	scope?: string;
 }
 
 /**
@@ -164,7 +188,13 @@ export async function initiateOAuthLogin(
 		if (!retryTimer) {
 			retryTimer = setTimeout(() => {
 				retryTimer = null;
-				void initiateOAuthLogin(clientId, redirectTarget);
+				// scope 必须随重试带下去：否则自动重试会把调用方申请的额外 scope 丢掉
+				// （表现为「登录成功但写接口 403」，且极难复现）。
+				void initiateOAuthLogin(
+					clientId,
+					redirectTarget,
+					opts?.scope ? { scope: opts.scope } : undefined,
+				);
 			}, wait);
 		}
 		return;
@@ -183,6 +213,9 @@ export async function initiateOAuthLogin(
 	const cfg = getConfig();
 	const cid = clientId || cfg.clientId;
 	if (!cid) throw new Error('OAuth client_id is not available');
+
+	// 申请 scope：调用方显式传入则用之（含额外 scope），否则沿用基础 scope（零波及其它站点）
+	const requestedScope = opts?.scope?.trim() || cfg.scope;
 
 	// Always encode state as JSON with CSRF token + redirect target
 	const csrf = randomState();
@@ -207,7 +240,7 @@ export async function initiateOAuthLogin(
 			response_type: 'code',
 			client_id: cid,
 			redirect_uri: cfg.redirectUri,
-			scope: cfg.scope,
+			scope: requestedScope,
 			code_challenge: pkce.challenge,
 			code_challenge_method: 'S256',
 			state,
@@ -224,7 +257,7 @@ export async function initiateOAuthLogin(
 			response_type: 'code',
 			client_id: cid,
 			redirect_uri: cfg.redirectUri,
-			scope: cfg.scope,
+			scope: requestedScope,
 			state,
 		});
 		traceRedirect(`${cfg.authorizeUrl}?${params}`, {

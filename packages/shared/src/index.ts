@@ -49,6 +49,7 @@ export {
 	handleOAuthCallback,
 	isOAuthEnabled,
 	OAuthCallbackError,
+	withOAuthScopes,
 } from './auth/oauth-login';
 export { decodeJwtPayload } from './auth/jwt-payload';
 export { buildLoginUrl } from './auth/roles';
