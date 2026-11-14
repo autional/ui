@@ -28,6 +28,7 @@ import { execFileSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { isMain } from './lib/is-main.mjs';
 import { ROOT } from './lib/tokens.mjs';
 
 const argv = process.argv.slice(2);
@@ -97,4 +98,6 @@ run('pnpm', ['build:cdn'], '3/4 重建 CDN 产物');
 // 主模块守卫：**被 import 时不许执行**。
 // 第 57 轮实测的教训：我用 node -e "import('./scripts/release.mjs')" 做语法自检，
 // 结果它**真的开始发布流程了**（跑到 verify 才被管道关闭杀掉）。脚本不是模块，就别装作是。
-if (import.meta.url === pathToFileURL(process.argv[1] || '').href) await main();
+// 判定走 lib/is-main.mjs：经 .refs/ui junction 调用时 argv[1] 是 junction 路径、
+// import.meta.url 是真实路径，直接比较会判成「被 import」→ 静默 exit 0（2026-11-14 实测两次）。
+if (isMain(import.meta.url)) await main();

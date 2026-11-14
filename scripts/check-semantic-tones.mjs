@@ -29,6 +29,7 @@
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, extname } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { isMain } from './lib/is-main.mjs';
 import { ROOT, loadTokens } from './lib/tokens.mjs';
 import { makeSkip, ARTIFACT_DIRS, TEST_RE, SRC_EXTS } from './lib/scan-scope.mjs';
 
@@ -251,7 +252,9 @@ async function main() {
 // 再 process.exit，迁移脚本会被它直接带走 —— 与 release.mjs 的教训同型（裸 import 一个
 // 「有主流程的脚本」等于执行它）。所以主流程进函数 + 守卫，且守卫放在**文件末尾**
 // （放在前面会撞 TDZ：SKIP / walk 还没初始化）。
-if (import.meta.url === pathToFileURL(process.argv[1] || '').href) {
+// 判定走 lib/is-main.mjs（junction 安全）：经 .refs/ui 调用时 argv[1] 是 junction 路径、
+// import.meta.url 是真实路径，直接比较会判成「被 import」→ 静默 exit 0（2026-11-14 实测两次）。
+if (isMain(import.meta.url)) {
   if (SELFTEST) selftest();
   await main();
 }

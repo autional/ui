@@ -24,6 +24,7 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { isMain } from './lib/is-main.mjs';
 import { ROOT } from './lib/tokens.mjs';
 import { REGISTRY } from './lib/dist-tags.mjs';
 
@@ -167,4 +168,6 @@ export async function main() {
 
 // 主模块守卫：**被 import 时不许执行**（与 release.mjs 同一条教训：
 // 拿 node -e "import('./scripts/x.mjs')" 做语法自检时，它真的开始跑流程了）。
-if (import.meta.url === pathToFileURL(process.argv[1] || '').href) await main();
+// 判定走 lib/is-main.mjs：经 .refs/ui junction 调用时 argv[1] 是 junction 路径、
+// import.meta.url 是真实路径，直接比较会判成「被 import」→ 静默 exit 0（2026-11-14 实测两次）。
+if (isMain(import.meta.url)) await main();
