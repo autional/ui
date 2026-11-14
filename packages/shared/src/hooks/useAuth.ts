@@ -35,8 +35,17 @@ export interface AuthSnapshot {
 }
 
 export interface AuthActions {
-	/** 跳转到 OAuth 登录页或 auth-pages */
-	login: (params?: { clientId?: string; redirectUri?: string }) => Promise<void>;
+	/**
+	 * 跳转到 OAuth 登录页或 auth-pages。
+	 * 指定 clientId 时走 OAuth PKCE：缺省申请门户档 scope（`PORTAL_LOGIN_SCOPES`，
+	 * 含业务写 scope）；窄权限调用方（如认证器类应用）显式传 `scope` 收窄。
+	 */
+	login: (params?: {
+		clientId?: string;
+		redirectUri?: string;
+		/** 覆盖登录 scope（缺省 = 门户档 `PORTAL_LOGIN_SCOPES`）。 */
+		scope?: string;
+	}) => Promise<void>;
 	/** 统一登出（清除所有状态 + 跳转登录页） */
 	logout: () => Promise<void>;
 	/** 设置当前租户 */
@@ -200,10 +209,18 @@ export function useTenants(): Array<{ id: string; name: string; role: string }> 
  */
 export function useAuthActions(): AuthActions {
 	const login = useCallback(
-		async (params?: { clientId?: string; redirectUri?: string }): Promise<void> => {
+		async (params?: {
+			clientId?: string;
+			redirectUri?: string;
+			scope?: string;
+		}): Promise<void> => {
 			if (params?.clientId) {
-				const { initiateOAuthLogin } = await import('../auth/oauth-login');
-				return initiateOAuthLogin(params.clientId, params.redirectUri);
+				const { initiateOAuthLogin, PORTAL_LOGIN_SCOPES } = await import(
+					'../auth/oauth-login'
+				);
+				return initiateOAuthLogin(params.clientId, params.redirectUri, {
+					scope: params.scope ?? PORTAL_LOGIN_SCOPES,
+				});
 			}
 			const { buildLoginUrl } = await import('../auth/roles');
 			window.location.href = buildLoginUrl(window.location.href);

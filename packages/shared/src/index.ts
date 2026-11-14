@@ -50,6 +50,9 @@ export {
 	isOAuthEnabled,
 	OAuthCallbackError,
 	withOAuthScopes,
+	PORTAL_LOGIN_SCOPES,
+	scopesCover,
+	tokenNeedsPortalScopeUpgrade,
 } from './auth/oauth-login';
 export { decodeJwtPayload } from './auth/jwt-payload';
 export { buildLoginUrl } from './auth/roles';

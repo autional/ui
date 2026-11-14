@@ -60,6 +60,63 @@ export function withOAuthScopes(...extra: string[]): string {
 	return out.join(' ');
 }
 
+/**
+ * 第一方门户登录申请的**完整 scope 档**（基础档 + 业务写能力）。
+ *
+ * 2026-11-14 事故：用户门户「短信验证 → 验证并开启」返回 403
+ * `token scope does not allow this operation` —— 登录只申请了 `read`，而 MFA 写接口自
+ * 2026-11-06 起强制 `mfa:write`。同类受影响的还有通知流 stream-ticket（`write`）、
+ * 社交账号绑定/解绑与授权撤销（`oauth:write`）、钱包/积分/支付/账单写（`*:write`）。
+ *
+ * 服务端 `oauth_clients.scopes` 已为全部首方门户 client（9 个固定 client +
+ * 全部租户 Default Client）登记了这套 scope；缺的一直只是「登录时申请」这一步。
+ * 认证器 PWA 另有更窄的档位（`withOAuthScopes('write')`，见 ADR-027 D2），不得使用本常量。
+ */
+export const PORTAL_LOGIN_SCOPES = withOAuthScopes(
+	'write',
+	'wallet:write',
+	'point:write',
+	'pay:write',
+	'billing:write',
+	'oauth:write',
+	'mfa:write',
+);
+
+/** granted 是否覆盖 required 要求的全部 scope（空格分隔；`*` 通配覆盖一切）。 */
+export function scopesCover(granted: string | null | undefined, required: string): boolean {
+	const have = new Set(
+		String(granted ?? '')
+			.trim()
+			.split(/\s+/)
+			.filter(Boolean),
+	);
+	if (have.has('*')) return true;
+	return String(required ?? '')
+		.trim()
+		.split(/\s+/)
+		.filter(Boolean)
+		.every((s) => have.has(s));
+}
+
+/**
+ * 现有令牌是否需要一次性 scope 升级（2026-11-14 前签发的令牌只带基础档）。
+ *
+ * 只对 **OAuth 令牌**（`custom.client_id` 存在）判定：会话 / SAML / identity 直签令牌
+ * 没有业务 scope 语义（`custom.scope` 含 `*` 或压根没有 client_id），不会被 scope 门禁拦。
+ * 模拟会话（`custom.is_imp`，平台→管理台交接）必须跳过——升级会把它换成本人令牌。
+ */
+export function tokenNeedsPortalScopeUpgrade(token: string | null | undefined): boolean {
+	if (!token) return false;
+	const payload = decodeJwtPayload(token) as { custom?: Record<string, unknown> } | null;
+	const custom = payload?.custom;
+	if (!custom) return false;
+	if (typeof custom.client_id !== 'string' || !custom.client_id) return false;
+	if (custom.is_imp === true) return false;
+	const scope = typeof custom.scope === 'string' ? custom.scope : '';
+	if (scope.split(/\s+/).includes('*')) return false;
+	return !scopesCover(scope, PORTAL_LOGIN_SCOPES);
+}
+
 export interface OAuthInitiateOptions {
 	/** 「停留」取消本次跳转时回调（AUTH-03，调用方据此恢复 UI）；内部已先清预置物 |
 	 *  与待重试定时器（AUTH-08），再次交互可全新发起。 */
@@ -73,6 +130,11 @@ export interface OAuthInitiateOptions {
 	 * 空串或纯空白视同未传。服务端仍会按 `oauth_clients.scopes` 校验，未登记项会被拒绝。
 	 */
 	scope?: string;
+	/**
+	 * 静默发起：流程内部步骤（如旧令牌的一次性 scope 升级），不弹「即将离开本页」
+	 * 提示条，直接整页跳转（trace 记 funnel）。用户主动登录不要设置。
+	 */
+	silent?: boolean;
 }
 
 /**
@@ -190,11 +252,10 @@ export async function initiateOAuthLogin(
 				retryTimer = null;
 				// scope 必须随重试带下去：否则自动重试会把调用方申请的额外 scope 丢掉
 				// （表现为「登录成功但写接口 403」，且极难复现）。
-				void initiateOAuthLogin(
-					clientId,
-					redirectTarget,
-					opts?.scope ? { scope: opts.scope } : undefined,
-				);
+				void initiateOAuthLogin(clientId, redirectTarget, {
+					...(opts?.scope ? { scope: opts.scope } : {}),
+					...(opts?.silent ? { silent: true } : {}),
+				});
 			}, wait);
 		}
 		return;
@@ -233,6 +294,10 @@ export async function initiateOAuthLogin(
 		opts?.onStay?.();
 	};
 
+	// silent（流程内部步骤，如 scope 升级）：静默整页跳，不弹「即将离开本页」提示条。
+	const traceKind = opts?.silent ? 'funnel' : 'interstitial';
+	const traceReason = opts?.silent ? 'oauth-scope-upgrade' : 'oauth-initiate';
+
 	try {
 		const pkce = await generatePKCE();
 		sessionStorage.setItem(SK.PKCE, pkce.verifier);
@@ -247,8 +312,8 @@ export async function initiateOAuthLogin(
 		});
 		// interstitial：未认证深链被动弹去登录 → authTrace 提示（可停留）。
 		traceRedirect(`${cfg.authorizeUrl}?${params}`, {
-			reason: 'oauth-initiate',
-			kind: 'interstitial',
+			reason: traceReason,
+			kind: traceKind,
 			assign: true,
 			onStay: handleStay,
 		});
@@ -261,8 +326,8 @@ export async function initiateOAuthLogin(
 			state,
 		});
 		traceRedirect(`${cfg.authorizeUrl}?${params}`, {
-			reason: 'oauth-initiate',
-			kind: 'interstitial',
+			reason: traceReason,
+			kind: traceKind,
 			assign: true,
 			onStay: handleStay,
 		});

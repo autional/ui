@@ -37,7 +37,10 @@ vi.mock('../../auth/tenant-route-middleware', async (importOriginal) => ({
 	useTenantRoute: () => mockState.tenantRoute,
 }));
 
-vi.mock('../../auth/oauth-login', () => ({
+// 部分 mock：保留真实 scope 常量/判定（RequireAuth 的 scope 升级 effect 依赖它们），
+// 只替换发起函数。
+vi.mock('../../auth/oauth-login', async (importOriginal) => ({
+	...(await importOriginal<typeof import('../../auth/oauth-login')>()),
 	initiateOAuthLogin: (...args: any[]) => mockState.initiate(...args),
 }));
 

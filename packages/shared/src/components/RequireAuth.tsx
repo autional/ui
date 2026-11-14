@@ -2,7 +2,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { AuthService, setBootstrapLock } from '../auth/service';
 import { buildLoginUrl } from '../auth/roles';
 import { traceRedirect } from '../auth/auth-trace';
-import { initiateOAuthLogin } from '../auth/oauth-login';
+import {
+	initiateOAuthLogin,
+	PORTAL_LOGIN_SCOPES,
+	tokenNeedsPortalScopeUpgrade,
+} from '../auth/oauth-login';
 import {
 	useTenantRoute,
 	resolveEffectiveClientId,
@@ -192,6 +196,9 @@ export function RequireAuth({
 				void initiateOAuthLogin(effectiveClientId, undefined, {
 					onStay: () => setStayed(true),
 					force,
+					// 门户档 scope：写接口（MFA 开通 / 通知流 / 账号绑定 / 钱包…）需要
+					// 业务写 scope；只申请基础档会「登录成功、写操作 403」。
+					scope: PORTAL_LOGIN_SCOPES,
 				});
 				return;
 			}
@@ -234,6 +241,29 @@ export function RequireAuth({
 		const hasToken = !!rawToken && rawToken !== 'undefined' && rawToken !== 'null';
 		if (!hasToken) setBootstrapLock(true);
 	}, []);
+
+	// 一次性 scope 升级（2026-11-14）：历史 OAuth 令牌只申请了基础档（read），写接口
+	// 全部 403（MFA 开通 / 通知流 / 账号绑定…）。已登录且令牌缺门户写 scope 时，用
+	// 完整档**静默**重新授权一次——auth 侧已有会话与既有同意时 authorize 自动放行，
+	// 用户只看到一次回跳。每页面会话最多尝试一次（失败不循环）；升级后令牌即带全
+	// scope，条件自然转假。会话/SAML 直签令牌（无 OAuth client_id）与模拟会话不参与。
+	const SCOPE_UPGRADE_FLAG = 'oauth_portal_scope_upgrade_tried';
+	useEffect(() => {
+		if (typeof window === 'undefined') return;
+		if (machine.status !== 'ready' && machine.status !== 'authenticated') return;
+		const cfg = (window as any).__APP_CONFIG__;
+		const envClientId = cfg?.VITE_OAUTH_CLIENT_ID || '';
+		const effectiveClientId = resolveEffectiveClientId(tenantRoute, envClientId);
+		if (!effectiveClientId) return;
+		if (!tokenNeedsPortalScopeUpgrade(AuthService.getAccessToken())) return;
+		if (sessionStorage.getItem(SCOPE_UPGRADE_FLAG)) return;
+		sessionStorage.setItem(SCOPE_UPGRADE_FLAG, '1');
+		void initiateOAuthLogin(effectiveClientId, undefined, {
+			scope: PORTAL_LOGIN_SCOPES,
+			force: true,
+			silent: true,
+		});
+	}, [machine.status, tenantRoute]);
 
 	// Redirect logic: only runs when machine says unauthenticated
 	useEffect(() => {

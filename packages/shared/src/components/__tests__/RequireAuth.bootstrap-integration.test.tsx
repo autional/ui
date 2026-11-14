@@ -17,7 +17,11 @@ vi.mock('../../auth/auth-queries', () => ({
 
 vi.mock('../../generated/api', () => ({ profileAvatar: vi.fn().mockResolvedValue({}) }));
 
-vi.mock('../../auth/oauth-login', () => ({ initiateOAuthLogin: vi.fn() }));
+// 部分 mock：保留真实 scope 常量/判定（RequireAuth 的 scope 升级 effect 依赖它们）。
+vi.mock('../../auth/oauth-login', async (importOriginal) => ({
+	...(await importOriginal<typeof import('../../auth/oauth-login')>()),
+	initiateOAuthLogin: vi.fn(),
+}));
 
 vi.mock('../../auth/tenant-route-middleware', async (importOriginal) => ({
 	...(await importOriginal<typeof import('../../auth/tenant-route-middleware')>()),
