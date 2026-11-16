@@ -13,7 +13,7 @@ import { loginWithTokens } from './store';
 import { AuthService } from './service';
 import { generatePKCE } from './pkce';
 import { getPortalUrl } from '../config';
-import { persistOAuthClientId } from './oauth-client-id-store';
+import { getPersistedOAuthClientId, persistOAuthClientId } from './oauth-client-id-store';
 import { traceRedirect } from './auth-trace';
 import { decodeJwtPayload } from './jwt-payload';
 import type { User } from '../types';
@@ -31,6 +31,152 @@ const SK = {
 	INIT_TS: 'oauth_init_ts',
 	CID: 'oauth_client_id',
 };
+
+// ============================================================
+// F-008：OAuth 交棒（state + PKCE verifier）跨浏览上下文兜底
+//
+// 只写 sessionStorage 时，回调页一旦落在**另一个浏览上下文**就必然读到空值 ⇒
+// `oauth.state_mismatch`（回调页不换码、停在错误页）。触发场景都是推送深链的常见形态：
+//   - PWA standalone（桌面/安卓 TWA）被系统浏览器打开
+//   - 登录链接在**新标签**打开（target=_blank / 系统「在浏览器中打开」）
+//   - 安卓 Custom Tab / iOS SFSafariViewController（独立 sessionStorage）
+// sessionStorage 是 per-context 的，localStorage 才是同源跨上下文共享的。
+//
+// 因此：**同时**写两处 —— sessionStorage（快路径，既有行为不变）、localStorage（兜底）；
+// 兜底记录自带 `exp`（≤5 分钟）与 `origin` 绑定，读取时校验；**命中即双删**（防重放：
+// 一条交棒只允许兑换一次 code）。值里只有 state/verifier + 时间戳，**不含任何 token**。
+//
+// 安全语义不变：state 仍与回调参数强比对，不匹配照样抛 `oauth.state_mismatch`；
+// 兜底只解决「读不到」，不解决「不匹配」——严格性没有放松。
+// ============================================================
+
+/** localStorage 兜底记录的键（与 sessionStorage 的 SK.STATE/SK.PKCE 分离，便于整体校验/清理） */
+const HANDOFF_KEY = 'oauth_handoff';
+/** 兜底有效期：5 分钟（跳去认证中心 → 输密码/短信 → 回跳的合理上限） */
+const HANDOFF_TTL_MS = 5 * 60 * 1000;
+
+interface OAuthHandoff {
+	state: string;
+	verifier: string;
+}
+
+interface StoredHandoff extends OAuthHandoff {
+	/** 记录版本，未来改结构时可直接判定旧记录无效 */
+	v: 1;
+	/** 发起方 origin（同源跨上下文才认；防止同 origin 其它部署/子应用的残留被误用） */
+	origin: string;
+	/** 过期时间戳（ms） */
+	exp: number;
+}
+
+function parseStoredHandoff(raw: string | null): StoredHandoff | null {
+	if (!raw) return null;
+	try {
+		const v = JSON.parse(raw) as Partial<StoredHandoff> | null;
+		if (!v || typeof v !== 'object') return null;
+		if (v.v !== 1) return null;
+		if (typeof v.state !== 'string' || typeof v.verifier !== 'string') return null;
+		if (typeof v.origin !== 'string' || typeof v.exp !== 'number') return null;
+		return { v: 1, state: v.state, verifier: v.verifier, origin: v.origin, exp: v.exp };
+	} catch {
+		return null;
+	}
+}
+
+/**
+ * 写入交棒：sessionStorage（快路径）+ localStorage（跨上下文兜底）。
+ * 存储不可用（隐私模式 / 配额满）时静默降级，绝不让登录流程抛错。
+ */
+function saveHandoff(origin: string, value: OAuthHandoff): void {
+	if (typeof window === 'undefined') return;
+	const state = value.state || '';
+	const verifier = value.verifier || '';
+	try {
+		if (state) sessionStorage.setItem(SK.STATE, state);
+		if (verifier) sessionStorage.setItem(SK.PKCE, verifier);
+	} catch {
+		/* ignore */
+	}
+	try {
+		const record: StoredHandoff = {
+			v: 1,
+			state,
+			verifier,
+			origin,
+			exp: Date.now() + HANDOFF_TTL_MS,
+		};
+		localStorage.setItem(HANDOFF_KEY, JSON.stringify(record));
+	} catch {
+		/* ignore */
+	}
+}
+
+/**
+ * 读取交棒：先 sessionStorage（同上下文），未命中再读 localStorage 兜底
+ * （校验 exp 未过期 + origin 匹配）。**命中即双删**（防重放）。
+ * 永不抛错；读不到时返回空串，交由调用方按既有逻辑抛 `state_mismatch` / `pkce_cleared`。
+ */
+function loadHandoff(origin: string): OAuthHandoff {
+	if (typeof window === 'undefined') return { state: '', verifier: '' };
+
+	let state = '';
+	let verifier = '';
+	try {
+		state = sessionStorage.getItem(SK.STATE) || '';
+		verifier = sessionStorage.getItem(SK.PKCE) || '';
+	} catch {
+		/* ignore */
+	}
+	if (state || verifier) {
+		clearHandoff(origin);
+		return { state, verifier };
+	}
+
+	let raw: string | null = null;
+	try {
+		raw = localStorage.getItem(HANDOFF_KEY);
+	} catch {
+		raw = null;
+	}
+	if (!raw) return { state: '', verifier: '' };
+
+	const rec = parseStoredHandoff(raw);
+	if (!rec) {
+		// 坏记录：直接清掉，避免每次回调都重复解析
+		clearHandoff(origin);
+		return { state: '', verifier: '' };
+	}
+	if (rec.origin !== origin) {
+		// 同源其它部署（多站点共用 localhost / 多 BASE_PATH）留下的交棒：不用也不动
+		return { state: '', verifier: '' };
+	}
+	if (Date.now() > rec.exp) {
+		clearHandoff(origin);
+		return { state: '', verifier: '' };
+	}
+	clearHandoff(origin);
+	return { state: rec.state, verifier: rec.verifier };
+}
+
+/** 清除交棒：两处都删（state/verifier）。只清属于本 origin 的 localStorage 记录。 */
+function clearHandoff(origin: string): void {
+	if (typeof window === 'undefined') return;
+	try {
+		sessionStorage.removeItem(SK.STATE);
+		sessionStorage.removeItem(SK.PKCE);
+	} catch {
+		/* ignore */
+	}
+	try {
+		const raw = localStorage.getItem(HANDOFF_KEY);
+		if (!raw) return;
+		const rec = parseStoredHandoff(raw);
+		// 解析失败 = 坏记录，一并清掉；origin 不符（别的部署的进行中交棒）则保留
+		if (!rec || rec.origin === origin) localStorage.removeItem(HANDOFF_KEY);
+	} catch {
+		/* ignore */
+	}
+}
 
 /**
  * 第一方门户登录申请的 scope —— **单一真源**。
@@ -167,8 +313,8 @@ export function discardPendingOAuthLogin(): void {
 		clearTimeout(retryTimer);
 		retryTimer = null;
 	}
-	sessionStorage.removeItem(SK.STATE);
-	sessionStorage.removeItem(SK.PKCE);
+	// F-008：交棒可能在 sessionStorage（同上下文）或 localStorage（跨上下文兜底），两处都清
+	clearHandoff(window.location.origin);
 	sessionStorage.removeItem(SK.CID);
 	sessionStorage.removeItem(SK.INIT_TS);
 }
@@ -274,6 +420,8 @@ export async function initiateOAuthLogin(
 	const cfg = getConfig();
 	const cid = clientId || cfg.clientId;
 	if (!cid) throw new Error('OAuth client_id is not available');
+	/** 交棒记录的 origin 绑定：回调页必须在同一 origin（跨浏览上下文但同源）才认 */
+	const handoffOrigin = window.location.origin;
 
 	// 申请 scope：调用方显式传入则用之（含额外 scope），否则沿用基础 scope（零波及其它站点）
 	const requestedScope = opts?.scope?.trim() || cfg.scope;
@@ -282,7 +430,9 @@ export async function initiateOAuthLogin(
 	const csrf = randomState();
 	const state = JSON.stringify({ csrf, redirect: target });
 
-	sessionStorage.setItem(SK.STATE, csrf);
+	// 交棒（state）：sessionStorage 快路径 + localStorage 跨上下文兜底（F-008）。
+	// 此处先落 state；verifier 需等 generatePKCE，稍后补齐整条记录。
+	saveHandoff(handoffOrigin, { state: csrf, verifier: '' });
 	sessionStorage.setItem(SK.CID, cid);
 	// 交棒时落持久层：刷新/登出在 React 上下文外，拿不到 slug 解析结果（TASK-09 / D8）
 	persistOAuthClientId(cid);
@@ -300,7 +450,8 @@ export async function initiateOAuthLogin(
 
 	try {
 		const pkce = await generatePKCE();
-		sessionStorage.setItem(SK.PKCE, pkce.verifier);
+		// 补齐 verifier 后重写整条交棒（localStorage 兜底记录同时带上 verifier）
+		saveHandoff(handoffOrigin, { state: csrf, verifier: pkce.verifier });
 		const params = new URLSearchParams({
 			response_type: 'code',
 			client_id: cid,
@@ -348,9 +499,16 @@ export async function handleOAuthCallback(): Promise<void> {
 	const code = q.get('code');
 	if (!code) throw new OAuthCallbackError('oauth.missing_code', 'Missing authorization code');
 
-	const storedState = sessionStorage.getItem(SK.STATE) || '';
-	const verifier = sessionStorage.getItem(SK.PKCE) || '';
-	const cid = sessionStorage.getItem(SK.CID) || '';
+	// F-008：交棒读取走 helper —— 先 sessionStorage（同上下文快路径），未命中再读
+	// localStorage 兜底（跨浏览上下文：PWA standalone → 外部浏览器 / 新标签 / Custom Tab）。
+	// 命中即双删（防重放）；读不到仍是空串 ⇒ 下面照旧抛 state_mismatch / pkce_cleared。
+	const cbOrigin = window.location.origin;
+	const handoff = loadHandoff(cbOrigin);
+	const storedState = handoff.state;
+	const verifier = handoff.verifier;
+	// client_id：sessionStorage 优先，localStorage 持久值兜底（跨上下文时 session 里没有；
+	// 发起时 persistOAuthClientId 已落库，不含任何凭据）
+	const cid = sessionStorage.getItem(SK.CID) || getPersistedOAuthClientId();
 
 	// State is always JSON: { csrf, redirect }
 	let oauthRedirectTarget: string | null = null;
@@ -404,8 +562,8 @@ export async function handleOAuthCallback(): Promise<void> {
 
 	// 用毕即焚（AUTH-08）：兑换请求已消费 code_verifier/state/client_id，立即清除；
 	// 原清理点在 userinfo、/auth/me 多次 await 之后，明文 verifier 驻留窗口被无谓拉长。
-	sessionStorage.removeItem(SK.PKCE);
-	sessionStorage.removeItem(SK.STATE);
+	// F-008：state/verifier 通常已在 loadHandoff 命中时双删，这里再清一次（幂等兜底）。
+	clearHandoff(cbOrigin);
 	sessionStorage.removeItem(SK.CID);
 
 	const t = res.data as any;

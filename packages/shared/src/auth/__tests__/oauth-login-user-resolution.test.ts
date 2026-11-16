@@ -20,7 +20,10 @@ const { mockPost, mockGet, mockLoginWithTokens, mockUpdateCurrentTenant, mockPer
 vi.mock('../../api/client', () => ({ apiClient: { post: mockPost, get: mockGet } }));
 vi.mock('../store', () => ({ loginWithTokens: mockLoginWithTokens }));
 vi.mock('../service', () => ({ AuthService: { updateCurrentTenant: mockUpdateCurrentTenant } }));
-vi.mock('../oauth-client-id-store', () => ({ persistOAuthClientId: mockPersistCid }));
+vi.mock('../oauth-client-id-store', () => ({
+	persistOAuthClientId: mockPersistCid,
+	getPersistedOAuthClientId: () => '',
+}));
 vi.mock('../auth-trace', () => ({ traceRedirect: mockTrace }));
 vi.mock('../../config', () => ({ getPortalUrl: () => 'https://auth.example.com' }));
 

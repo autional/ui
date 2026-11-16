@@ -10,7 +10,10 @@ const { mockPost } = vi.hoisted(() => ({ mockPost: vi.fn() }));
 vi.mock('../../api/client', () => ({ apiClient: { post: mockPost, get: vi.fn() } }));
 vi.mock('../store', () => ({ loginWithTokens: vi.fn() }));
 vi.mock('../service', () => ({ AuthService: { updateCurrentTenant: vi.fn() } }));
-vi.mock('../oauth-client-id-store', () => ({ persistOAuthClientId: vi.fn() }));
+vi.mock('../oauth-client-id-store', () => ({
+	persistOAuthClientId: vi.fn(),
+	getPersistedOAuthClientId: () => '',
+}));
 vi.mock('../auth-trace', () => ({ traceRedirect: vi.fn() }));
 vi.mock('../../config', () => ({ getPortalUrl: () => 'https://auth.example.com' }));
 
