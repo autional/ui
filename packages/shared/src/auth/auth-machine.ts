@@ -15,7 +15,8 @@
 
 import { useReducer, useEffect, useMemo } from 'react';
 import { AuthService } from './service';
-import { useBootstrap } from '../hooks/useBootstrap';
+import { useAuthDataStatus, type BootstrapState } from '../hooks/useBootstrap';
+import { useCurrentRole } from '../hooks/useCurrentRole';
 
 // ============ Types ============
 
@@ -30,8 +31,26 @@ export type AuthStatus =
 export interface AuthMachineState {
 	status: AuthStatus;
 	hasToken: boolean;
-	bootstrapState: ReturnType<typeof useBootstrap>;
+	bootstrapState: BootstrapState;
+	/**
+	 * 当前租户角色。来源优先 store（与 `AuthService.getCurrentRole()` 同源、同口径），
+	 * store 尚未派生出来时用租户查询结果兜底 —— 消除「查询已返回 → store 写入 effect」
+	 * 之间的一帧滞后，避免守卫把「角色马上到」误判成「确定无角色」。
+	 */
+	role: string | null;
+	/**
+	 * 角色是否已定型。true ⇒ `role === null` 就是「确定无角色」（可据此拒绝）；
+	 * false ⇒ 仍在途（守卫必须等待，既不放行也不拒绝）。
+	 */
+	roleSettled: boolean;
 }
+
+/**
+ * 状态机自身的核心状态（reducer 维护的部分）。
+ * 角色/就绪判据是**派生值**（每次渲染由 store + 租户查询算出），不入 reducer，
+ * 因此 reducer 与初始态只需这一层 —— 避免「派生值也进 reducer」造成两份真源。
+ */
+type AuthCoreState = Pick<AuthMachineState, 'status' | 'hasToken' | 'bootstrapState'>;
 
 type AuthAction =
 	| { type: 'TOKEN_FOUND' }
@@ -44,7 +63,7 @@ type AuthAction =
 
 // ============ Reducer ============
 
-function authReducer(state: AuthMachineState, action: AuthAction): AuthMachineState {
+function authReducer(state: AuthCoreState, action: AuthAction): AuthCoreState {
 	switch (action.type) {
 		case 'TOKEN_FOUND':
 			return { ...state, status: 'authenticated', hasToken: true };
@@ -79,7 +98,7 @@ function authReducer(state: AuthMachineState, action: AuthAction): AuthMachineSt
 
 // ============ Initial State ============
 
-function createInitialState(): AuthMachineState {
+function createInitialState(): AuthCoreState {
 	const token = AuthService.getAccessToken();
 	return {
 		status: 'checking',
@@ -111,7 +130,9 @@ function createInitialState(): AuthMachineState {
  */
 export function useAuthMachine(): AuthMachineState {
 	const [state, dispatch] = useReducer(authReducer, undefined, createInitialState);
-	const bootstrapState = useBootstrap();
+	const authData = useAuthDataStatus();
+	const bootstrapState: BootstrapState = authData.bootstrap;
+	const storeRole = useCurrentRole();
 
 	// Phase 1: 检查 token
 	const hasToken = useMemo(() => {
@@ -143,9 +164,20 @@ export function useAuthMachine(): AuthMachineState {
 		}
 	}, [bootstrapState]);
 
+	// 角色 + 就绪判据（供 RequireAuth 区分「未就绪」与「确定无角色」）
+	const role = useMemo(() => {
+		if (storeRole) return storeRole;
+		const tenantId = AuthService.getCurrentTenantId();
+		if (!tenantId) return null;
+		return authData.tenants.find((t) => t.id === tenantId)?.role ?? null;
+	}, [storeRole, authData.tenants]);
+	const roleSettled = role !== null || authData.tenantsSettled;
+
 	return {
 		...state,
 		hasToken,
 		bootstrapState,
+		role,
+		roleSettled,
 	};
 }

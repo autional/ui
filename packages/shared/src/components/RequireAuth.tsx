@@ -13,6 +13,7 @@ import {
 	isSameDomainOAuth,
 } from '../auth/tenant-route-middleware';
 import { useAuthMachine } from '../auth/auth-machine';
+import { useAuthStore } from '../auth/store';
 
 interface RequireAuthProps {
 	children: React.ReactNode;
@@ -163,14 +164,36 @@ export function RequireAuth({
 }: RequireAuthProps) {
 	const machine = useAuthMachine();
 	const tenantRoute = useTenantRoute();
+
+	// ============ 角色门控（allowedRoles）的「就绪」判据 ============
+	// `role === null` 有三种含义，必须区分（不区分 = 要么 fail-open、要么误伤）：
+	//   ① 租户/权限数据在途（查询未定型、slug 的租户身份未解析）⇒ **未就绪**；
+	//   ② 已定型但当前租户无角色（role 字段缺失 / 名单已不含该租户）⇒ **确定无角色**；
+	//   ③ 未登录 —— 已在更早的 unauthenticated 分支裁决，走不到角色门控。
+	// 处理口径：① 渲染 loadingFallback（**不渲染 children、也不判拒绝**，等数据到位）；
+	//           ② fail-closed（fallback），唯一豁免仍是持 '*' 权限（既有语义②）。
+	const roles = allowedRoles && allowedRoles.length > 0 ? allowedRoles : null;
+	const currentRole = machine.role !== undefined ? machine.role : AuthService.getCurrentRole();
+	const storeTenantId = useAuthStore((s) => s.currentTenantId);
+	// 租户身份仍在解析（slug → tenantId），或路由租户与 store 当前租户不一致
+	// （useTenantRoute 的 effect 即将回写）：手里的角色属于另一个租户 ⇒ 不得据此裁决。
+	const tenantRoutePending =
+		(!!tenantRoute.tenantId && tenantRoute.tenantId !== storeTenantId) ||
+		(tenantRoute.loading && !currentRole);
+	/** 角色门控等待中：角色未对齐/在途且数据未定型 —— 是「未就绪」，不是「无权限」。 */
+	const rolePending =
+		!!roles && (tenantRoutePending || (!currentRole && machine.roleSettled === false));
+
 	// 「停留」已选（被动登录跳转被用户取消）——渲染恢复态而非空白（AUTH-03）
 	const [stayed, setStayed] = useState(false);
 
 	// P1-2：启动数据加载失败/卡住时不得 render null（整站白屏）。
 	// ① bootstrapState==='error'（两个查询都失败）立即给错误页；
-	// ② checking/bootstrap 超过 10s 视为卡住（单查询挂起等），同样降级。
+	// ② checking/bootstrap、或角色门控等待角色到位，超过 10s 视为卡住，同样降级
+	//    （角色永远到不了时，宁可给可恢复错误页，也不无限 loading / fail-open）。
 	const [bootstrapTimedOut, setBootstrapTimedOut] = useState(false);
-	const waitingBootstrap = machine.status === 'checking' || machine.status === 'bootstrap';
+	const waitingBootstrap =
+		machine.status === 'checking' || machine.status === 'bootstrap' || rolePending;
 	useEffect(() => {
 		if (!waitingBootstrap) {
 			setBootstrapTimedOut(false);
@@ -309,12 +332,28 @@ export function RequireAuth({
 	//   ② '*' 单豁免：持全量通配 '*' 的非白名单角色放行（唯一豁免通道）；
 	//   ③ 空权限 fail-closed：非白名单角色且无 '*' ⇒ 拒绝（fallback / null），
 	//      空权限数组不再构成放行旁路。
-	// role === null 保持穿透为锁定现语义（叠加语义）：更严闸门（AuthGuard /
-	// PortalGuard）在更外层裁决未知角色，本组件不把 null 判为拒绝
-	// （对抗用例④为防误改回归锁，改前先改裁定）。
-	if (allowedRoles && allowedRoles.length > 0) {
-		const role = AuthService.getCurrentRole();
-		if (role && !allowedRoles.includes(role)) {
+	//
+	// 角色缺失（role === null）分两态（2026-11-19 裁定，替换旧的「null 保持穿透」口径）：
+	//   - **未就绪**（rolePending：租户数据在途 / 租户身份未对齐）⇒ 渲染 loadingFallback。
+	//     既不渲染 children（否则就是 fail-open 穿透），也不判拒绝
+	//     （否则把「角色马上到」的合法用户闪成 fallback；站点常接 ForbiddenRedirect ⇒ 误跳 403）。
+	//   - **已就绪仍无角色** ⇒ fail-closed（fallback / null）：拿不到角色就授权，等于放弃门控。
+	//     仍保留 '*' 豁免（与②同一口径）。
+	if (roles) {
+		// 未就绪（角色数据在途 / 租户身份未对齐）⇒ 渲染 loadingFallback：
+		// 既不放行 children（否则 fail-open），也不判拒绝（避免误跳 403）。
+		// 注意此处**不区分是否已有一个（属于别的租户的）角色** —— 身份没对齐就不能裁决。
+		if (rolePending) return loadingFallback ? <>{loadingFallback}</> : null;
+
+		if (!currentRole) {
+			// 已就绪但确定无角色 ⇒ fail-closed；保留 '*' 单一豁免通道（既有语义②）
+			const permissions = AuthService.getPermissions();
+			const hasWildcard = !!permissions && permissions.some((p: string) => p === '*');
+			if (!hasWildcard) {
+				if (fallback) return <>{fallback}</>;
+				return null;
+			}
+		} else if (!roles.includes(currentRole)) {
 			const permissions = AuthService.getPermissions();
 			const hasWildcard = !!permissions && permissions.some((p: string) => p === '*');
 			if (!hasWildcard) {

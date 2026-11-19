@@ -8,6 +8,24 @@ import { usePermissionsQuery, useTenantsQuery } from '../auth/auth-queries';
 
 export type BootstrapState = 'idle' | 'loading' | 'ready' | 'error';
 
+/** 启动数据的「角色可判据」视图（供守卫区分「未就绪」与「确定无角色」）。 */
+export interface AuthDataStatus {
+	/** 启动数据总体状态 —— 与 useBootstrap() 返回值逐字相同（既有语义不变）。 */
+	bootstrap: BootstrapState;
+	/**
+	 * 租户名单的权威快照：**查询结果优先**，其次 store。
+	 * 优先取查询结果是为了消除「查询已返回 → store 写入 effect」之间的一帧滞后
+	 * （否则守卫会在这一帧把"角色即将到达"误判成"确定无角色"）。
+	 */
+	tenants: Array<{ id: string; name: string; role: string }>;
+	/**
+	 * 租户名单是否已定型（成功或失败都算定型）。
+	 * true ⇒ 再看 store 派生角色仍为 null，即「确定无角色」；
+	 * false ⇒ 仍在途，`role === null` 只代表「未知」（不得据此拒绝）。
+	 */
+	tenantsSettled: boolean;
+}
+
 /**
  * 应用启动数据加载 Hook。
  *
@@ -17,6 +35,23 @@ export type BootstrapState = 'idle' | 'loading' | 'ready' | 'error';
  * 返回 BootstrapState 用于 Portal Layout 展示加载状态。
  */
 export function useBootstrap(): BootstrapState {
+	return useAuthDataStatus().bootstrap;
+}
+
+/**
+ * 启动数据的完整视图（useBootstrap 的超集，纯增量导出）。
+ *
+ * **为什么不把 `role === null` 一律判为拒绝**：`role === null` 有三种含义 ——
+ * ① 租户/权限数据还在途（未就绪）；② 已成型但当前租户无角色；③ 未登录。
+ * ① 判拒绝会把「角色马上到达」的合法用户闪成 forbidden（站点常接
+ * `<ForbiddenRedirect/>`，等于误跳 403）；② 判放行则是 fail-open 穿透。
+ * 因此守卫必须先拿到「是否已定型」，再决定「等待」还是「拒绝」。
+ *
+ * 就绪判据的取舍（无反例信号的说明见 RequireAuth 角色门控注释）：
+ * - 租户查询 isSuccess/isError（React Query 已定型）→ 定型；
+ * - 未定型且 store 也派不出角色 ⇒ 未就绪（渲染 loading，不放行也不拒绝）。
+ */
+export function useAuthDataStatus(): AuthDataStatus {
 	const currentTenantId = useAuthStore((s) => s.currentTenantId);
 	const permissionsStore = useAuthStore((s) => s.permissions);
 	const tenantsStore = useAuthStore((s) => s.tenants);
@@ -88,29 +123,39 @@ export function useBootstrap(): BootstrapState {
 	// 无会话 = 无数据可引导：返回 'idle'，登录交棒由 RequireAuth/守卫决策（见上）。
 	// 不得返回 'loading'：Layout 消费者（platform-console）以 bootstrap==='loading'
 	// 挡 Outlet，而 RequireAuth 在 Outlet 里 ⇒ 无会话冷启动永停 Spin、守卫永不挂载（F-W5b）。
-	if (!hasToken) {
-		return 'idle';
-	}
+	const bootstrap: BootstrapState = (() => {
+		if (!hasToken) return 'idle';
 
-	// 已缓存数据 → 立即 ready
-	if (permissionsStore.length > 0 && tenantsStore.length > 0) {
-		return 'ready';
-	}
+		// 已缓存数据 → 立即 ready
+		if (permissionsStore.length > 0 && tenantsStore.length > 0) return 'ready';
 
-	// React Query 数据到达（即使是 stale）
-	if (permsQuery.data || tentsQuery.data) {
-		return 'ready';
-	}
+		// React Query 数据到达（即使是 stale）
+		if (permsQuery.data || tentsQuery.data) return 'ready';
 
-	// 两个请求都失败 —— 语义是「启动失败」，不是「仍在加载」。
-	// 旧实现返回 'loading'（原注释：防重渲染循环），使状态机永停 bootstrap、
-	// RequireAuth 恒 render null ⇒ 后端 5xx 时整站白屏（P1-2，2026-11-08 线上复现：
-	// 四个 bootstrap 接口全 500 → #root 只剩空容器，无提示/无重试）。
-	// 返回 'error' 是稳定值（不会抖动），由 RequireAuth 渲染可恢复错误页。
-	if (permsQuery.isError && tentsQuery.isError) {
-		return 'error';
-	}
+		// 两个请求都失败 —— 语义是「启动失败」，不是「仍在加载」。
+		// 旧实现返回 'loading'（原注释：防重渲染循环），使状态机永停 bootstrap、
+		// RequireAuth 恒 render null ⇒ 后端 5xx 时整站白屏（P1-2，2026-11-08 线上复现：
+		// 四个 bootstrap 接口全 500 → #root 只剩空容器，无提示/无重试）。
+		// 返回 'error' 是稳定值（不会抖动），由 RequireAuth 渲染可恢复错误页。
+		if (permsQuery.isError && tentsQuery.isError) return 'error';
 
-	// 等待中
-	return 'loading';
+		// 等待中
+		return 'loading';
+	})();
+
+	// 租户名单是否定型：成功/失败都算定型（失败 = 拿不到名单，角色只能判为"未知→不可授权"）。
+	// `data !== undefined` 兼容测试桩与 keepPreviousData 之外的自定义 query 形状。
+	const tenantsSettled =
+		!!tentsQuery.isSuccess || !!tentsQuery.isError || tentsQuery.data !== undefined;
+
+	return {
+		bootstrap,
+		// 查询结果优先（同一次渲染内与 query 同步，不受 store 写入 effect 的一帧滞后影响）
+		tenants: (tentsQuery.data ?? tenantsStore) as Array<{
+			id: string;
+			name: string;
+			role: string;
+		}>,
+		tenantsSettled,
+	};
 }

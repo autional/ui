@@ -4,6 +4,9 @@
 // 修复前基线（2026-10-04）：本文件对未修复代码运行，组①③必须红（fail-open 实证）；
 // 修复（TASK-AB1-01）后 6 类全绿，即 A-445 子串穿透永久钉死。
 // 14 条 `*:admin` 弹药清单以 findings §1.1 实扫枚举为准（防清单漂移）。
+//
+// 2026-11-19 裁定（改 ④）：`role === null` 不再一律穿透 —— 已定型仍无角色 ⇒ fail-closed；
+// 仅「角色数据在途（未就绪）」时才不渲染子路由、也不判拒绝（渲染 loadingFallback）。
 // ============================================================
 import '@testing-library/jest-dom/vitest';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
@@ -14,11 +17,16 @@ const { mockState } = vi.hoisted(() => ({
 		machineStatus: 'ready' as string,
 		role: 'admin' as string | null,
 		permissions: [] as string[],
+		/** 角色是否已定型；undefined = 旧夹具形状（按已定型处理） */
+		roleSettled: undefined as boolean | undefined,
 	},
 }));
 
 vi.mock('../../auth/auth-machine', () => ({
-	useAuthMachine: () => ({ status: mockState.machineStatus }),
+	useAuthMachine: () => ({
+		status: mockState.machineStatus,
+		roleSettled: mockState.roleSettled,
+	}),
 }));
 
 vi.mock('../../auth/tenant-route-middleware', async (importOriginal) => ({
@@ -86,6 +94,7 @@ beforeEach(() => {
 	mockState.machineStatus = 'ready';
 	mockState.role = 'admin';
 	mockState.permissions = [];
+	mockState.roleSettled = undefined;
 	delete (window as any).__APP_CONFIG__;
 });
 
@@ -125,13 +134,44 @@ describe('RequireAuth 对抗 6 类（A-445 / RC-4）', () => {
 		expect(screen.queryByTestId('protected-c3')).toBeNull();
 	});
 
-	it('④ role=null ⇒ 穿透（现语义锁定，防误改）', () => {
+	it('④ role=null 且角色数据已定型 ⇒ fail-closed 拒绝（2026-11-19 裁定：null 不再穿透）', () => {
 		mockState.role = null;
 		mockState.permissions = [];
 
 		renderGuard('c4', { allowedRoles: ADMIN_ONLY });
 
-		expect(screen.getByTestId('protected-c4')).toBeInTheDocument();
+		expect(screen.getByTestId('forbidden-c4')).toBeInTheDocument();
+		expect(screen.queryByTestId('protected-c4')).toBeNull();
+	});
+
+	it('④b role=null 但角色数据在途（未就绪）⇒ 不渲染子路由、也不判拒绝（渲染 loading）', () => {
+		mockState.role = null;
+		mockState.permissions = [];
+		mockState.roleSettled = false;
+
+		render(
+			<RequireAuth
+				allowedRoles={ADMIN_ONLY}
+				loadingFallback={<div data-testid="loading-c4b">loading</div>}
+				fallback={<div data-testid="forbidden-c4b">forbidden</div>}
+			>
+				<div data-testid="protected-c4b">protected</div>
+			</RequireAuth>,
+		);
+
+		expect(screen.getByTestId('loading-c4b')).toBeInTheDocument();
+		expect(screen.queryByTestId('protected-c4b')).toBeNull();
+		// 未就绪 ≠ 无权限：不得提前渲染 fallback（站点常接 ForbiddenRedirect ⇒ 误跳 403）
+		expect(screen.queryByTestId('forbidden-c4b')).toBeNull();
+	});
+
+	it('④c role=null 但持 "*" ⇒ 放行（豁免口径不变）', () => {
+		mockState.role = null;
+		mockState.permissions = ['*'];
+
+		renderGuard('c4c', { allowedRoles: ADMIN_ONLY });
+
+		expect(screen.getByTestId('protected-c4c')).toBeInTheDocument();
 	});
 
 	it('⑤ 持 \"*\" 的非白名单角色 ⇒ 放行（豁免对照组）', () => {
